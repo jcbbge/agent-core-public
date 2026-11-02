@@ -1,0 +1,4 @@
+interface:
+  display_name: "Illustrated Explainer"
+  short_description: "Teach a topic through a sequence of illustrations"
+  default_prompt: "Use $illustrated-explainer to turn our topic into a standalone illustrated lesson, choosing a visual metaphor for each teaching point."

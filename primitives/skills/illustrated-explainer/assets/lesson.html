@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Illustrated lesson</title>
+<style>
+:root { color-scheme: light dark; font-family: var(--font-sans, system-ui, sans-serif); color: var(--foreground, light-dark(#20332e, #e0ebe6)); }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+main { max-width: 760px; margin: auto; }
+.scene { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: center; min-height: 340px; }
+figure { margin: 0; min-width: 0; }
+canvas { display: block; width: 100%; aspect-ratio: 1; image-rendering: pixelated; cursor: grab; touch-action: none; }
+canvas:active { cursor: grabbing; }
+canvas:focus-visible { outline: 2px solid var(--ring, #6baf8c); outline-offset: -3px; }
+.motion { display: flex; justify-content: center; gap: 6px; }
+.motion button[aria-pressed="true"] { border-color: var(--primary, #508c70); color: var(--primary, #508c70); }
+figcaption { text-align: center; font-size: 11px; color: var(--muted-foreground, light-dark(#64786e, #a5baaf)); margin: 10px 0 18px; }
+.eyebrow { color: var(--muted-foreground, light-dark(#64786e, #a5baaf)); font-family: var(--font-mono, monospace); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+h1 { font-size: clamp(24px, 4.4vw, 36px); line-height: 1.12; font-weight: 540; letter-spacing: -.035em; margin: 16px 0; }
+.narration { line-height: 1.65; font-size: 15px; margin: 0; white-space: pre-line; }
+.visual { margin: 18px 0 0; line-height: 1.5; font-size: 12px; color: var(--muted-foreground, light-dark(#64786e, #a5baaf)); }
+.source { display: inline-block; margin-top: 10px; font-size: 11px; color: var(--muted-foreground, light-dark(#64786e, #a5baaf)); text-underline-offset: 3px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 16px 0; border-top: 1px solid var(--border, light-dark(#dce6df, #344a3e)); }
+button { font: inherit; font-size: 12px; color: inherit; border: 1px solid var(--border, light-dark(#dce6df, #344a3e)); border-radius: var(--radius, 7px); background: transparent; padding: 8px 12px; cursor: pointer; }
+button:hover:enabled { background: var(--secondary, light-dark(#eff4f0, #273c30)); }
+button:focus-visible { outline: 2px solid var(--ring, #6baf8c); outline-offset: 3px; }
+button:disabled { opacity: .35; cursor: default; }
+.progress { display: flex; flex: 1; gap: 5px; min-width: 50px; }
+.progress button { padding: 0; height: 24px; min-width: 8px; flex: 1; border: 0; border-radius: 0; position: relative; }
+.progress button::after { content: ''; height: 3px; background: var(--border, #b4c7bc); position: absolute; top: 10px; left: 0; right: 0; border-radius: 2px; }
+.progress button[aria-current="step"]::after { background: var(--primary, #508c70); }
+.error { font-size: 13px; color: var(--warning, #a07936); }
+@media (max-width: 520px) { .scene { grid-template-columns: 1fr; gap: 0; min-height: 0; } figure { width: min(76%, 300px); margin: auto; } h1 { margin-top: 10px; } .copy { padding-bottom: 24px; } .controls { gap: 6px; } button { padding: 8px 10px; } }
+</style>
+</head>
+<body>
+<main aria-label="Illustrated lesson">
+  <section class="scene" aria-live="polite" aria-atomic="true">
+    <figure>
+      <canvas id="art" width="240" height="240" role="img" tabindex="0" aria-describedby="motion-hint" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"></canvas>
+      <div class="motion" role="group" aria-label="Illustration motion">
+        <button id="motion-still" aria-pressed="true">Static</button><button id="motion-turn" aria-pressed="false">Idle</button><button id="motion-spin" aria-pressed="false">Turntable</button>
+      </div>
+      <figcaption id="motion-hint">Drag to rotate · arrow keys when focused</figcaption>
+      <p id="error" class="error" hidden></p>
+    </figure>
+    <div class="copy"><div id="counter" class="eyebrow"></div><h1 id="heading"></h1><p id="narration" class="narration"></p><p id="visual" class="visual"></p><a id="source" class="source" target="_blank" rel="noopener noreferrer" hidden>Source ↗</a></div>
+  </section>
+  <nav class="controls" aria-label="Lesson controls">
+    <button id="previous" aria-label="Previous scene">←</button>
+    <button id="play">Play</button>
+    <button id="next" aria-label="Next scene">→</button>
+    <div id="progress" class="progress" aria-label="Choose a scene"></div>
+    <button id="png" aria-label="Download current illustration as PNG">PNG ↓</button>
+    <button id="svg" aria-label="Download current illustration as SVG">SVG ↓</button>
+  </nav>
+</main>
+<script>
+"use strict";
+const lesson = __LESSON_JSON__;
+const shapeNames = __SHAPES_JSON__;
+const fragmentSource = __SHADER_JSON__;
+const el = id => document.getElementById(id);
+document.title = lesson.title;
+document.querySelector('main').setAttribute('aria-label', lesson.title);
+const canvas = el('art');
+const SIZE = 960, GRID = canvas.width, CELL = SIZE / GRID;
+const INK = '#508b76';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+let gl, program, frame = 0, current = 0, timer = 0;
+let motion = 'still', motionTime = 0, lastFrame = 0, yaw = .28, pitch = -.15;
+let transition = null, drag = null, visible = true;
+let illustrationError = '';
+const api = window.lessonArtifact = { ready: false, error: '', lesson };
+
+function reportError(error) {
+  illustrationError = String(error.message || error);
+  api.error = illustrationError;
+  el('error').textContent = 'Illustration unavailable: ' + illustrationError;
+  el('error').hidden = false;
+  el('png').disabled = el('svg').disabled = true;
+  cancelAnimationFrame(frame); frame = 0;
+  for (const mode of ['still', 'turn', 'spin']) el('motion-' + mode).disabled = true;
+}
+
+function initRenderer() {
+  gl = canvas.getContext('webgl2', { antialias: false, alpha: true, preserveDrawingBuffer: true });
+  if (!gl) throw new Error('This illustration needs WebGL2.');
+  const compile = (kind, source) => {
+    const shader = gl.createShader(kind);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      const message = gl.getShaderInfoLog(shader);
+      gl.deleteShader(shader);
+      throw new Error(message);
+    }
+    return shader;
+  };
+  const vs = compile(gl.VERTEX_SHADER, '#version 300 es\nin vec2 position;void main(){gl_Position=vec4(position,0.,1.);}');
+  const fs = compile(gl.FRAGMENT_SHADER, fragmentSource);
+  program = gl.createProgram();
+  gl.attachShader(program, vs); gl.attachShader(program, fs); gl.linkProgram(program);
+  gl.deleteShader(vs); gl.deleteShader(fs);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+  gl.useProgram(program);
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(program, 'position');
+  gl.enableVertexAttribArray(pos); gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  gl.viewport(0, 0, GRID, GRID);
+  const rgb = [1,3,5].map(start => parseInt(INK.slice(start, start + 2), 16) / 255);
+  gl.uniform3fv(gl.getUniformLocation(program, 'uInk'), rgb);
+  gl.uniform2f(gl.getUniformLocation(program, 'uResolution'), GRID, GRID);
+}
+
+function draw(from, to, mix, pose = currentPose()) {
+  if (illustrationError) return;
+  gl.uniform1f(gl.getUniformLocation(program, 'uTime'), motionTime);
+  gl.uniform1f(gl.getUniformLocation(program, 'uYaw'), pose.yaw);
+  gl.uniform1f(gl.getUniformLocation(program, 'uPitch'), pose.pitch);
+  gl.uniform1i(gl.getUniformLocation(program, 'uFrom'), from);
+  gl.uniform1i(gl.getUniformLocation(program, 'uTo'), to);
+  gl.uniform1f(gl.getUniformLocation(program, 'uMix'), mix);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+
+function currentPose() {
+  if (reduced.matches) return { yaw, pitch };
+  return { yaw: yaw + (motion === 'spin' ? motionTime * .65 : motion === 'turn' ? .5 * Math.sin(motionTime * .7) : 0), pitch };
+}
+
+function drawCurrent(poster = false) {
+  const shape = shapeNames.indexOf(lesson.scenes[current].shape);
+  draw(shape, shape, 1, poster ? { yaw: .28, pitch: -.15 } : currentPose());
+}
+
+function renderFrame(now) {
+  frame = 0;
+  if (illustrationError || document.hidden || !visible) { lastFrame = 0; return; }
+  const dt = lastFrame ? Math.min(.05, (now - lastFrame) / 1000) : 0;
+  lastFrame = now;
+  if (!reduced.matches && motion !== 'still') motionTime += dt;
+  if (transition) {
+    const t = Math.min(1, (now - transition.start) / 700);
+    draw(transition.from, transition.to, t * t * (3 - 2 * t));
+    if (t === 1) transition = null;
+  } else drawCurrent();
+  if (transition || (motion !== 'still' && !reduced.matches)) kick();
+  else lastFrame = 0;
+}
+
+function kick() {
+  if (!frame && gl && !illustrationError && !document.hidden && visible) frame = requestAnimationFrame(renderFrame);
+}
+
+function updateMotionButtons() {
+  for (const mode of ['still', 'turn', 'spin']) el('motion-' + mode).setAttribute('aria-pressed', String(mode === motion));
+  el('motion-hint').textContent = reduced.matches ? 'Reduced motion · drag or use arrow keys to rotate' : 'Drag to rotate · arrow keys when focused';
+}
+
+function setMotion(mode) {
+  if (!['still', 'turn', 'spin'].includes(mode)) throw new Error('Unknown motion mode.');
+  const pose = currentPose(); yaw = pose.yaw; pitch = pose.pitch;
+  motion = mode; motionTime = 0; lastFrame = 0;
+  transition = null;
+  updateMotionButtons();
+  if (gl && !illustrationError) { drawCurrent(); kick(); }
+}
+
+function setScene(index, options = {}) {
+  if (!Number.isInteger(index) || index < 0 || index >= lesson.scenes.length) throw new Error('Scene index is out of range.');
+  cancelAnimationFrame(frame); frame = 0; lastFrame = 0;
+  const oldShape = shapeNames.indexOf(lesson.scenes[current].shape);
+  current = index;
+  const scene = lesson.scenes[index], newShape = shapeNames.indexOf(scene.shape);
+  motion = scene.motion || 'still'; motionTime = 0; yaw = .28; pitch = -.15; drag = null;
+  updateMotionButtons();
+  el('counter').textContent = `${String(index + 1).padStart(2, '0')} / ${String(lesson.scenes.length).padStart(2, '0')} · ${lesson.title}`;
+  el('heading').textContent = scene.title;
+  el('narration').textContent = scene.narration;
+  el('visual').textContent = scene.visual;
+  el('source').hidden = !scene.source;
+  if (scene.source) el('source').href = scene.source;
+  else el('source').removeAttribute('href');
+  canvas.setAttribute('aria-label', scene.visual);
+  el('previous').disabled = index === 0;
+  el('next').disabled = index === lesson.scenes.length - 1;
+  [...el('progress').children].forEach((button, i) => {
+    if (i === index) button.setAttribute('aria-current', 'step');
+    else button.removeAttribute('aria-current');
+  });
+  if (illustrationError) return;
+  if (options.animate && !reduced.matches && oldShape !== newShape) {
+    transition = { from: oldShape, to: newShape, start: performance.now() };
+  } else { transition = null; drawCurrent(); }
+  kick();
+}
+
+function pause() { clearTimeout(timer); timer = 0; el('play').textContent = 'Play'; el('play').setAttribute('aria-pressed', 'false'); }
+function advance() {
+  if (current >= lesson.scenes.length - 1) { pause(); return; }
+  setScene(current + 1, { animate: true });
+  schedule();
+}
+function schedule() {
+  const words = lesson.scenes[current].narration.trim().split(/\s+/).length;
+  timer = setTimeout(advance, Math.max(6500, words / 2.4 * 1000));
+}
+function go(index) { pause(); setScene(index, { animate: true }); }
+
+function snapshot(options = {}) {
+  if (illustrationError) throw new Error(illustrationError);
+  // Browser downloads capture the chosen angle; batch exports request a stable poster.
+  drawCurrent(Boolean(options.poster));
+  const pixels = new Uint8Array(GRID * GRID * 4);
+  gl.readPixels(0, 0, GRID, GRID, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+  const small = document.createElement('canvas'); small.width = small.height = GRID;
+  const ctx = small.getContext('2d'), image = ctx.createImageData(GRID, GRID);
+  const paths = [];
+  let dots = 0;
+  for (let y = 0; y < GRID; y++) {
+    let run = -1;
+    for (let x = 0; x <= GRID; x++) {
+      const source = ((GRID - 1 - y) * GRID + x) * 4;
+      const on = x < GRID && pixels[source + 3] > 127;
+      if (x < GRID) {
+        const dest = (y * GRID + x) * 4;
+        image.data.set(pixels.subarray(source, source + 4), dest);
+      }
+      if (on) { dots++; if (run === -1) run = x; }
+      else if (run !== -1) {
+        paths.push(`M${run * CELL} ${y * CELL}h${(x - run) * CELL}v${CELL}H${run * CELL}z`);
+        run = -1;
+      }
+    }
+  }
+  if (!dots) throw new Error('The illustration contains no visible dots.');
+  ctx.putImageData(image, 0, 0);
+  const large = document.createElement('canvas'); large.width = large.height = SIZE;
+  const target = large.getContext('2d'); target.imageSmoothingEnabled = false; target.drawImage(small, 0, 0, SIZE, SIZE);
+  const escapeXML = text => text.replace(/[<>&"']/g, c => ({'<':'&lt;', '>':'&gt;', '&':'&amp;', '"':'&quot;', "'":'&apos;'}[c]));
+  const scene = lesson.scenes[current];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}" viewBox="0 0 ${SIZE} ${SIZE}" role="img"><title>${escapeXML(scene.title)}</title><desc>${escapeXML(scene.visual)}</desc><path fill="${INK}" d="${paths.join('')}"/></svg>`;
+  drawCurrent(); kick();
+  return { id: scene.id, png: large.toDataURL('image/png').split(',')[1], svg, dots, width: SIZE, height: SIZE };
+}
+
+function download(kind) {
+  pause();
+  try {
+    const artifact = snapshot();
+    const blob = kind === 'png' ? new Blob([Uint8Array.from(atob(artifact.png), c => c.charCodeAt(0))], {type: 'image/png'}) : new Blob([artifact.svg], {type: 'image/svg+xml'});
+    const link = document.createElement('a'), url = URL.createObjectURL(blob);
+    link.href = url; link.download = artifact.id + '.' + kind; link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (error) { reportError(error); }
+}
+
+lesson.scenes.forEach((scene, i) => {
+  const button = document.createElement('button'); button.setAttribute('aria-label', `Scene ${i + 1}: ${scene.title}`);
+  button.onclick = () => go(i); el('progress').append(button);
+});
+el('previous').onclick = () => go(Math.max(0, current - 1));
+el('next').onclick = () => go(Math.min(lesson.scenes.length - 1, current + 1));
+el('play').setAttribute('aria-pressed', 'false');
+el('play').disabled = lesson.scenes.length === 1;
+el('play').onclick = () => {
+  if (timer) { pause(); return; }
+  if (current === lesson.scenes.length - 1) setScene(0);
+  el('play').textContent = 'Pause'; el('play').setAttribute('aria-pressed', 'true'); schedule();
+};
+el('png').onclick = () => download('png'); el('svg').onclick = () => download('svg');
+for (const mode of ['still', 'turn', 'spin']) el('motion-' + mode).onclick = () => setMotion(mode);
+canvas.addEventListener('pointerdown', event => {
+  if (illustrationError || drag || (event.pointerType === 'mouse' && event.button !== 0)) return;
+  pause(); setMotion('still'); transition = null;
+  drag = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  canvas.setPointerCapture(event.pointerId);
+});
+canvas.addEventListener('pointermove', event => {
+  if (!drag || event.pointerId !== drag.id) return;
+  yaw += (event.clientX - drag.x) * .012;
+  pitch = Math.max(-1.35, Math.min(1.35, pitch + (event.clientY - drag.y) * .012));
+  drag.x = event.clientX; drag.y = event.clientY;
+  drawCurrent();
+});
+for (const eventName of ['pointerup', 'pointercancel', 'lostpointercapture']) canvas.addEventListener(eventName, () => { drag = null; });
+canvas.addEventListener('keydown', event => {
+  if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key) || illustrationError) return;
+  event.preventDefault(); event.stopPropagation(); pause(); setMotion('still'); transition = null;
+  yaw += event.key === 'ArrowLeft' ? -.15 : event.key === 'ArrowRight' ? .15 : 0;
+  pitch = Math.max(-1.35, Math.min(1.35, pitch + (event.key === 'ArrowUp' ? -.15 : event.key === 'ArrowDown' ? .15 : 0)));
+  drawCurrent();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'ArrowRight') go(Math.min(lesson.scenes.length - 1, current + 1));
+  if (event.key === 'ArrowLeft') go(Math.max(0, current - 1));
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { pause(); cancelAnimationFrame(frame); frame = 0; lastFrame = 0; }
+  else kick();
+});
+new IntersectionObserver(entries => {
+  visible = entries[0].isIntersecting;
+  if (visible) kick();
+  else { cancelAnimationFrame(frame); frame = 0; lastFrame = 0; }
+}).observe(canvas);
+reduced.addEventListener('change', () => { lastFrame = 0; updateMotionButtons(); kick(); });
+canvas.addEventListener('webglcontextlost', event => { event.preventDefault(); pause(); reportError(new Error('The graphics context was lost. Reload to restore illustrations.')); });
+api.setScene = setScene; api.snapshot = snapshot; api.pause = pause; api.setMotion = setMotion;
+try { initRenderer(); } catch (error) { reportError(error); }
+setScene(0);
+api.ready = !illustrationError;
+</script>
+</body>
+</html>
