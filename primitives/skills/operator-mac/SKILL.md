@@ -27,11 +27,29 @@ Chrome: it holds their logins.
 
 ## Show the operator a web UI on the server
 
-1. Bind the server to `127.0.0.1:<port>`, never `0.0.0.0`.
-2. If `<port>` is not already forwarded (4747 is), the forward is added on the Mac as a
-   `LocalForward` on the always-on connection. Never hand the operator an `ssh -L` command.
-3. Give them `http://localhost:<port>/`. A process started inside your own session dies with
-   it; anything they will keep opening needs a supervised service.
+1. Reuse the project's existing task, checkout and server. Give a review server an owner
+   that survives agent turns and disconnects: the project's supervisor, or a named persistent
+   terminal session when that is the supported host arrangement. A background PID or `nohup`
+   alone does not prove that an agent harness will leave it running. Pending operator review
+   keeps the server alive until the project's explicit stop/reap step or the operator asks to stop.
+2. Bind the server to `127.0.0.1:<port>`, never `0.0.0.0`. Check startup output for an actual
+   listening server; a printed URL, warning or exited startup command is not readiness.
+3. Inspect the Mac's existing forwarding configuration for the actual port; do not assume a
+   new worktree uses a forwarded port. Add a missing loopback-only `LocalForward` to the existing
+   always-on connection and activate it through its existing supervisor. Do not create a competing
+   tunnel or leave the operator to run an `ssh -L` command.
+4. Before giving the URL back, verify both the server-side request and the same request from
+   the Mac. Verify the browser renders the intended page and expected data, not just its HTML
+   shell. If the Mac cannot be reached, state that operator-side access is unverified; do not
+   call the link ready. Follow the current environment's browser-tool rules.
+5. When resuming or reusing a review URL in another session/thread, check its actual server
+   owner and repeat those access checks. Restore the existing task if needed; do not create a
+   second stack or infer readiness from the previous session's report.
+
+Retain the runtime owner/session, task path, review URL and any forwarding change in the
+project's existing handoff record. Keep these details with the agents; the operator needs
+only the working link. Persistence across agent turns is not a claim of host-reboot recovery
+or automatic crash restart.
 
 ## Drive the browser
 
