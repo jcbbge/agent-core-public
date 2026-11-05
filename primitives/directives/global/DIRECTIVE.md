@@ -42,6 +42,8 @@ the work lives where the project keeps it.
   fetched, the operator's words. Acquire before you assert.
 - No source means look for one. Only when looking cannot settle it, say UNKNOWN or ask.
 - Never print, log or commit a secret.
+- For credentials, follow [credential continuity](../../rules/credential-continuity/RULE.md).
+  A new thread or session is not a reason to request a password again.
 
 ## Ground, make, report
 
