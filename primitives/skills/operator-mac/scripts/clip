@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# clip — copy stdin (or the args) to the clipboard of the Mac you are ssh-ed in from.
+# Rides OSC 52: inside tmux via load-buffer -w (tmux has set-clipboard on),
+# otherwise straight to the terminal. Needs the terminal to allow clipboard writes.
+#   git log -1 | clip      clip "some text"
+set -euo pipefail
+if (( $# )); then data="$*"; else data="$(cat)"; fi
+if [[ -n "${TMUX:-}" ]]; then
+  printf %s "$data" | tmux load-buffer -w -
+elif { : > /dev/tty; } 2>/dev/null; then
+  printf "\033]52;c;%s\a" "$(printf %s "$data" | base64 -w0)" > /dev/tty
+else
+  echo "clip: no terminal attached; nothing reaches the clipboard. Write it to a file instead." >&2
+  exit 1
+fi

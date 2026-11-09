@@ -1,0 +1,251 @@
+#!/usr/bin/env bash
+# task — a plain-file NOW / LATER / DONE task ledger; completions are retained.
+#
+# One TASKS.md per project (or per home directory). Every item is either NOW
+# (do it in this session), LATER (do it at a time or on a condition), or DONE.
+# Agents write their plan here before acting and check items off after.
+#
+#   task                     list NOW, LATER and done/planned counts
+#   task now  "text"         add a NOW item
+#   task later "text" [@when] add a LATER item; @when is a date or a condition.
+#   task done <id>...        move items to DONE with an ISO timestamp
+#   task defer <id> [@when]  NOW -> LATER
+#   task promote <id>        LATER -> NOW
+#   task drop <id> [reason]  remove an item that will not be done
+#   task all                 open ledgers only: every registered ledger that
+#                            has an open NOW or LATER item; missing files are
+#                            skipped silently
+#   task all --every         every registered ledger, including empty ones;
+#                            missing files are named instead of skipped
+#   task roots               registered ledgers with open NOW/LATER counts
+#   task roots prune         drop registry lines whose file no longer exists
+#   task register <file>     register a ledger file (idempotent)
+#   task unregister <file>   remove a ledger file from the registry (idempotent)
+#   task open                print open NOW count; exit 1 when it is zero
+#   task path                print the ledger file in use
+#
+# List resolution: $TASKS_FILE, else the nearest TASKS.md walking up from the current
+# directory. Inside a git repository the walk stops at the repository's top, so a session
+# in a project never lands on another agent's list above it; a project with no TASKS.md of
+# its own gets one kept outside it ($XDG_STATE_HOME/tasks/lists/<repo>.TASKS.md), so no file
+# is added to the project.
+# Requires: bash, awk, sed, grep, flock (util-linux; falls back to no lock).
+set -euo pipefail
+
+REG="${XDG_CONFIG_HOME:-$HOME/.config}/tasks/roots"
+TODAY=$(date +%Y-%m-%d)
+
+die() { printf 'task: %s\n' "$*" >&2; exit 2; }
+
+resolve() {
+  if [ -n "${TASKS_FILE:-}" ]; then printf '%s\n' "$TASKS_FILE"; return; fi
+  local d top stop=/
+  d=$(pwd -P); top=$(git rev-parse --show-toplevel 2>/dev/null || true)
+  [ -n "$top" ] && stop=$top
+  while :; do
+    [ -f "$d/TASKS.md" ] && { printf '%s\n' "$d/TASKS.md"; return; }
+    [ "$d" = "$stop" ] || [ "$d" = / ] && break
+    d=$(dirname "$d")
+  done
+  if [ -n "$top" ]; then
+    local dir="${XDG_STATE_HOME:-$HOME/.local/state}/tasks/lists"; mkdir -p "$dir"
+    printf '%s\n' "$dir/$(basename "$top").TASKS.md"
+  else
+    printf '%s\n' "$(pwd -P)/TASKS.md"
+  fi
+}
+
+ensure() {
+  local f=$1
+  if [ ! -f "$f" ]; then
+    printf '# Tasks\n\n## NOW\n\n## LATER\n' >"$f"
+  fi
+  register_root "$f"
+}
+
+with_lock() { # with_lock <file> <cmd...>
+  local f=$1; shift
+  if command -v flock >/dev/null 2>&1; then
+    ( flock 9; "$@" ) 9>"$f.lock"
+  else
+    "$@"
+  fi
+}
+
+next_id() { # ids never repeat, including after items are dropped
+  awk 'match($0,/^- \[[ x]\] #[0-9]+/){ id=substr($0,RSTART+7,RLENGTH-7)+0; if(id>m)m=id }
+       /^# Tasks/ && match($0,/next #[0-9]+/){ n=substr($0,RSTART+6,RLENGTH-6)-1; if(n>m)m=n } END{print m+1}' "$1"; }
+
+# insert_line <file> <section> <line> : append line to a section and rewrite
+# the file in canonical form (title, then each section header, a blank line,
+# its lines, a blank line).
+insert_line() {
+  local f=$1 sec=$2 line=$3 tmp nx lid; tmp=$(mktemp); nx=$(next_id "$f")
+  lid=$(sed -nE 's/^- \[[ x]\] #([0-9]+).*/\1/p' <<<"$line"); [ -n "$lid" ] && [ "$lid" -ge "$nx" ] && nx=$((lid + 1))
+  awk -v sec="$sec" -v line="$line" -v nx="$nx" '
+    BEGIN{ order[1]="NOW"; order[2]="LATER"; order[3]="DONE"; cur="" }
+    /^# /{ next }
+    /^## /{ cur=substr($0,4); next }
+    cur!="" && NF{ body[cur]=body[cur] $0 "\n" }
+    END{
+      if(line!="") body[sec]=body[sec] line "\n"
+      print "# Tasks (next #" nx ")"
+      for(i=1;i<=3;i++){ s=order[i]; print ""; print "## " s; print ""; if(body[s]!="") printf "%s", body[s] }
+    }' "$f" >"$tmp" && mv "$tmp" "$f"
+}
+
+# take_line <file> <id> : print the line for id and remove it from the file
+take_line() {
+  local f=$1 id=$2 tmp nx; tmp=$(mktemp)
+  local line; line=$(grep -m1 -E "^- \[[ x]\] #$id( |\$)" "$f" || true)
+  [ -n "$line" ] || die "no item #$id in $f"
+  nx=$(next_id "$f")   # counted before the item goes, so its id is never handed out again
+  grep -v -E "^- \[[ x]\] #$id( |\$)" "$f" | sed -E "1s/^# Tasks.*/# Tasks (next #$nx)/" >"$tmp" || true
+  mv "$tmp" "$f"
+  insert_line "$f" NOW ""   # canonical form, retaining DONE
+  printf '%s\n' "$line"
+}
+
+finish_line() { # called under one lock so removal and retention cannot interleave
+  local f=$1 id=$2 line
+  line=$({ section_lines "$f" NOW; section_lines "$f" LATER; } | grep -m1 -E "^- \\[ \\] #$id( |\$)" || true)
+  [ -n "$line" ] || die "no open item #$id in $f"
+  take_line "$f" "$id" >/dev/null
+  insert_line "$f" DONE "$(sed 's/^- \[ \]/- [x]/' <<<"$line") (done $(date -u +%Y-%m-%dT%H:%M:%SZ))"
+}
+
+body_of() { # strip "- [ ] #N " and a leading "@when " token
+  sed -E 's/^- \[[ x]\] #[0-9]+ ?//; s/^@[^ ]+ ?//' <<<"$1"
+}
+
+section_lines() { # section_lines <file> <section>
+  awk -v sec="## $2" '/^## /{insec=($0==sec); next} insec && /^- \[/' "$1"
+}
+
+open_counts() { # open_counts <file> : prints "<now> <later>" open-item counts
+  local f=$1 n l
+  n=$(section_lines "$f" NOW | grep -c '^- \[ \]' || true)
+  l=$(section_lines "$f" LATER | grep -c '^- \[ \]' || true)
+  printf '%s %s\n' "$n" "$l"
+}
+
+abspath() { # abspath <path> : make relative paths absolute; does not resolve symlinks or ..
+  case "$1" in
+    /*) printf '%s\n' "$1" ;;
+    *) printf '%s\n' "$(pwd -P)/$1" ;;
+  esac
+}
+
+register_root() { # register_root <file> : idempotent append to $REG
+  local f=$1
+  mkdir -p "$(dirname "$REG")"; touch "$REG"
+  grep -qxF "$f" "$REG" || printf '%s\n' "$f" >>"$REG"
+}
+
+show() {
+  local f=$1 label=${2:-}
+  local now later done n l
+  now=$(section_lines "$f" NOW); later=$(section_lines "$f" LATER)
+  done=$(section_lines "$f" DONE | grep -c '^- \[[xX]\]' || true)
+  read -r n l <<<"$(open_counts "$f")"
+  [ -n "$label" ] && printf '%s\n' "$label"
+  printf 'NOW\n'; if [ -n "$now" ]; then printf '%s\n' "$now" | sed 's/^/  /'; else printf '  (none)\n'; fi
+  printf 'LATER\n'; if [ -n "$later" ]; then printf '%s\n' "$later" | sed 's/^/  /'; else printf '  (none)\n'; fi
+  printf 'done %s / planned %s\n' "$done" "$((done + n + l))"
+}
+
+
+cmd=${1:-list}; shift || true
+F=$(resolve)
+
+case "$cmd" in
+  list|"") [ -f "$F" ] || { printf 'NOW\n  (none)\nLATER\n  (none)\ndone 0 / planned 0\n'; exit 0; }; show "$F" ;;
+  path) printf '%s\n' "$F" ;;
+  open) n=$(section_lines "$F" NOW 2>/dev/null | grep -c '^- \[ \]' || true); printf '%s\n' "$n"; [ "$n" -gt 0 ] ;;
+  now)
+    [ $# -ge 1 ] || die 'usage: task now "text"'
+    ensure "$F"; id=$(next_id "$F")
+    with_lock "$F" insert_line "$F" NOW "- [ ] #$id $*"
+    printf '#%s added to NOW\n' "$id" ;;
+  later)
+    [ $# -ge 1 ] || die 'usage: task later "text" [@when]'
+    when=""; text=(); for a in "$@"; do case "$a" in @*) when=${a// /-};; *) text+=("$a");; esac; done
+    ensure "$F"; id=$(next_id "$F")
+    with_lock "$F" insert_line "$F" LATER "- [ ] #$id ${when:+$when }${text[*]}"
+    printf '#%s added to LATER%s\n' "$id" "${when:+ ($when)}" ;;
+  done)
+    [ $# -ge 1 ] || die 'usage: task done <id>...'
+    for id in "$@"; do id=${id#\#}
+      with_lock "$F" finish_line "$F" "$id"
+      printf '#%s done\n' "$id"
+    done ;;
+  drop)
+    [ $# -ge 1 ] || die 'usage: task drop <id> [reason]'
+    id=${1#\#}; shift
+    with_lock "$F" take_line "$F" "$id" >/dev/null
+    printf '#%s dropped\n' "$id" ;;
+  defer)
+    [ $# -ge 1 ] || die 'usage: task defer <id> [@when]'
+    id=${1#\#}; when=${2:-}; when=${when// /-}
+    line=$(with_lock "$F" take_line "$F" "$id")
+    with_lock "$F" insert_line "$F" LATER "- [ ] #$id ${when:+$when }$(body_of "$line")"
+    printf '#%s moved to LATER%s\n' "$id" "${when:+ ($when)}" ;;
+  promote)
+    [ $# -ge 1 ] || die 'usage: task promote <id>'
+    id=${1#\#}
+    line=$(with_lock "$F" take_line "$F" "$id")
+    with_lock "$F" insert_line "$F" NOW "- [ ] #$id $(body_of "$line")"
+    printf '#%s moved to NOW\n' "$id" ;;
+  all)
+    every=0; for a in "$@"; do [ "$a" = --every ] && every=1; done
+    [ -f "$REG" ] || exit 0
+    while IFS= read -r f; do
+      if [ ! -f "$f" ]; then
+        [ "$every" -eq 1 ] && printf '== %s == (missing)\n\n' "$f"
+        continue
+      fi
+      read -r n l <<<"$(open_counts "$f")"
+      [ "$every" -eq 0 ] && [ "$n" -eq 0 ] && [ "$l" -eq 0 ] && continue
+      show "$f" "== $(dirname "$f") =="; echo
+    done <"$REG" ;;
+  roots)
+    sub=${1:-}; shift || true
+    case "$sub" in
+      "")
+        [ -f "$REG" ] || exit 0
+        while IFS= read -r f; do
+          if [ -f "$f" ]; then
+            read -r n l <<<"$(open_counts "$f")"
+            printf 'NOW=%s LATER=%s %s\n' "$n" "$l" "$f"
+          else
+            printf 'NOW=? LATER=? %s (missing)\n' "$f"
+          fi
+        done <"$REG" ;;
+      prune)
+        [ -f "$REG" ] || exit 0
+        tmp=$(mktemp)
+        while IFS= read -r f; do
+          if [ -f "$f" ]; then printf '%s\n' "$f" >>"$tmp"
+          else printf 'removed %s\n' "$f"
+          fi
+        done <"$REG"
+        mv "$tmp" "$REG" ;;
+      *) die "unknown roots subcommand '$sub' (try: task roots, task roots prune)" ;;
+    esac ;;
+  register)
+    [ $# -ge 1 ] || die 'usage: task register <file>'
+    f=$(abspath "$1")
+    register_root "$f"
+    printf 'registered %s\n' "$f" ;;
+  unregister)
+    [ $# -ge 1 ] || die 'usage: task unregister <file>'
+    f=$(abspath "$1")
+    if [ -f "$REG" ]; then
+      tmp=$(mktemp)
+      grep -vxF "$f" "$REG" >"$tmp" || true
+      mv "$tmp" "$REG"
+    fi
+    printf 'unregistered %s\n' "$f" ;;
+  -h|--help|help) sed -n '2,31p' "$0" | sed 's/^# \{0,1\}//' ;;
+  *) die "unknown command '$cmd' (try: task help)" ;;
+esac

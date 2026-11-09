@@ -1,0 +1,306 @@
+#!/usr/bin/env python3
+"""ground — the ground contract as a jig: no change to a repo until the agent
+changing it has looked at what is already there.
+
+A jig makes the wrong cut impossible, so nothing has to be re-checked afterwards. The
+stop is shape, not content: *did you look*, never *is your code right*.
+
+An agent has grounded in a repo, in this session, when the spine shows it:
+  1. read the repo's entrypoint: AGENTS.md, CLAUDE.md or README.md
+     (an entrypoint the harness loads by itself for its own cwd counts);
+  2. read one thing from each ground the repo itself shows it has: its contracts
+     (specs, decisions, docs/, the package manifest), its API (openapi, proto,
+     graphql, routes) and its database schema (schema files, migrations, prisma,
+     drizzle). Found with `git ls-files`; nothing is configured, nothing is written;
+  3. surveyed the codebase: at least GROUND_MIN_READS (default 3) reads or searches
+     inside the repo besides the entrypoint.
+
+Usage:
+  ground check --sid S [--agent A] [--harness NAME] [--cwd C] PATH
+      exit 0 = allowed; exit 2 = refused, with the refusal (what to read) on stdout
+  ground bash-writes COMMAND      exit 0 if COMMAND writes files (sed -i, >, tee, git commit, ...)
+  ground brief [--cwd C]          what to read before the first change in the cwd's repo
+  ground status --sid S [--agent A] [--cwd C] [PATH]   the picture so far, for humans
+
+Always allowed: paths outside any git repo, TASKS.md ledgers, anything under .git/.
+Fails open on any internal error. Knobs: GROUND_GATE=off, GROUND_MIN_READS, SPINE_DIR.
+"""
+import os, sys
+
+if __name__ == "__main__" and sys.argv[1:2] == ["check"] and os.environ.get("MW_WORKER") == "1":
+    sys.exit(0)
+
+import datetime, hashlib, json, re, shlex, subprocess
+
+HOME = os.path.expanduser("~")
+SPINE = os.environ.get("SPINE_DIR") or os.path.join(os.environ.get("XDG_STATE_HOME") or os.path.join(HOME, ".local", "state"), "spine")
+MEMO = os.path.join(os.environ.get("XDG_STATE_HOME") or os.path.join(HOME, ".local", "state"), "ground")
+MIN_READS = int(os.environ.get("GROUND_MIN_READS") or 3)
+ENTRY = ("AGENTS.md", "CLAUDE.md", "README.md")
+AUTOLOAD = os.environ.get("GROUND_AUTOLOAD", "")  # the entrypoint file the harness loads by itself, if any
+GROUNDS = (  # (name, test on a repo-relative path from `git ls-files`)
+    ("the contracts", lambda p: re.search(r"(^|/)(SPEC|SPECS|DECISIONS|CONTRACTS?|ARCHITECTURE|PRODUCT)\.md$|(^|/)docs/[^/]+\.md$"
+                                          r"|^(package\.json|pyproject\.toml|Cargo\.toml|go\.mod|deno\.json)$", p, re.I)),
+    ("the API", lambda p: re.search(r"(^|/)(openapi|swagger)[^/]*\.(ya?ml|json)$|\.proto$|\.graphqls?$|(^|/)(routes|api)/[^/]+\.[a-z]+$", p, re.I)),
+    ("the database schema", lambda p: re.search(r"(^|/)[^/]*schema[^/]*\.(sql|prisma|ts|js|py|rb)$|\.prisma$|(^|/)migrations?/|(^|/)drizzle/", p, re.I)),
+)
+
+
+def repo_of(path):
+    """The git toplevel holding path (a worktree's own root counts), or None."""
+    d = path if os.path.isdir(path) else os.path.dirname(path)
+    while d and d != "/":
+        if os.path.exists(os.path.join(d, ".git")):
+            return d
+        d = os.path.dirname(d)
+    return None
+
+
+def under(p, root):
+    return p == root or p.startswith(root.rstrip("/") + "/")
+
+
+def rel(p, root):
+    return os.path.relpath(p, root) if under(p, root) else p
+
+
+def exempt(path, repo):
+    r = rel(path, repo)
+    return os.path.basename(path) == "TASKS.md" or r == ".git" or r.startswith(".git/")
+
+
+_grounds = {}
+
+
+def roots_of(repo):
+    """[(ground, [absolute paths])]: the contracts, API and schema this repo shows it has."""
+    if repo in _grounds:
+        return _grounds[repo]
+    try:
+        files = subprocess.run(["git", "-C", repo, "ls-files"], capture_output=True, text=True, timeout=5).stdout.splitlines()
+    except (OSError, subprocess.SubprocessError):
+        files = []
+    out = []
+    for name, test in GROUNDS:
+        hits = [os.path.join(repo, f) for f in files if test(f) and not f.startswith(".git")]
+        if hits:
+            out.append((name, sorted(hits, key=lambda p: (p.count("/"), p))))
+    _grounds[repo] = out
+    return out
+
+
+def events(sid, agent):
+    """This agent's spine lines for this session (today's and yesterday's files)."""
+    today = datetime.datetime.now(datetime.timezone.utc).date()
+    key = '"sid":"%s"' % sid
+    out = []
+    for day in (today - datetime.timedelta(days=1), today):
+        f = os.path.join(SPINE, day.isoformat() + ".ndjson")
+        try:
+            with open(f, encoding="utf-8", errors="replace") as fh:
+                for line in fh:
+                    if key not in line:
+                        continue
+                    try:
+                        e = json.loads(line)
+                    except ValueError:
+                        continue
+                    if e.get("sid") == sid and (e.get("ag") or "") == (agent or ""):
+                        out.append(e)
+        except OSError:
+            continue
+    return out
+
+
+def touched(e, repo):
+    """Absolute paths inside repo that a read or search event looked at."""
+    if e.get("k") not in ("read", "search"):
+        return []
+    cwd = e.get("cwd") or ""
+    if e.get("path"):
+        return [e["path"]] if under(e["path"], repo) else []
+    arg = e.get("arg") or ""
+    if e.get("k") == "search":
+        parts = arg.rsplit(" ", 1)
+        p = parts[1] if len(parts) == 2 and parts[1] else cwd
+        p = p if p.startswith("/") else os.path.join(cwd, p)
+        return [os.path.normpath(p)] if under(os.path.normpath(p), repo) else []
+    hits = []
+    try:
+        toks = shlex.split(arg)
+    except ValueError:
+        toks = arg.split()
+    base = cwd
+    if len(toks) >= 2 and toks[0] == "cd":
+        base = toks[1] if toks[1].startswith("/") else os.path.join(cwd, toks[1])
+    for t in toks:
+        if t.startswith("-") or t in ("&&", ";", "|"):
+            continue
+        t = os.path.expanduser(t)
+        p = os.path.normpath(t if t.startswith("/") else os.path.join(base, t))
+        if under(p, repo) and os.path.exists(p):
+            hits.append(p)
+    if not hits and under(os.path.normpath(base), repo):
+        hits.append(os.path.normpath(base))  # a read command run inside the repo looks at the repo
+    return hits
+
+
+def picture(sid, agent, harness, cwd, repo):
+    evs = events(sid, agent)
+    seen = set()
+    for e in evs:
+        seen.update(touched(e, repo))
+    start_cwd = next((e.get("cwd") for e in evs if e.get("ev") == "session" and e.get("cwd")), cwd)
+    entry_read = [n for n in ENTRY if os.path.join(repo, n) in seen]
+    auto = [n for n in ([AUTOLOAD] if AUTOLOAD else []) if os.path.exists(os.path.join(repo, n))
+            and start_cwd and under(os.path.normpath(start_cwd), repo) and not agent]
+    has_entry = [n for n in ENTRY if os.path.exists(os.path.join(repo, n))]
+    entry_ok = bool(entry_read or auto or not has_entry)
+    sections = []
+    for name, paths in roots_of(repo):
+        ok = any(any(under(s, p) for s in seen) for p in paths)
+        sections.append((name, paths, ok))
+    survey = {p for p in seen if os.path.basename(p) not in ENTRY or os.path.dirname(p) != repo}
+    return {"entry_ok": entry_ok, "entry_read": entry_read or auto, "entry_have": has_entry,
+            "sections": sections, "survey": len(survey), "ok": entry_ok and all(s[2] for s in sections) and len(survey) >= MIN_READS}
+
+
+def memo_path(sid, agent, repo):
+    h = hashlib.sha1(("%s|%s|%s" % (sid, agent or "", repo)).encode()).hexdigest()[:24]
+    return os.path.join(MEMO, h)
+
+
+def refusal(repo, pic):
+    name = os.path.basename(repo)
+    lines = ["Ground first. Before your first change in %s, look at what already exists:" % name]
+    if not pic["entry_ok"]:
+        lines.append("  [ ] the entrypoint: " + " or ".join(os.path.join(repo, n) for n in pic["entry_have"]))
+    for sec, paths, ok in pic["sections"]:
+        if not ok:
+            lines.append("  [ ] %s: %s" % (sec, ", ".join(rel(p, repo) for p in paths[:6])))
+    if pic["survey"] < MIN_READS:
+        lines.append("  [ ] the code itself: %d more read(s) or search(es) inside %s (have %d of %d)"
+                     % (MIN_READS - pic["survey"], repo, pic["survey"], MIN_READS))
+    done = []
+    if pic["entry_ok"] and pic["entry_read"]:
+        done.append("entrypoint")
+    done += [s for s, _, ok in pic["sections"] if ok]
+    if done:
+        lines.append("  Already grounded: " + ", ".join(done) + ".")
+    lines.append("Then retry the same change. How you write the code is yours; this only asks that you looked first.")
+    return "\n".join(lines)
+
+
+def brief(cwd):
+    repo = repo_of(os.path.abspath(cwd))
+    if not repo:
+        return ""
+    ents = [n for n in ENTRY if os.path.exists(os.path.join(repo, n))]
+    out = ["Ground: before your first change in %s, read what already exists." % repo]
+    if ents:
+        out.append("- the entrypoint: " + ", ".join(ents))
+    for sec, paths, _ in [(s, p, False) for s, p in roots_of(repo)]:
+        out.append("- %s: %s" % (sec, ", ".join(rel(p, repo) for p in paths[:8])))
+    out.append("- the code the task touches: at least %d reads or searches inside the repo" % MIN_READS)
+    out.append("A write before that is refused, and the refusal lists what is still missing.")
+    return "\n".join(out)
+
+
+WRITE_RE = re.compile(r"(^|[;&|]\s*|\s)(sed\s+-i|perl\s+-[a-z]*i|tee\b|git\s+(commit|apply|am|mv|rm|restore|checkout\s+--)\b|patch\b|mv\b|cp\b|rm\b|truncate\b)"
+                      r"|(^|[^0-9&>])>>?\s*(?!&|/dev/null)[^\s|&;]+")
+
+
+def bash_writes(cmd):
+    stripped = re.sub(r"'[^']*'|\"[^\"]*\"", "''", cmd or "")
+    return bool(WRITE_RE.search(stripped))
+
+
+def main(argv):
+    if os.environ.get("GROUND_GATE", "on") == "off":
+        return 0
+    if not argv:
+        print(__doc__)
+        return 0
+    cmd, rest = argv[0], argv[1:]
+    if cmd == "bash-writes":
+        return 0 if bash_writes(" ".join(rest)) else 1
+    opts, pos = {}, []
+    i = 0
+    while i < len(rest):
+        if rest[i].startswith("--") and i + 1 < len(rest):
+            opts[rest[i][2:]] = rest[i + 1]
+            i += 2
+        else:
+            pos.append(rest[i])
+            i += 1
+    cwd = opts.get("cwd") or os.getcwd()
+    if cmd == "brief":
+        b = brief(cwd)
+        if b:
+            print(b)
+        return 0
+    sid, agent, harness = opts.get("sid", ""), opts.get("agent", ""), opts.get("harness", "")
+    target = pos[0] if pos else cwd
+    target = os.path.normpath(target if target.startswith("/") else os.path.join(cwd, target))
+    repo = repo_of(target)
+    if cmd == "status":
+        if not repo:
+            print("not in a git repo")
+            return 0
+        print(json.dumps(picture(sid, agent, harness, cwd, repo), indent=2, default=list))
+        return 0
+    if cmd != "check":
+        print("ground: unknown command %r" % cmd, file=sys.stderr)
+        return 0
+    if not repo or not sid or exempt(target, repo):
+        return 0
+    memo = memo_path(sid, agent, repo)
+    if os.path.exists(memo):
+        return 0
+    pic = picture(sid, agent, harness, cwd, repo)
+    if pic["ok"]:
+        os.makedirs(MEMO, exist_ok=True)
+        with open(memo, "w") as f:
+            f.write(repo + "\n")
+        spine_note(sid, agent, harness, cwd, target, "grounded", "")
+        return 0
+    text = refusal(repo, pic)
+    missing = "; ".join(l.strip()[4:] for l in text.splitlines() if l.strip().startswith("[ ]"))
+    spine_note(sid, agent, harness, cwd, target, "refused", missing)
+    print(text)
+    return 2
+
+
+def tier(agent, cwd):
+    """The same tier spine-emit derives: AGENT_ROLE when set; box for a session in home."""
+    if agent:
+        return "subagent"
+    if os.environ.get("AGENT_ROLE"):
+        return os.environ["AGENT_ROLE"]
+    return "box" if os.path.normpath(cwd) == HOME else ""
+
+
+def spine_note(sid, agent, harness, cwd, target, ev, why):
+    """The jig's own verdicts go on the spine, so a refusal is never invisible."""
+    try:
+        os.makedirs(SPINE, exist_ok=True)
+        now = datetime.datetime.now(datetime.timezone.utc)
+        line = {"ts": now.strftime("%Y-%m-%dT%H:%M:%S.") + "%03dZ" % (now.microsecond // 1000),
+                "h": harness, "sid": sid, "ag": agent or "",
+                "role": tier(agent, cwd),
+                "lane": os.environ.get("AGENT_LANE") or "",
+                "scope": os.environ.get("AGENT_SCOPE") or "", "cwd": cwd,
+                "ev": ev, "tool": "ground", "k": "", "arg": why[:300], "path": target}
+        with open(os.path.join(SPINE, now.date().isoformat() + ".ndjson"), "a") as f:
+            f.write(json.dumps(line, separators=(",", ":")) + "\n")
+    except OSError:
+        pass
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main(sys.argv[1:]))
+    except SystemExit:
+        raise
+    except Exception:  # a broken jig must never stop the work
+        sys.exit(0)

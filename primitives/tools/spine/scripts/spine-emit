@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# spine-emit — append one event to the machine's spine: the single event stream every
+# agent writes, at every tier, without knowing it exists.
+#
+# Reads one event JSON document on stdin, in the shape one harness sends (hook_event_name, tool_name,
+# tool_input, session_id, agent_id, cwd; other harnesses adapt the mapping below), and appends one NDJSON line to $SPINE_DIR/<UTC date>.ndjson:
+#
+#   ts    ISO-8601 UTC, milliseconds       h     harness (SPINE_HARNESS)
+#   sid   harness session id               ag    sub-agent id ("" for the main agent)
+#   role  AGENT_ROLE, subagent, or box (derived below)
+#   lane  AGENT_LANE
+#   scope AGENT_SCOPE                     cwd   the session's working directory
+#   ev    session | prompt | tool | stop | end
+#   tool  tool name (Read, Edit, Bash, ...) k     read | search | write | exec | other
+#   arg   what it acted on (a path, a pattern, a command; cut to 300 characters)
+#   path  absolute path for file tools, else ""
+#
+# Never blocks, never prints, always exits 0: the spine observes, it does not gate.
+# Knobs: SPINE_DIR (default ${XDG_STATE_HOME:-~/.local/state}/spine), SPINE=off.
+[ "${SPINE:-on}" = off ] && exit 0
+command -v jq >/dev/null 2>&1 || exit 0
+dir=${SPINE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/spine}
+mkdir -p "$dir" 2>/dev/null || exit 0
+input=$(cat 2>/dev/null) || exit 0
+# The tier: AGENT_ROLE when the launcher sets it; a session whose cwd is home is the box;
+# sub-agents are "subagent" (decided below from the event's agent_id).
+role=${AGENT_ROLE:-}
+if [ -z "$role" ]; then
+  [ "$(jq -r '.cwd // empty' <<<"$input" 2>/dev/null)" = "$HOME" ] && role=box
+fi
+line=$(jq -c \
+  --arg ts "$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)" \
+  --arg h "${SPINE_HARNESS:-unknown}" \
+  --arg role "$role" \
+  --arg lane "${AGENT_LANE:-}" \
+  --arg scope "${AGENT_SCOPE:-}" '
+  def cut: tostring | gsub("\\s+"; " ") | .[0:300];
+  (.hook_event_name // "") as $e | (.tool_name // "") as $t | (.tool_input // {}) as $i
+  | (.cwd // "") as $cwd
+  | ($i.file_path // $i.notebook_path // $i.path // "") as $p
+  | (if $p == "" then "" elif ($p | startswith("/")) then $p else ($cwd + "/" + $p) end) as $abs
+  | ($i.command // "" | tostring | sub("^\\s*(cd\\s+[^;&|]+\\s*(&&|;)\\s*)?"; "") | split(" ") | map(select(. != ""))) as $words
+  | (($words[0] // "") | split("/")[-1]) as $cmd0
+  | (if $cmd0 == "git" then (if (($words[1] // "") | test("^(log|show|status|diff|grep|ls-files|ls-tree|blame|rev-parse|branch|cat-file)$")) then "cat" else "git-write" end) else $cmd0 end) as $cmd0
+  | {ts: $ts, h: $h, sid: (.session_id // ""), ag: (.agent_id // ""),
+     role: (if (.agent_id // "") != "" then "subagent" else $role end), lane: $lane,
+     scope: $scope, cwd: $cwd,
+     ev: ({"SessionStart":"session","UserPromptSubmit":"prompt","PostToolUse":"tool",
+           "Stop":"stop","SubagentStop":"stop","SessionEnd":"end"}[$e] // ($e | ascii_downcase)),
+     tool: $t,
+     k: (if $t == "" then ""
+         elif ($t | test("^(Read|NotebookRead|LS)$")) then "read"
+         elif ($t | test("^(Grep|Glob)$")) then "search"
+         elif ($t | test("^(Edit|Write|MultiEdit|NotebookEdit)$")) then "write"
+         elif $t == "Bash" then
+           (if ($cmd0 | test("^(cat|sed|head|tail|less|rg|grep|ugrep|ls|find|tree|wc|jq|file|stat|diff|awk|sqlite3|psql|curl)$")) then "read" else "exec" end)
+         else "other" end),
+     arg: (if $t == "Bash" then ($i.command // "" | cut)
+           elif ($t | test("^(Grep|Glob)$")) then (($i.pattern // "") + " " + ($i.path // "") | cut)
+           elif $abs != "" then $abs
+           elif $e == "UserPromptSubmit" then (.prompt // "" | cut)
+           elif $t != "" then ($i | tostring | cut)
+           else "" end),
+     path: $abs}' <<<"$input" 2>/dev/null) || exit 0
+[ -n "$line" ] && printf '%s\n' "$line" >>"$dir/$(date -u +%Y-%m-%d).ndjson" 2>/dev/null
+# Retention, once per session start: SPINE_KEEP_DAYS (14) of spine files, and Ground passes
+# older than two days (a session that old has ended; its memo only takes space).
+case "$input" in *'"SessionStart"'*)
+  find "$dir" -maxdepth 1 -name '*.ndjson' -mtime +"${SPINE_KEEP_DAYS:-14}" -delete 2>/dev/null
+  find "${XDG_STATE_HOME:-$HOME/.local/state}/ground" -maxdepth 1 -type f -mtime +2 -delete 2>/dev/null ;;
+esac
+exit 0

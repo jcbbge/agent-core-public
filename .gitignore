@@ -1,0 +1,6 @@
+.DS_Store
+
+# Local tool state: caches, indexes and dependencies. Never source.
+.coraline/
+.pi/
+node_modules/

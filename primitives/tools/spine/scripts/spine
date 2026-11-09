@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""spine — read the machine's event stream (written by spine-emit from every agent).
+
+  spine [tail] [-n N] [-f] [filters]   the last N events (default 30), newest last; -f follows
+  spine who [--since 2h]               one line per live session: tier, lane, project, last act
+  spine json [filters]                 matching events as NDJSON, for agents
+
+Filters: --lane ID  --role ROLE  --scope PROJECT  --sid SESSION  --repo PATH  --since 2h|30m|1d
+Knobs: SPINE_DIR (default ${XDG_STATE_HOME:-~/.local/state}/spine).
+"""
+import datetime, glob, json, os, sys, time
+
+HOME = os.path.expanduser("~")
+DIR = os.environ.get("SPINE_DIR") or os.path.join(os.environ.get("XDG_STATE_HOME") or os.path.join(HOME, ".local", "state"), "spine")
+
+
+def since_epoch(s):
+    if not s:
+        return None
+    n, u = int(s[:-1]), s[-1]
+    return time.time() - n * {"m": 60, "h": 3600, "d": 86400}[u]
+
+
+def ts_epoch(ts):
+    try:
+        return datetime.datetime.strptime(ts, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=datetime.timezone.utc).timestamp()
+    except (TypeError, ValueError):
+        return 0
+
+
+def files(days=2):
+    fs = sorted(glob.glob(os.path.join(DIR, "*.ndjson")))
+    return fs[-days:]
+
+
+def load(opts, days=2):
+    cut = since_epoch(opts.get("since"))
+    if cut:
+        days = max(days, int((time.time() - cut) // 86400) + 2)
+    out = []
+    for f in files(days):
+        with open(f, encoding="utf-8", errors="replace") as fh:
+            for line in fh:
+                try:
+                    e = json.loads(line)
+                except ValueError:
+                    continue
+                if match(e, opts, cut):
+                    out.append(e)
+    return out
+
+
+def match(e, o, cut):
+    if cut and ts_epoch(e.get("ts")) < cut:
+        return False
+    for k, f in (("lane", "lane"), ("role", "role"), ("scope", "scope"), ("sid", "sid")):
+        if o.get(k) and e.get(f) != o[k]:
+            return False
+    if o.get("repo"):
+        r = os.path.abspath(o["repo"]).rstrip("/") + "/"
+        if not ((e.get("path") or "").startswith(r) or (e.get("cwd") or "").rstrip("/") + "/" == r or (e.get("cwd") or "").startswith(r)):
+            return False
+    return True
+
+
+def who(e):
+    tier = e.get("role") or "?"
+    if e.get("ag"):
+        tier += "/sub"
+    return "%-9s %-14s %-10s" % (tier, (e.get("lane") or "-")[:14], (e.get("scope") or os.path.basename(e.get("cwd") or "") or "-")[:10])
+
+
+def row(e):
+    t = (e.get("ts") or "")[11:19]
+    what = e.get("ev") or ""
+    if what == "tool":
+        what = "%s %s" % (e.get("tool"), e.get("arg") or "")
+    elif what == "prompt":
+        what = "prompt  " + (e.get("arg") or "")
+    elif what == "refused":
+        what = "REFUSED %s  missing: %s" % (e.get("path") or "", e.get("arg") or "")
+    elif what == "grounded":
+        what = "grounded in %s" % (e.get("path") or "")
+    return "%s %s %s  %s" % (t, e.get("h", "")[:2], who(e), what)
+
+
+def cols():
+    try:
+        return os.get_terminal_size().columns
+    except OSError:
+        return 200
+
+
+def main(argv):
+    cmd = "tail"
+    if argv and argv[0] in ("tail", "who", "json", "help", "-h", "--help"):
+        cmd, argv = argv[0], argv[1:]
+    if cmd in ("help", "-h", "--help"):
+        print(__doc__)
+        return 0
+    opts, n, follow, i = {}, 30, False, 0
+    while i < len(argv):
+        a = argv[i]
+        if a == "-f":
+            follow = True
+        elif a == "-n" and i + 1 < len(argv):
+            n = int(argv[i + 1]); i += 1
+        elif a.startswith("--") and i + 1 < len(argv):
+            opts[a[2:]] = argv[i + 1]; i += 1
+        else:
+            print("spine: unknown argument %r (spine help)" % a, file=sys.stderr)
+            return 2
+        i += 1
+    if cmd == "json":
+        for e in load(opts):
+            print(json.dumps(e))
+        return 0
+    if cmd == "who":
+        opts.setdefault("since", "2h")
+        last = {}
+        for e in load(opts):
+            last[(e.get("sid"), e.get("ag"))] = e
+        w = cols()
+        for e in sorted(last.values(), key=lambda e: e.get("ts") or ""):
+            if e.get("ev") == "end":
+                continue
+            print(row(e)[:w])
+        return 0
+    w = cols()
+    for e in load(opts)[-n:]:
+        print(row(e)[:w])
+    if not follow:
+        return 0
+    f = files(1)
+    path = f[-1] if f else os.path.join(DIR, datetime.datetime.utcnow().strftime("%Y-%m-%d") + ".ndjson")
+    pos = os.path.getsize(path) if os.path.exists(path) else 0
+    try:
+        while True:
+            time.sleep(0.5)
+            today = os.path.join(DIR, datetime.datetime.utcnow().strftime("%Y-%m-%d") + ".ndjson")
+            if today != path:
+                path, pos = today, 0
+            if not os.path.exists(path) or os.path.getsize(path) <= pos:
+                continue
+            with open(path, encoding="utf-8", errors="replace") as fh:
+                fh.seek(pos)
+                for line in fh:
+                    try:
+                        e = json.loads(line)
+                    except ValueError:
+                        continue
+                    if match(e, opts, None):
+                        print(row(e)[:cols()], flush=True)
+                pos = fh.tell()
+    except KeyboardInterrupt:
+        return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
