@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# rivet-relay: the one always-on relay on hive that carries fenced workers' messages to Rex.
+# A fenced worker has no key and no tunnel. It runs `rex-say`, which (with RV_RELAY_MAILBOX set) writes one JSON file
+# into the mailbox instead of reaching the Mac. This service watches the mailbox and delivers each file with the real
+# rex-say over the tunnel, to allowlisted panes only, then moves the file to sent/ or failed/ and logs one line.
+# State: $RIVET_RELAY (default ~/.local/state/rivet-relay): outbox/ sent/ failed/ allow relay.log
+# It changes nothing else on the machine. Off: systemctl --user stop rivet-relay (disable to keep it off).
+set -u
+ROOT="${RIVET_RELAY:-$HOME/.local/state/rivet-relay}"
+OUT="$ROOT/outbox"; SENT="$ROOT/sent"; FAILED="$ROOT/failed"; ALLOW="$ROOT/allow"; LOG="$ROOT/relay.log"
+mkdir -p "$OUT" "$SENT" "$FAILED"; touch "$ALLOW"
+export PATH="$HOME/.local/bin:$PATH"
+log() { printf '%s %s\n' "$(date -u +%FT%TZ)" "$*" >> "$LOG"; }
+log "relay up, mailbox $OUT"
+while :; do
+  for f in "$OUT"/*.json; do
+    [ -e "$f" ] || continue
+    session=$(jq -r '.session // empty' "$f" 2>/dev/null); block=$(jq -r '.block // empty' "$f" 2>/dev/null)
+    name=$(jq -r '.name // empty' "$f" 2>/dev/null); msg=$(jq -r '.message // empty' "$f" 2>/dev/null)
+    item=$(jq -r '.item // empty' "$f" 2>/dev/null)
+    if [ -z "$session" ] || [ -z "$block" ] || [ -z "$name" ] || [ -z "$msg" ]; then
+      log "failed $(basename "$f"): malformed"; mv "$f" "$FAILED/"; continue; fi
+    if ! grep -qxF -e "$block" -e '*' "$ALLOW"; then
+      log "failed $(basename "$f"): block $block not in allow"; mv "$f" "$FAILED/"; continue; fi
+    if rex-say "$session" "$block" "$name (fenced${item:+, $item})" "$msg" >>"$LOG" 2>&1; then
+      log "sent $(basename "$f"): $name -> $block"; mv "$f" "$SENT/"
+    else
+      log "failed $(basename "$f"): rex-say error"; mv "$f" "$FAILED/"
+    fi
+  done
+  sleep 1
+done
