@@ -21,10 +21,11 @@ the one surface every agent and the human share.
 1. **Starting an agent.** Open it in a visible Rex tab, never hidden:
    `rex window new -s <session> <name> --focus=false --json -- <command>`. Keep the block id it returns.
    Its brief always includes: your name, your session and block (the reply address), and what to report.
-2. **Sending a message.** Type it into the receiver's block and submit it:
-   `rex send -s <session> -b <block> "FROM <your name>: <message>"` then
-   `rex send-key -s <session> -b <block> Enter`.
-   Every message starts with `FROM <name>:`, so it is never mistaken for the human.
+2. **Sending a message.** `rex-say <session> <block> <your name> <message>` (agent-core `tools/rex-say`, on
+   the Mac in `~/.local/bin`; on hive a forwarder to the Mac). It takes a per-pane lock, clears the receiver's
+   input line, types `FROM <your name>: <message>` and presses Enter, then releases the lock, so two agents
+   sending to one pane at once never run their lines together (seen 2026-11-10). Never send messages with raw
+   `rex send`. Every message starts with `FROM <name>:`, so it is never mistaken for the human.
 3. **Reporting back.** An agent that was started reports to its starter the same way, unprompted:
    when it stops, finishes, needs a decision, or is blocked. One message per event, self-contained, plain
    words. Then it waits for the reply in its own pane.

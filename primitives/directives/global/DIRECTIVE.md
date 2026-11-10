@@ -80,8 +80,9 @@ through Rex. No agent waits to be noticed, and nobody asks the human to relay.
 
 - **Start agents in visible Rex tabs:** `rex window new -s <session> <name> --focus=false --json -- <command>`.
   Keep the block id it returns. The brief names you, your session and block (the reply address), and what to report.
-- **Send:** `rex send -s <session> -b <block> "FROM <your name>: <message>"`, then
-  `rex send-key -s <session> -b <block> Enter`. Every message starts with `FROM <name>:` so it is never taken for the human.
+- **Send:** `rex-say <session> <block> <your name> <message>`. It locks the receiving pane, clears its input,
+  types `FROM <your name>: <message>` and presses Enter, so simultaneous messages never run together. Every
+  message starts with `FROM <name>:` so it is never taken for the human. Never use raw `rex send` for messages.
 - **Report back unprompted** when you stop, finish, need a decision or are blocked: one self-contained message
   to your starter, then wait for the reply in your pane. Reply to the sender's block.
 - **Read a pane** with `rex capture -s <session> -b <block> --trim`, only to confirm delivery or answer a prompt
