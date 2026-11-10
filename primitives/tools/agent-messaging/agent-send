@@ -1,0 +1,16 @@
+#!/bin/bash
+# agent-send <session> <pane> <from> <message...>
+# One agent-to-agent message, delivered whole: lock the receiving pane, clear its input line, type
+# "FROM <from>: <message>", press Enter, unlock. Concurrent senders to one pane queue on the lock.
+# Transport: the terminal multiplexer's CLI (today Rex), run where its server is. Elsewhere, a forwarder calls this.
+set -euo pipefail
+[ $# -ge 4 ] || { echo "usage: agent-send <session> <pane> <from> <message...>" >&2; exit 2; }
+S=$1; P=$2; FROM=$3; shift 3; MSG="$*"
+T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")
+LOCK="${TMPDIR:-/tmp}/agent-send.${P##*:}.lock"
+for i in $(seq 1 300); do mkdir "$LOCK" 2>/dev/null && break; sleep 0.2; [ $i -eq 300 ] && { echo "agent-send: pane $P busy for 60s" >&2; exit 1; }; done
+trap 'rmdir "$LOCK" 2>/dev/null' EXIT
+"$T" send-key -s "$S" -b "$P" ctrl+u >/dev/null 2>&1 || true
+"$T" send -s "$S" -b "$P" "FROM ${FROM}: ${MSG}"
+sleep 0.3
+"$T" send-key -s "$S" -b "$P" Enter

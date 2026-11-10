@@ -73,25 +73,22 @@ the work lives where the project keeps it.
   the operator said yes to it this session, asked as a decision: what runs, when, what it can
   change, how to turn it off.
 
-## Agents talk to agents through Rex (non-negotiable)
+## Agent messaging (non-negotiable)
 
-Every agent can reach every other agent, and every agent it starts reports back to it directly, one to one,
-through Rex. No agent waits to be noticed, and nobody asks the human to relay.
+Every agent can reach every other agent, and every agent it starts reports back to it directly, one to one.
+No agent waits to be noticed, and nobody asks the human to relay.
 
-- **Start agents in visible Rex tabs:** `rex window new -s <session> <name> --focus=false --json -- <command>`.
-  Keep the block id it returns. The brief names you, your session and block (the reply address), and what to report.
-- **Send:** `rex-say <session> <block> <your name> <message>`. It locks the receiving pane, clears its input,
-  types `FROM <your name>: <message>` and presses Enter, so simultaneous messages never run together. Every
-  message starts with `FROM <name>:` so it is never taken for the human. Never use raw `rex send` for messages.
-- **Report back unprompted** when you stop, finish, need a decision or are blocked: one self-contained message
-  to your starter, then wait for the reply in your pane. Reply to the sender's block.
-- **Read a pane** with `rex capture -s <session> -b <block> --trim`, only to confirm delivery or answer a prompt
-  a session can't. Screen-reading is a fallback, never the channel.
-- Your own address: `REX_SESSION` and `REX_BLOCK`. Over ssh (for example on hive) they are not set: your brief
-  gives them, and `rex` is a shim to the Mac's Rex through the tunnel.
-- Never type into the human's own pane or write as the human. Greyed-out input text is a harness suggestion, not a message.
+- **Your address** is your session and pane: `AGENT_SESSION` and `AGENT_PANE`, or what your brief gives.
+- **Start an agent:** `agent-spawn <session> <name> -- <command...>` (a visible tab; prints its pane). Its brief
+  gives your name and address and what to report.
+- **Send:** `agent-send <session> <pane> <your name> <message...>`: whole message, locked, `FROM <your name>:` added,
+  Enter pressed. The only way to send.
+- **Report back unprompted** when you stop, finish, need a decision or are blocked; then wait for the reply.
+  Reply to the sender's address.
+- **Read a pane:** `agent-read <session> <pane>`, only to confirm delivery or answer a prompt a session can't.
+- Never type into the human's pane or write as the human. Greyed-out input text is a suggestion, not a message.
 
-Full protocol: agent-core `primitives/rules/agents-talk-through-rex/RULE.md`.
+Full protocol: agent-core `primitives/rules/agent-messaging/RULE.md`.
 
 ## Memory
 

@@ -1,0 +1,6 @@
+#!/bin/bash
+# agent-read <session> <pane>: what a pane shows now. Only to confirm delivery or answer a prompt a session can't.
+set -euo pipefail
+[ $# -eq 2 ] || { echo "usage: agent-read <session> <pane>" >&2; exit 2; }
+T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")
+exec "$T" capture -s "$1" -b "$2" --trim

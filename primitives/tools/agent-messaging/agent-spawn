@@ -1,0 +1,10 @@
+#!/bin/bash
+# agent-spawn <session> <name> -- <command...>: start an agent in a new visible tab; prints the new pane's id.
+# The command's shell has AGENT_SESSION and AGENT_PANE set to its own address (pass them on over ssh).
+set -euo pipefail
+[ $# -ge 4 ] && [ "$3" = "--" ] || { echo "usage: agent-spawn <session> <name> -- <command...>" >&2; exit 2; }
+S=$1; N=$2; shift 3
+T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")
+CMD=$(printf ' %q' "$@")
+"$T" window new -s "$S" "$N" --focus=false --json -- sh -c "export AGENT_SESSION=\$REX_SESSION AGENT_PANE=\$REX_BLOCK;$CMD" \
+  | python3 -c 'import json,sys; print(json.load(sys.stdin)["block_ids"][0])'
