@@ -73,6 +73,25 @@ the work lives where the project keeps it.
   the operator said yes to it this session, asked as a decision: what runs, when, what it can
   change, how to turn it off.
 
+## Agents talk to agents through Rex (non-negotiable)
+
+Every agent can reach every other agent, and every agent it starts reports back to it directly, one to one,
+through Rex. No agent waits to be noticed, and nobody asks the human to relay.
+
+- **Start agents in visible Rex tabs:** `rex window new -s <session> <name> --focus=false --json -- <command>`.
+  Keep the block id it returns. The brief names you, your session and block (the reply address), and what to report.
+- **Send:** `rex send -s <session> -b <block> "FROM <your name>: <message>"`, then
+  `rex send-key -s <session> -b <block> Enter`. Every message starts with `FROM <name>:` so it is never taken for the human.
+- **Report back unprompted** when you stop, finish, need a decision or are blocked: one self-contained message
+  to your starter, then wait for the reply in your pane. Reply to the sender's block.
+- **Read a pane** with `rex capture -s <session> -b <block> --trim`, only to confirm delivery or answer a prompt
+  a session can't. Screen-reading is a fallback, never the channel.
+- Your own address: `REX_SESSION` and `REX_BLOCK`. Over ssh (for example on hive) they are not set: your brief
+  gives them, and `rex` is a shim to the Mac's Rex through the tunnel.
+- Never type into the human's own pane or write as the human. Greyed-out input text is a harness suggestion, not a message.
+
+Full protocol: agent-core `primitives/rules/agents-talk-through-rex/RULE.md`.
+
 ## Memory
 
 At session start, recall context for the current project and task before touching anything. During
