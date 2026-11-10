@@ -12,7 +12,9 @@ the one surface every agent and the human share.
   lists tabs, with each tab's blocks under `layers[].blocks[]`.
 - **On a machine without the Rex server** (the VPS, hive), `rex` is a shim (`~/.local/bin/rex`) that runs the
   Mac's Rex through the always-on tunnel (`ssh m5`). The commands are identical. An ssh'd terminal has no
-  `REX_*` variables: whoever starts you passes your session and block in your brief.
+  `REX_*` variables unless the tab passes them: open hive tabs so the new pane's own address travels with it:
+  `rex window new -s <session> <name> --json -- sh -c 'ssh -t hive "export REX_SESSION=$REX_SESSION REX_BLOCK=$REX_BLOCK; cd ~/rivet && <command>"'`
+  (the single quotes keep `$REX_*` for the new tab's own shell to fill in).
 
 ## The protocol
 
