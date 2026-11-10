@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# rivet-relay: the one always-on relay on hive that carries fenced workers' messages to Rex.
-# A fenced worker has no key and no tunnel. It runs `rex-say`, which (with RV_RELAY_MAILBOX set) writes one JSON file
-# into the mailbox instead of reaching the Mac. This service watches the mailbox and delivers each file with the real
-# rex-say over the tunnel, to allowlisted panes only, then moves the file to sent/ or failed/ and logs one line.
-# State: $RIVET_RELAY (default ~/.local/state/rivet-relay): outbox/ sent/ failed/ allow relay.log
-# It changes nothing else on the machine. Off: systemctl --user stop rivet-relay (disable to keep it off).
+# agent-relay: the one always-on relay on a worker host (hive) that carries fenced workers' messages to their starters.
+# A fenced worker has no key and no tunnel. It runs `agent-send`, which (with RV_RELAY_MAILBOX set) writes one JSON
+# file into the mailbox instead of reaching the operator's machine. This service watches the mailbox and delivers each
+# file with the real `agent-send`, to allowlisted panes only, then moves the file to sent/ or failed/ and logs one line.
+# State: $AGENT_RELAY (default ~/.local/state/agent-relay): outbox/ sent/ failed/ allow relay.log
+# It changes nothing else on the machine. Off: systemctl --user stop agent-relay (disable to keep it off).
 set -u
-ROOT="${RIVET_RELAY:-$HOME/.local/state/rivet-relay}"
+ROOT="${AGENT_RELAY:-$HOME/.local/state/agent-relay}"
 OUT="$ROOT/outbox"; SENT="$ROOT/sent"; FAILED="$ROOT/failed"; ALLOW="$ROOT/allow"; LOG="$ROOT/relay.log"
 mkdir -p "$OUT" "$SENT" "$FAILED"; touch "$ALLOW"
 export PATH="$HOME/.local/bin:$PATH"
@@ -22,10 +22,10 @@ while :; do
       log "failed $(basename "$f"): malformed"; mv "$f" "$FAILED/"; continue; fi
     if ! grep -qxF -e "$block" -e '*' "$ALLOW"; then
       log "failed $(basename "$f"): block $block not in allow"; mv "$f" "$FAILED/"; continue; fi
-    if rex-say "$session" "$block" "$name (fenced${item:+, $item})" "$msg" >>"$LOG" 2>&1; then
+    if agent-send "$session" "$block" "$name (fenced${item:+, $item})" "$msg" >>"$LOG" 2>&1; then
       log "sent $(basename "$f"): $name -> $block"; mv "$f" "$SENT/"
     else
-      log "failed $(basename "$f"): rex-say error"; mv "$f" "$FAILED/"
+      log "failed $(basename "$f"): agent-send error"; mv "$f" "$FAILED/"
     fi
   done
   sleep 1

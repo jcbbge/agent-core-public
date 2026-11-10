@@ -1,9 +1,0 @@
-[Unit]
-Description=Rivet relay: carries fenced workers' messages to Rex through rex-say (mailbox ~/.local/state/rivet-relay)
-After=default.target
-[Service]
-ExecStart=%h/agent-core/primitives/tools/rex-say/relay/rivet-relay
-Restart=always
-RestartSec=3
-[Install]
-WantedBy=default.target

@@ -1,0 +1,9 @@
+[Unit]
+Description=Agent relay: carries fenced workers' messages to their starters through agent-send (mailbox ~/.local/state/agent-relay)
+After=default.target
+[Service]
+ExecStart=%h/agent-core/primitives/tools/agent-messaging/relay/agent-relay
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=default.target

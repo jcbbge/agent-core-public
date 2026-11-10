@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# agent-send on a worker host (hive). Usage: agent-send <session> <block> <name> <message>
+# Inside a fence (RV_RELAY_MAILBOX set to a writable folder) there is no key and no tunnel: the message is written to
+# the mailbox as one JSON file and the agent-relay service delivers it. Otherwise it forwards to the operator's
+# machine, where the terminal multiplexer and the per-pane lock live (agent-core tools/agent-messaging).
+if [ -n "${RV_RELAY_MAILBOX:-}" ] && [ -d "$RV_RELAY_MAILBOX" ] && [ -w "$RV_RELAY_MAILBOX" ]; then
+  [ $# -ge 4 ] || { echo "usage: agent-send <session> <block> <name> <message>" >&2; exit 2; }
+  f="$RV_RELAY_MAILBOX/$(date -u +%Y%m%dT%H%M%S)-$$-$RANDOM.json"
+  jq -n --arg s "$1" --arg b "$2" --arg n "$3" --arg m "$4" --arg i "${RV_ITEM:-}" \
+     '{session:$s, block:$b, name:$n, message:$m, item:$i, at:(now|todate)}' > "$f.tmp" && mv "$f.tmp" "$f" && exit 0
+  echo "agent-send: could not write to the mailbox $RV_RELAY_MAILBOX" >&2; exit 1
+fi
+args=$(printf " %q" "$@")
+exec ssh -o BatchMode=yes -o ConnectTimeout=8 m5 "PATH=\$HOME/.local/bin:\$PATH agent-send$args"
