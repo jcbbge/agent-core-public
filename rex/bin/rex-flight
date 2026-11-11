@@ -33,8 +33,11 @@ def record(args):
         if bid not in labels and time.monotonic() - refreshed >= 10:
             refreshed = time.monotonic()
             try:
-                # CHECK: rex block ls -A --json (C12)
-                blocks = json.loads(subprocess.check_output([command, 'block', 'ls', '-A', '--json'], timeout=8))
+                # `rex block ls --json` needs one session, so walk every session through the API.
+                blocks = []
+                for sess in json.loads(subprocess.check_output([command, 'api', 'call', 'session.list'], timeout=8)).get('sessions', []):
+                    out = subprocess.check_output([command, 'api', 'call', '-s', sess['session_id'], 'session.list_blocks'], timeout=8)
+                    blocks += json.loads(out).get('blocks', [])
                 labels.update({b['block_id']: b.get('label', '') for b in blocks})
             except (OSError, ValueError, subprocess.SubprocessError, KeyError, TypeError):
                 pass
