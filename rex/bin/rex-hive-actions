@@ -28,6 +28,12 @@ def main():
                 entries.append(parts)
                 continue
         else:
+            # The launch menu's own format: name | what it is | command (empty command = the plain shell).
+            if line.count('|') == 2:
+                name, title, command = (x.strip() for x in line.split('|'))
+                if re.fullmatch(r'[\w-]+', name) and title:
+                    entries.append((name, title, command or 'exec zsh -il'))
+                    continue
             match = re.fullmatch(r'\s*([\w-]+)\s*\)\s*(.+?)\s*;;\s*', line)
             if not match:
                 match = re.fullmatch(r'\s*([\w-]+)(?:\t|\s*[=:]\s*)(.+?)\s*', line)
