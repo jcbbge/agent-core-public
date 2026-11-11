@@ -71,8 +71,8 @@ def fold(recs):
                 x = json.loads(msg[len(RESOLVED):]); d = open_.pop(x["id"], None)
                 if d: done.append((d, x.get("answer", ""), r.get("at", "")))
             except ValueError: pass
-        elif re.match(r"^ACK\b", msg) or re.match(r"^\S+: hi$", msg):
-            continue  # handshakes and proofs: never shown
+        elif re.match(r"^ACK\b", msg) or re.match(r"^\S+: hi$", msg) or "proof" in str(r.get("from", "")).lower():
+            continue  # handshakes and test/proof agents: never shown
         else:
             activity.append((r, msg))
     return list(open_.values()), done, activity
