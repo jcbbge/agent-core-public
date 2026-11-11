@@ -16,4 +16,23 @@ if [ -s "$D/$id.viewer" ] && rex block ls --json 2>/dev/null | grep -q "$(cat "$
 tz=${AGENT_INBOX_TZ:-America/Chicago}
 v=$(rex run -s "$S" -b "$B" --split=right --focus=false -- ssh -t hive "TZ=$tz ~/.local/bin/agent-inbox $id" 2>/dev/null) || exit 0
 printf '%s\n' "$v" > "$D/$id.viewer"
-rex api call session.resize_pane "{\"session_id\":\"$S\",\"direction\":\"horizontal\",\"before_block_id\":\"$B\",\"after_block_id\":\"$v\",\"ratio\":0.667}" >/dev/null 2>&1 || true
+# Size it to a third and read it back (research idea 8): retry, and log any mismatch instead of failing silently.
+ratio() { rex api call session.view -s "$S" 2>/dev/null | python3 -c '
+import json,sys
+v,b=sys.argv[1],sys.argv[2]
+def walk(n):
+    s=n.get("split")
+    if not s: return None
+    kids=(s.get("before",{}).get("block_id"),s.get("after",{}).get("block_id"))
+    if kids==(b,v): return s.get("ratio")
+    return walk(s.get("before",{})) or walk(s.get("after",{}))
+for w in json.load(sys.stdin).get("windows",[]):
+    for l in w.get("layers",[]):
+        r=walk(l.get("layout",{}))
+        if r: print(r); sys.exit()' "$v" "$B"; }
+for try in 1 2 3; do
+  sleep 1
+  rex api call session.resize_pane "{\"session_id\":\"$S\",\"direction\":\"horizontal\",\"before_block_id\":\"$B\",\"after_block_id\":\"$v\",\"ratio\":0.667}" >>"$D/seat.log" 2>&1
+  r=$(ratio); case "$r" in 0.66*) exit 0 ;; esac
+  echo "$(date -u +%FT%TZ) $id: ratio read back '$r' after try $try" >> "$D/seat.log"
+done

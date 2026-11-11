@@ -25,8 +25,20 @@ T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogi
 LOCK="${TMPDIR:-/tmp}/agent-send.${P##*:}.lock"
 for i in $(seq 1 300); do mkdir "$LOCK" 2>/dev/null && break; sleep 0.2; [ $i -eq 300 ] && { echo "agent-send: pane $P busy for 60s" >&2; exit 1; }; done
 trap 'rmdir "$LOCK" 2>/dev/null' EXIT
-# Long messages are cut when typed into a busy pane (seen 2026-11-10): send them as numbered parts of at most
-# 350 characters, split on spaces, each a whole line, all under the one lock, in order.
+# Deliver the whole message as ONE paste event, line breaks kept, then one Enter (Rex block.event; research idea 6,
+# 2026-11-11). A paste is a single input event, so it is never cut or interleaved the way typed text was.
+SID=$("$T" api call -s "$S" session.view 2>/dev/null | python3 -c 'import json,sys;print(json.load(sys.stdin)["session_id"])' 2>/dev/null || true)
+if [ -n "$SID" ]; then
+  EV=$(jq -nc --arg s "$SID" --arg b "$P" --arg t "FROM ${FROM}: $MSG" '{session_id:$s,block_id:$b,event:{type:"paste",payload:{text:$t}}}')
+  "$T" send-key -s "$S" -b "$P" ctrl+u >/dev/null 2>&1 || true
+  if "$T" api call -s "$S" block.event "$EV" >/dev/null 2>&1; then
+    sleep 0.4
+    "$T" send-key -s "$S" -b "$P" Enter
+    exit 0
+  fi
+fi
+# Fallback, only if the paste failed: type it as numbered parts of at most 350 characters (typed text is cut in a
+# busy pane, seen 2026-11-10), split on spaces, all under the one lock, in order.
 MSG=$(printf '%s' "$MSG" | tr '\n' ' ')
 parts=()
 while [ ${#MSG} -gt 350 ]; do
