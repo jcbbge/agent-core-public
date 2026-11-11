@@ -45,6 +45,11 @@ def paint(line):
 def card(at, frm, msg):
     w = width()
     when = at[-8:] if at else ""
+    if at.endswith("Z"):  # stored in UTC; show the viewer's local time (set TZ for the pane)
+        try:
+            import calendar
+            when = time.strftime("%H:%M:%S", time.localtime(calendar.timegm(time.strptime(at, "%Y-%m-%dT%H:%M:%SZ"))))
+        except ValueError: pass
     rule = "─" * max(2, w - len(when) - 3)
     out = ["", c(DIM, f"{rule} {when} ─"), c(BOLD + ";" + sender_color(frm), frm)]
     msg = re.sub(r"^FROM [^:]*:\s*", "", msg.strip())

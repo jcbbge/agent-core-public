@@ -13,7 +13,7 @@ S=$1; P=$2; FROM=$3; shift 3; MSG="$*"
 INBOX="${AGENT_INBOX_DIR:-$HOME/.local/state/agent-inbox}"
 if [ -e "$INBOX/${P##*:}.inbox" ]; then
   id=${P##*:}; host=$(tr -d '[:space:]' < "$INBOX/$id.inbox")
-  rec=$(jq -nc --arg at "$(date '+%Y-%m-%d %H:%M:%S')" --arg from "$FROM" --arg msg "$MSG" '{at:$at, from:$from, msg:$msg}')
+  rec=$(jq -nc --arg at "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" --arg from "$FROM" --arg msg "$MSG" '{at:$at, from:$from, msg:$msg}')
   if [ -n "$host" ]; then
     printf '%s\n' "$rec" | ssh -o BatchMode=yes -o ConnectTimeout=8 "$host" "mkdir -p ~/.local/state/agent-inbox && cat >> ~/.local/state/agent-inbox/$id.log"
   else

@@ -16,7 +16,7 @@ fi
 INBOX="${AGENT_INBOX_DIR:-$HOME/.local/state/agent-inbox}"
 if [ $# -ge 4 ] && [ -e "$INBOX/${2##*:}.inbox" ]; then
   id=${2##*:}; FROM=$3; shift 3
-  jq -nc --arg at "$(date '+%Y-%m-%d %H:%M:%S')" --arg from "$FROM" --arg msg "$*" '{at:$at, from:$from, msg:$msg}' >> "$INBOX/$id.log"
+  jq -nc --arg at "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" --arg from "$FROM" --arg msg "$*" '{at:$at, from:$from, msg:$msg}' >> "$INBOX/$id.log"
   exit 0
 fi
 args=$(printf " %q" "$@")
