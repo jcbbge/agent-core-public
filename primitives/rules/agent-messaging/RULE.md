@@ -20,6 +20,18 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
 - `agent-read <session> <pane>`: what a pane shows now. Only to confirm delivery or to answer a prompt a
   session cannot answer itself. Reading screens is a fallback, never the channel.
 
+## The seat: where questions for the human go
+
+The human talks to exactly one agent: **the seat** (the agent whose pane the human types in). Everything
+meant for the human goes to the seat with `agent-send`, and only the seat asks the human anything.
+
+- Every other agent sends a question or decision for the human to the seat, as one self-contained message
+  (what, why it matters, the options, its recommendation), then keeps doing whatever does not depend on it.
+- **No agent outside the seat ever stops on an on-screen prompt**: no question menus, no "choose an option"
+  dialogs, no waiting on input in its own pane. A pane nobody watches is a dead end.
+- The seat relays the human's answer word for word to whoever asked, with `agent-send`.
+- If you do not know who the seat is, ask your starter. A brief always names the seat and its address.
+
 ## The protocol
 
 1. Start agents with `agent-spawn`, never hidden. Their brief gives your name and address and what to report.
