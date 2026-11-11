@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# agent-spawn on hive forwards to the Mac, where the terminal multiplexer lives (agent-core tools/agent-messaging).
+# It passes the caller's own address as the new agent's starter, so the agent reports back here when it stops.
+REPORT=${AGENT_REPORT_TO:-"${AGENT_SESSION:-${LC_REX_SESSION:-}} ${AGENT_PANE:-${LC_REX_BLOCK:-}}"}
+args=$(printf " %q" "$@")
+exec ssh -o BatchMode=yes -o ConnectTimeout=8 m5 "PATH=\$HOME/.local/bin:\$PATH AGENT_REPORT_TO=$(printf %q "$REPORT") agent-spawn$args"
