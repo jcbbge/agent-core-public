@@ -31,6 +31,11 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
   dialogs, no waiting on input in its own pane. A pane nobody watches is a dead end.
 - The seat relays the human's answer word for word to whoever asked, with `agent-send`.
 - If you do not know who the seat is, ask your starter. A brief always names the seat and its address.
+- **The seat's pane is never typed into (Josh, 2026-11-11: "i cant type without the agents message overwriting my
+  words").** The seat's pane is marked an inbox (`~/.local/state/agent-inbox/<pane id>.inbox` on the machine running
+  the multiplexer). `agent-send` to it appends the whole message to `<pane id>.log` instead of typing; a sidecar tab
+  shows the log to the human, and the seat reads the log when it works. Senders change nothing: same verb, same
+  address.
 
 ## The protocol
 

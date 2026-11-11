@@ -6,6 +6,13 @@
 set -euo pipefail
 [ $# -ge 4 ] || { echo "usage: agent-send <session> <pane> <from> <message...>" >&2; exit 2; }
 S=$1; P=$2; FROM=$3; shift 3; MSG="$*"
+# Inbox panes: a pane where a human types (the seat) is never typed into. If $INBOX/<pane id>.inbox exists, the
+# message is appended whole to $INBOX/<pane id>.log instead; a sidecar shows the log and the seat's agent watches it.
+INBOX="${AGENT_INBOX_DIR:-$HOME/.local/state/agent-inbox}"
+if [ -e "$INBOX/${P##*:}.inbox" ]; then
+  { printf '%s FROM %s: ' "$(date '+%H:%M:%S')" "$FROM"; printf '%s' "$MSG" | tr '\n' ' '; printf '\n'; } >> "$INBOX/${P##*:}.log"
+  exit 0
+fi
 T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")
 LOCK="${TMPDIR:-/tmp}/agent-send.${P##*:}.lock"
 for i in $(seq 1 300); do mkdir "$LOCK" 2>/dev/null && break; sleep 0.2; [ $i -eq 300 ] && { echo "agent-send: pane $P busy for 60s" >&2; exit 1; }; done
