@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# agent-seat: make the pane the human just logged in from a seat. It marks the pane as an inbox (agents never type
+# into it) and opens the inbox viewer beside it at one third of the width. It is silent, runs at most once per pane,
+# and is safe to run again.
+# It runs automatically from an interactive login shell on hive (~/.zshrc), when the operator's terminal passed its
+# pane over ssh (LC_REX_BLOCK, LC_REX_SESSION; sshd accepts LC_*). Agents started by agent-spawn carry AGENT_PANE
+# and are skipped: those panes belong to agents, and agents are typed into.
+[ -n "${AGENT_PANE:-}" ] && exit 0
+B=${LC_REX_BLOCK:-${REX_BLOCK:-}}; S=${LC_REX_SESSION:-${REX_SESSION:-}}
+[ -n "$B" ] && [ -n "$S" ] || exit 0
+command -v rex >/dev/null || exit 0
+id=${B##*:}; D="${AGENT_INBOX_DIR:-$HOME/.local/state/agent-inbox}"; mkdir -p "$D"
+touch "$D/$id.inbox" "$D/$id.log"
+# One viewer per seat: skip if the one recorded for this pane still exists.
+if [ -s "$D/$id.viewer" ] && rex block ls --json 2>/dev/null | grep -q "$(cat "$D/$id.viewer")"; then exit 0; fi
+tz=${AGENT_INBOX_TZ:-America/Chicago}
+v=$(rex run -s "$S" -b "$B" --split=right --focus=false -- ssh -t hive "TZ=$tz ~/.local/bin/agent-inbox $id" 2>/dev/null) || exit 0
+printf '%s\n' "$v" > "$D/$id.viewer"
+rex api call session.resize_pane "{\"session_id\":\"$S\",\"direction\":\"horizontal\",\"before_block_id\":\"$B\",\"after_block_id\":\"$v\",\"ratio\":0.667}" >/dev/null 2>&1 || true
