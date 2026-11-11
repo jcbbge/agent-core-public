@@ -25,7 +25,7 @@ def message(value):
 
 
 def record(args):
-    command = '/usr/bin/rex' if args.server == 'hive' else 'rex'
+    command = os.path.expanduser('~/opt/rex/bin/rex') if args.server == 'hive' else 'rex'
     child = None
     labels, refreshed = {}, -float('inf')
     def label(bid):

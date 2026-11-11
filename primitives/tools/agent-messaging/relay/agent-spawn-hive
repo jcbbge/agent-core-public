@@ -6,8 +6,8 @@ REPORT=${AGENT_REPORT_TO:-"${AGENT_SESSION:-${LC_REX_SESSION:-}} ${AGENT_PANE:-$
 AC_TOOLS=${AGENT_CORE:-$HOME/agent-core}/primitives/tools/agent-messaging
 TARGET=${1:-}
 [ "$TARGET" != --detached ] || TARGET=${2:-}
-if [ -x /usr/bin/rex ] && REX_AUTOSTART=0 /usr/bin/rex session inspect "$TARGET" >/dev/null 2>&1; then
-  PATH=/usr/bin:$PATH exec "$AC_TOOLS/agent-spawn" "$@"
+HR=${REX_HIVE_BIN:-$HOME/opt/rex/bin/rex}; if [ -x "$HR" ] && REX_AUTOSTART=0 "$HR" session inspect "$TARGET" >/dev/null 2>&1; then
+  PATH=$(dirname "$HR"):$PATH exec "$AC_TOOLS/agent-spawn" "$@"
 fi
 args=$(printf " %q" "$@")
 exec ssh -o BatchMode=yes -o ConnectTimeout=8 m5 "PATH=\$HOME/.local/bin:\$PATH AGENT_REPORT_TO=$(printf %q "$REPORT") agent-spawn$args"

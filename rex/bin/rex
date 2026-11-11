@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # rex on hive: the hive server for hive-server terminals (REX_SESSION set), else the Mac's rex over ssh (m5).
 set -euo pipefail
-if [ -n "${REX_SESSION:-}" ] && [ -x /usr/bin/rex ]; then exec /usr/bin/rex "$@"; fi
+HR=${REX_HIVE_BIN:-$HOME/opt/rex/bin/rex}  # the hive server binary, installed without sudo
+if [ -n "${REX_SESSION:-}" ] && [ -x "$HR" ]; then exec "$HR" "$@"; fi
 REX="/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex"
 args=$(printf " %q" "$@")
 exec ssh -o BatchMode=yes -o ConnectTimeout=8 m5 "$(printf %q "$REX")$args"
