@@ -7,10 +7,11 @@ set -euo pipefail
 [ $# -ge 4 ] || { echo "usage: agent-send <session> <pane> <from> <message...>" >&2; exit 2; }
 S=$1; P=$2; FROM=$3; shift 3; MSG="$*"
 # Inbox panes: a pane where a human types (the seat) is never typed into. If $INBOX/<pane id>.inbox exists, the
-# message is appended whole to $INBOX/<pane id>.log instead; a sidecar shows the log and the seat's agent watches it.
+# message is appended whole, newlines kept, as one JSON line to $INBOX/<pane id>.log; `agent-inbox` renders it in a
+# sidecar, and the seat's agent reads it when it works. Write structure freely: line breaks and lists survive.
 INBOX="${AGENT_INBOX_DIR:-$HOME/.local/state/agent-inbox}"
 if [ -e "$INBOX/${P##*:}.inbox" ]; then
-  { printf '%s FROM %s: ' "$(date '+%H:%M:%S')" "$FROM"; printf '%s' "$MSG" | tr '\n' ' '; printf '\n'; } >> "$INBOX/${P##*:}.log"
+  jq -nc --arg at "$(date '+%Y-%m-%d %H:%M:%S')" --arg from "$FROM" --arg msg "$MSG" '{at:$at, from:$from, msg:$msg}' >> "$INBOX/${P##*:}.log"
   exit 0
 fi
 T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")

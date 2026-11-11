@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+"""agent-inbox [pane id] — show a seat's inbox as readable cards, live.
+
+agent-send writes one JSON line per message ({at, from, msg}) to ~/.local/state/agent-inbox/<pane id>.log for any
+pane marked <pane id>.inbox. This renders each as a card: a rule with the time, the sender, then the message wrapped
+to the pane's width, with lists and key words broken out. Older plain-text lines render too. Ctrl+C to quit.
+Defaults: the pane is $AGENT_INBOX_PANE or the only .inbox in the folder; the last 15 messages are shown first.
+"""
+import json, os, re, shutil, sys, textwrap, time, hashlib
+
+DIR = os.environ.get("AGENT_INBOX_DIR", os.path.expanduser("~/.local/state/agent-inbox"))
+BACK = int(os.environ.get("AGENT_INBOX_BACK", "15"))
+
+def pane_id():
+    if len(sys.argv) > 1: return sys.argv[1].split(":")[-1]
+    if os.environ.get("AGENT_INBOX_PANE"): return os.environ["AGENT_INBOX_PANE"].split(":")[-1]
+    marks = [f[:-6] for f in os.listdir(DIR) if f.endswith(".inbox")]
+    if len(marks) == 1: return marks[0]
+    sys.exit("agent-inbox: name the pane (marked inboxes: %s)" % (", ".join(marks) or "none"))
+
+TTY = sys.stdout.isatty()
+def c(code, s): return f"\033[{code}m{s}\033[0m" if TTY else s
+DIM, BOLD = "2", "1"
+PALETTE = ["38;5;81", "38;5;179", "38;5;150", "38;5;175", "38;5;117", "38;5;216"]
+def sender_color(name): return PALETTE[int(hashlib.md5(name.encode()).hexdigest(), 16) % len(PALETTE)]
+
+# Words that decide something get colour, so a scan finds them.
+MARKS = [
+    (re.compile(r"\b(STOP|BLOCKED|Blocker|FAIL(?:ED)?|REDO|not clean)\b"), "1;38;5;203"),
+    (re.compile(r"\b(GO|PASS(?:ED)?|done|Pushed|verified|APPROVED)\b"), "1;38;5;114"),
+    (re.compile(r"(Josh's call:|Recommendation:|Autonomy:|Decision:|Question:)"), "1;38;5;221"),
+]
+# Where a long one-line message wants a line break: numbered points, lettered options, labelled sections.
+BREAKS = re.compile(r"\s+(?=\(\d{1,2}\)\s|\([A-F]\)\s|\d{1,2}\.\s+[A-Z]|(?:Recommendation|Autonomy|Josh's call|Options|Meanwhile|Other finds|Gaps|Decision|Question|Cautions?):)")
+
+def width(): return max(40, shutil.get_terminal_size((80, 24)).columns)
+
+def paint(line):
+    for rx, code in MARKS: line = rx.sub(lambda m: c(code, m.group(0)), line)
+    return line
+
+def card(at, frm, msg):
+    w = width()
+    when = at[-8:] if at else ""
+    rule = "─" * max(2, w - len(when) - 3)
+    out = ["", c(DIM, f"{rule} {when} ─"), c(BOLD + ";" + sender_color(frm), frm)]
+    msg = re.sub(r"^FROM [^:]*:\s*", "", msg.strip())
+    for para in msg.split("\n"):
+        para = BREAKS.sub("\n", para.strip()) if "\n" not in para else para
+        for seg in para.split("\n"):
+            if not seg.strip(): out.append(""); continue
+            bullet = re.match(r"(\(\d{1,2}\)|\([A-F]\)|\d{1,2}\.|[-*•])\s+", seg)
+            hang = " " * (len(bullet.group(0)) if bullet else 0)
+            for l in textwrap.wrap(seg, w - 4, subsequent_indent=hang, break_on_hyphens=False) or [""]:
+                out.append("  " + paint(l))
+    return "\n".join(out)
+
+def render(line):
+    line = line.rstrip("\n")
+    if not line.strip(): return None
+    try:
+        r = json.loads(line); return card(r.get("at", ""), r.get("from", "?"), r.get("msg", ""))
+    except ValueError:
+        m = re.match(r"(\d\d:\d\d:\d\d) FROM ([^:]+?): (.*)", line)
+        return card(m.group(1), m.group(2), m.group(3)) if m else card("", "?", line)
+
+def main():
+    path = os.path.join(DIR, pane_id() + ".log")
+    open(path, "a").close()
+    with open(path) as f:
+        for line in f.readlines()[-BACK:]:
+            s = render(line)
+            if s: print(s)
+        if TTY: print(c(DIM, "\n  … waiting for messages (Ctrl+C to quit)"))
+        sys.stdout.flush()
+        while True:
+            line = f.readline()
+            if not line: time.sleep(0.4); continue
+            s = render(line)
+            if s: print(s); sys.stdout.flush()
+
+if __name__ == "__main__":
+    try: main()
+    except KeyboardInterrupt: pass
