@@ -33,7 +33,10 @@ MARKS = [
 # Where a long one-line message wants a line break: numbered points, lettered options, labelled sections.
 BREAKS = re.compile(r"\s+(?=\(\d{1,2}\)\s|\([A-F]\)\s|\d{1,2}\.\s+[A-Z]|(?:Recommendation|Autonomy|Josh's call|Options|Meanwhile|Other finds|Gaps|Decision|Question|Cautions?):)")
 
-def width(): return max(40, shutil.get_terminal_size((80, 24)).columns)
+def width():
+    # Ask the terminal itself each time: $COLUMNS is frozen at launch and goes stale when the pane is resized.
+    try: return max(40, os.get_terminal_size(sys.stdout.fileno()).columns)
+    except OSError: return max(40, shutil.get_terminal_size((80, 24)).columns)
 
 def paint(line):
     for rx, code in MARKS: line = rx.sub(lambda m: c(code, m.group(0)), line)
