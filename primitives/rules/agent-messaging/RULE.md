@@ -44,6 +44,13 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
    one self-contained message, plain words, then it waits for the reply in its own pane.
 3. Reply to the `FROM` sender's address. A message that needs an answer says where to answer.
 4. Agents on one machine may also use their harness's own session messaging; the three verbs work everywhere.
+5. **Acknowledge before the brief (Josh, 2026-11-11).** A started agent first gets only this protocol and its reply
+   address, and acknowledges by `agent-send` to its starter. The brief comes after the acknowledgement. An agent
+   that never acknowledges is killed and reported.
+6. **The launcher guarantees the alert.** An agent can die or go idle without reporting, so its launcher makes
+   sure the starter hears: `agent-spawn` carries `AGENT_NAME` and `AGENT_REPORT_TO`, and the harness's stop and
+   stop-failure hooks run `agent-stop-alert`, which sends the starter the agent's last words or its error. A
+   starter watches its own inbox; it never waits to be prompted.
 
 ## Never
 
