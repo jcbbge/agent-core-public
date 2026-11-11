@@ -3,6 +3,7 @@
 # Inside a fence (RV_RELAY_MAILBOX set to a writable folder) there is no key and no tunnel: the message is written to
 # the mailbox as one JSON file and the agent-relay service delivers it. Otherwise it forwards to the operator's
 # machine, where the terminal multiplexer and the per-pane lock live (agent-core tools/agent-messaging).
+set -euo pipefail
 if [ -n "${RV_RELAY_MAILBOX:-}" ] && [ -d "$RV_RELAY_MAILBOX" ] && [ -w "$RV_RELAY_MAILBOX" ]; then
   [ $# -ge 4 ] || { echo "usage: agent-send <session> <block> <name> <message>" >&2; exit 2; }
   f="$RV_RELAY_MAILBOX/$(date -u +%Y%m%dT%H%M%S)-$$-$RANDOM.json"
@@ -18,6 +19,12 @@ if [ $# -ge 4 ] && [ -e "$INBOX/${2##*:}.inbox" ]; then
   id=${2##*:}; FROM=$3; shift 3
   jq -nc --arg at "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" --arg from "$FROM" --arg msg "$*" '{at:$at, from:$from, msg:$msg}' >> "$INBOX/$id.log"
   exit 0
+fi
+AC_TOOLS=${AGENT_CORE:-$HOME/agent-core}/primitives/tools/agent-messaging
+TARGET=${1:-}
+[ "$TARGET" != --detached ] || TARGET=${2:-}
+if [ -x /usr/bin/rex ] && REX_AUTOSTART=0 /usr/bin/rex session inspect "$TARGET" >/dev/null 2>&1; then
+  PATH=/usr/bin:$PATH exec "$AC_TOOLS/agent-send" "$@"
 fi
 args=$(printf " %q" "$@")
 exec ssh -o BatchMode=yes -o ConnectTimeout=8 m5 "PATH=\$HOME/.local/bin:\$PATH agent-send$args"

@@ -5,8 +5,9 @@
 # It runs automatically from an interactive login shell on hive (~/.zshrc), when the operator's terminal passed its
 # pane over ssh (LC_REX_BLOCK, LC_REX_SESSION; sshd accepts LC_*). Agents started by agent-spawn carry AGENT_PANE
 # and are skipped: those panes belong to agents, and agents are typed into.
+set -euo pipefail
 [ -n "${AGENT_PANE:-}" ] && exit 0
-B=${LC_REX_BLOCK:-${REX_BLOCK:-}}; S=${LC_REX_SESSION:-${REX_SESSION:-}}
+B=${REX_BLOCK:-${LC_REX_BLOCK:-}}; S=${REX_SESSION:-${LC_REX_SESSION:-}}
 [ -n "$B" ] && [ -n "$S" ] || exit 0
 command -v rex >/dev/null || exit 0
 id=${B##*:}; D="${AGENT_INBOX_DIR:-$HOME/.local/state/agent-inbox}"; mkdir -p "$D"
@@ -14,7 +15,30 @@ touch "$D/$id.inbox" "$D/$id.log"
 # One viewer per seat: skip if the one recorded for this pane still exists.
 if [ -s "$D/$id.viewer" ] && rex block ls --json 2>/dev/null | grep -q "$(cat "$D/$id.viewer")"; then exit 0; fi
 tz=${AGENT_INBOX_TZ:-America/Chicago}
-v=$(rex run -s "$S" -b "$B" --split=right --focus=false -- ssh -t hive "TZ=$tz ~/.local/bin/agent-inbox $id" 2>/dev/null) || exit 0
+CMD="TZ=$tz ~/.local/bin/agent-inbox $id"
+VIEW=$(rex api call -s "$S" session.view 2>/dev/null || echo '{}') # CHECK: rex api describe session.view --json (C4)
+SID=$(printf '%s' "$VIEW" | python3 -c 'import json,sys;print(json.load(sys.stdin).get("session_id",""))')
+W=$(printf '%s' "$VIEW" | python3 -c '
+import json,sys
+bid=sys.argv[1]
+def holds(n):
+    return n.get("block",{}).get("block_id")==bid or any(holds(n.get("split",{}).get(k,{})) for k in ("before","after") if k in n.get("split",{}))
+for w in json.load(sys.stdin).get("windows",[]):
+    if any(holds(l.get("layout",{})) for l in w.get("layers",[])): print(w["window_id"]); break
+' "$B")
+if [ -n "${REX_SESSION:-}" ]; then ARGV=$(jq -nc --arg c "$CMD" '["sh","-lc",$c]'); else ARGV=$(jq -nc --arg c "$CMD" '["ssh","-t","hive",$c]'); fi
+J=$(jq -nc --arg s "$SID" --arg w "$W" --argjson argv "$ARGV" '{session_id:$s,window_id:$w,bounds:[0.667,0,0.333,1],focus:false,layout:{block:{flavor:"com.superlogical.terminal.shell",label:"inbox",options:{command:$argv}}}}') # CHECK: rex block types --json; rex api describe session.new_layer --json (C1, C3)
+if out=$(rex api call -s "$S" session.new_layer "$J" 2>>"$D/seat.log"); then
+  if v=$(printf '%s' "$out" | python3 -c 'import json,sys;print(json.load(sys.stdin)["block_ids"][0])'); then
+    printf '%s\n' "$v" > "$D/$id.viewer"; exit 0
+  fi
+fi
+# Keep the previous split and resize as the fallback.
+if [ -n "${REX_SESSION:-}" ]; then
+  v=$(rex run -s "$S" -b "$B" --split=right --focus=false -- sh -lc "$CMD" 2>/dev/null) || exit 0
+else
+  v=$(rex run -s "$S" -b "$B" --split=right --focus=false -- ssh -t hive "$CMD" 2>/dev/null) || exit 0
+fi
 printf '%s\n' "$v" > "$D/$id.viewer"
 # Size it to a third and read it back (research idea 8): retry, and log any mismatch instead of failing silently.
 ratio() { rex api call session.view -s "$S" 2>/dev/null | python3 -c '

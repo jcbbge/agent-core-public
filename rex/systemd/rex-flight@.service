@@ -1,0 +1,8 @@
+[Unit]
+Description=Rex flight recorder (%i): agent state changes to ~/.local/state/rex-flight
+[Service]
+ExecStart=%h/.local/bin/rex-flight record --server %i
+Restart=always
+RestartSec=5
+[Install]
+WantedBy=default.target

@@ -4,6 +4,44 @@
 # "FROM <from>: <message>", press Enter, unlock. Concurrent senders to one pane queue on the lock.
 # Transport: the terminal multiplexer's CLI (today Rex), run where its server is. Elsewhere, a forwarder calls this.
 set -euo pipefail
+# Read only actual input, excluding dim and grey completion suggestions.
+GUARD_PY=$(cat <<'PYGUARD'
+import json,re,sys
+try:
+    text=json.load(sys.stdin)['text']
+    lines=[line for line in text.splitlines() if re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]', '',line).strip()][-15:]
+    draft=''
+    for line in lines:
+        plain=re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]', '',line)
+        if not re.match(r'^\s*[│┃|]?\s*[>❯]\s?(.*?)\s*[│┃|]?\s*$', plain):
+            continue
+        dim=False; grey=False; out=[]
+        for part in re.split(r'(\x1b\[[0-?]*[ -/]*[@-~])', line):
+            if part.startswith('\x1b['):
+                if not part.endswith('m'): continue
+                codes=[int(c or 0) for c in part[2:-1].split(';')]
+                i=0
+                while i<len(codes):
+                    c=codes[i]
+                    if c==0: dim=grey=False
+                    elif c==2: dim=True
+                    elif c==22: dim=False
+                    elif c==90: grey=True
+                    elif c==39 or 30<=c<=37 or 91<=c<=97: grey=False
+                    elif c==38 and i+2<len(codes) and codes[i+1]==5:
+                        grey=240<=codes[i+2]<=250; i+=2
+                    elif c==38 and i+4<len(codes) and codes[i+1]==2:
+                        red,green,blue=codes[i+2:i+5]; grey=red==green==blue and red<160; i+=4
+                    i+=1
+            elif not dim and not grey: out.append(part)
+        m=re.match(r'^\s*[│┃|]?\s*[>❯]\s?(.*?)\s*[│┃|]?\s*$', ''.join(out))
+        draft=m.group(1).strip() if m else ''
+    print(draft)
+except (ValueError,KeyError,TypeError,AttributeError):
+    pass
+PYGUARD
+)
+if [ "${1:-}" = --guard-test ]; then python3 -c "$GUARD_PY"; exit 0; fi
 [ $# -ge 4 ] || { echo "usage: agent-send <session> <pane> <from> <message...>" >&2; exit 2; }
 S=$1; P=$2; FROM=$3; shift 3; MSG="$*"
 # Inbox panes: a pane where a human types (the seat) is never typed into. If $INBOX/<pane id>.inbox exists, the
@@ -23,8 +61,27 @@ if [ -e "$INBOX/${P##*:}.inbox" ]; then
 fi
 T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")
 LOCK="${TMPDIR:-/tmp}/agent-send.${P##*:}.lock"
-for i in $(seq 1 300); do mkdir "$LOCK" 2>/dev/null && break; sleep 0.2; [ $i -eq 300 ] && { echo "agent-send: pane $P busy for 60s" >&2; exit 1; }; done
+for i in $(seq 1 300); do mkdir "$LOCK" 2>/dev/null && break; sleep 0.2; [ "$i" -eq 300 ] && { echo "agent-send: pane $P busy for 60s" >&2; exit 1; }; done
 trap 'rmdir "$LOCK" 2>/dev/null' EXIT
+# Typing guard: hold the lock while the recipient finishes their input.
+draft() {
+  "$T" block call -s "$S" -b "$P" format '{"format":"vt"}' 2>/dev/null | python3 -c "$GUARD_PY" || true # CHECK: rex api describe com.superlogical.terminal.format --json (C9)
+}
+d=""
+for i in $(seq 1 30); do d=$(draft); [ -z "$d" ] && break; sleep 1; done
+restore_draft() {
+  [ -n "$d" ] || return 0
+  sleep 0.4
+  local restore_sid="$SID"
+  if [ -z "$restore_sid" ]; then
+    restore_sid=$("$T" api call -s "$S" session.view | python3 -c 'import json,sys;print(json.load(sys.stdin)["session_id"])') # CHECK: C4
+  fi
+  local event
+  event=$(jq -nc --arg s "$restore_sid" --arg b "$P" --arg t "$d" '{session_id:$s,block_id:$b,event:{type:"paste",payload:{text:$t}}}')
+  "$T" api call -s "$S" block.event "$event" >/dev/null
+  mkdir -p "$HOME/.local/state/agent-send"
+  printf '%s %s draft restored (%s chars)\n' "$(date -u +%FT%TZ)" "$P" "${#d}" >> "$HOME/.local/state/agent-send/guard.log"
+}
 # Deliver the whole message as ONE paste event, line breaks kept, then one Enter (Rex block.event; research idea 6,
 # 2026-11-11). A paste is a single input event, so it is never cut or interleaved the way typed text was.
 SID=$("$T" api call -s "$S" session.view 2>/dev/null | python3 -c 'import json,sys;print(json.load(sys.stdin)["session_id"])' 2>/dev/null || true)
@@ -34,6 +91,7 @@ if [ -n "$SID" ]; then
   if "$T" api call -s "$S" block.event "$EV" >/dev/null 2>&1; then
     sleep 0.4
     "$T" send-key -s "$S" -b "$P" Enter
+    restore_draft
     exit 0
   fi
 fi
@@ -47,10 +105,12 @@ while [ ${#MSG} -gt 350 ]; do
 done
 parts+=("$MSG"); n=${#parts[@]}
 for i in "${!parts[@]}"; do
-  tag="FROM ${FROM}:"; [ $n -gt 1 ] && tag="FROM ${FROM} ($((i+1))/$n):"
+  tag="FROM ${FROM}:"; [ "$n" -gt 1 ] && tag="FROM ${FROM} ($((i+1))/$n):"
   "$T" send-key -s "$S" -b "$P" ctrl+u >/dev/null 2>&1 || true
   "$T" send -s "$S" -b "$P" "$tag ${parts[$i]}"
   sleep 0.3
   "$T" send-key -s "$S" -b "$P" Enter
   sleep 0.5
 done
+
+restore_draft

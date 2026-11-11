@@ -4,11 +4,23 @@
 # It also carries AGENT_NAME and AGENT_REPORT_TO="<session> <pane>" (the starter), plus their LC_ forms, which cross
 # ssh. agent-stop-alert reads them: when the agent finishes or dies, its starter is told automatically.
 set -euo pipefail
-[ $# -ge 4 ] && [ "$3" = "--" ] || { echo "usage: agent-spawn <session> <name> -- <command...>" >&2; exit 2; }
+DETACHED=false
+if [ "${1:-}" = --detached ]; then DETACHED=true; shift; fi
+[ $# -ge 4 ] && [ "$3" = "--" ] || { echo "usage: agent-spawn [--detached] <session> <name> -- <command...>" >&2; exit 2; }
 S=$1; N=$2; shift 3
 T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")
 REPORT=${AGENT_REPORT_TO:-"${AGENT_SESSION:-${REX_SESSION:-}} ${AGENT_PANE:-${REX_BLOCK:-}}"}
 CMD=$(printf ' %q' "$@")
 ENVS="export AGENT_SESSION=\$REX_SESSION AGENT_PANE=\$REX_BLOCK AGENT_NAME=$(printf %q "$N") AGENT_REPORT_TO=$(printf %q "$REPORT") LC_AGENT_NAME=$(printf %q "$N") LC_AGENT_REPORT_TO=$(printf %q "$REPORT")"
+if "$DETACHED"; then
+SID=$("$T" api call -s "$S" session.view | python3 -c 'import json,sys;print(json.load(sys.stdin)["session_id"])')
+J=$(jq -nc --arg s "$SID" --arg n "$N" --arg c "$ENVS;$CMD" \
+  '{session_id:$s, flavor:"com.superlogical.terminal.shell", label:$n, options:{command:["sh","-c",$c]}}')   # CHECK: C1
+B=$("$T" api call -s "$S" session.new_block "$J" | python3 -c 'import json,sys;print(json.load(sys.stdin)["block_id"])')  # CHECK: C2
+A=${REPORT#* }                                       # the starter's pane: where this agent appears when it needs you
+mkdir -p "$HOME/.local/state/rex-fleet"; printf '%s\n' "$A" > "$HOME/.local/state/rex-fleet/${B##*:}.anchor"
+echo "$B"
+  exit 0
+fi
 "$T" window new -s "$S" "$N" --focus=false --json -- sh -c "$ENVS;$CMD" \
   | python3 -c 'import json,sys; print(json.load(sys.stdin)["block_ids"][0])'

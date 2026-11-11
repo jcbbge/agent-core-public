@@ -104,6 +104,7 @@ def first_line(msg, n):
 def render(path):
     w = width()
     open_, done, activity = fold(read(path))
+    if TTY: sys.stdout.write(f"\033]2;Inbox · {len(open_)} waiting\007")
     out = ["\033[2J\033[H" if TTY else ""]
     if open_:
         out.append(c(BOLD + ";" + AMBER, f"  {len(open_)} WAITING ON YOU"))

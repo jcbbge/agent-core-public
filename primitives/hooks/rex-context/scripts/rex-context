@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# rex-context: provide live Rex API context without delaying session start.
+set -euo pipefail
+command -v rex >/dev/null || exit 0
+C="${XDG_CACHE_HOME:-$HOME/.cache}/rex"; F="$C/api.json"; mkdir -p "$C"
+# Refresh in the background when missing or older than 6 hours, so session start never waits on ssh.
+if [ ! -s "$F" ] || [ -n "$(find "$F" -mmin +360 2>/dev/null)" ]; then
+  # shellcheck disable=SC2015 # Failed validation or rename must also remove the temporary file.
+  ( timeout 20 rex api list --json > "$F.tmp" 2>/dev/null && [ -s "$F.tmp" ] && mv "$F.tmp" "$F" || rm -f "$F.tmp" ) \
+    </dev/null >/dev/null 2>&1 & disown
+fi
+cat <<EOF
+Rex (the terminal multiplexer this session runs in) has a self-describing API. Never guess a method's arguments:
+- Exact schema of one method: rex api describe <method> --json   (e.g. session.new_split)
+- Every method, cached: $F   (jq '.. | objects | select(.name? == "session.view")' $F)
+- Find a docs section: curl -s 'https://www.superlogical.com/rex/docs/search.json?q=<words>'
+- The full guide for agents: rex skill show
+Rex says "block" for what agent messaging calls a "pane"; the ids are the same.
+EOF
+
