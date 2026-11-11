@@ -10,7 +10,20 @@ T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogi
 LOCK="${TMPDIR:-/tmp}/agent-send.${P##*:}.lock"
 for i in $(seq 1 300); do mkdir "$LOCK" 2>/dev/null && break; sleep 0.2; [ $i -eq 300 ] && { echo "agent-send: pane $P busy for 60s" >&2; exit 1; }; done
 trap 'rmdir "$LOCK" 2>/dev/null' EXIT
-"$T" send-key -s "$S" -b "$P" ctrl+u >/dev/null 2>&1 || true
-"$T" send -s "$S" -b "$P" "FROM ${FROM}: ${MSG}"
-sleep 0.3
-"$T" send-key -s "$S" -b "$P" Enter
+# Long messages are cut when typed into a busy pane (seen 2026-11-10): send them as numbered parts of at most
+# 350 characters, split on spaces, each a whole line, all under the one lock, in order.
+MSG=$(printf '%s' "$MSG" | tr '\n' ' ')
+parts=()
+while [ ${#MSG} -gt 350 ]; do
+  cut=$(printf '%s' "${MSG:0:350}" | awk '{n=match($0, / [^ ]*$/); print (n>100 ? n-1 : 350)}')
+  parts+=("${MSG:0:$cut}"); MSG="${MSG:$cut}"; MSG="${MSG# }"
+done
+parts+=("$MSG"); n=${#parts[@]}
+for i in "${!parts[@]}"; do
+  tag="FROM ${FROM}:"; [ $n -gt 1 ] && tag="FROM ${FROM} ($((i+1))/$n):"
+  "$T" send-key -s "$S" -b "$P" ctrl+u >/dev/null 2>&1 || true
+  "$T" send -s "$S" -b "$P" "$tag ${parts[$i]}"
+  sleep 0.3
+  "$T" send-key -s "$S" -b "$P" Enter
+  sleep 0.5
+done
