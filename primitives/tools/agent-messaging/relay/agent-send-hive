@@ -10,5 +10,14 @@ if [ -n "${RV_RELAY_MAILBOX:-}" ] && [ -d "$RV_RELAY_MAILBOX" ] && [ -w "$RV_REL
      '{session:$s, block:$b, name:$n, message:$m, item:$i, at:(now|todate)}' > "$f.tmp" && mv "$f.tmp" "$f" && exit 0
   echo "agent-send: could not write to the mailbox $RV_RELAY_MAILBOX" >&2; exit 1
 fi
+# Inbox panes live here on hive: a pane a human types in (the seat) is never typed into. If $INBOX/<pane id>.inbox
+# exists, the message is appended whole, newlines kept, as one JSON line to $INBOX/<pane id>.log; `agent-inbox`
+# renders it. Fenced workers reach this through the relay above, which calls this same command.
+INBOX="${AGENT_INBOX_DIR:-$HOME/.local/state/agent-inbox}"
+if [ $# -ge 4 ] && [ -e "$INBOX/${2##*:}.inbox" ]; then
+  id=${2##*:}; FROM=$3; shift 3
+  jq -nc --arg at "$(date '+%Y-%m-%d %H:%M:%S')" --arg from "$FROM" --arg msg "$*" '{at:$at, from:$from, msg:$msg}' >> "$INBOX/$id.log"
+  exit 0
+fi
 args=$(printf " %q" "$@")
 exec ssh -o BatchMode=yes -o ConnectTimeout=8 m5 "PATH=\$HOME/.local/bin:\$PATH agent-send$args"
