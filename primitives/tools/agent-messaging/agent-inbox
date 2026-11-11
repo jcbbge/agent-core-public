@@ -78,7 +78,9 @@ def main():
         sys.stdout.flush()
         while True:
             line = f.readline()
-            if not line: time.sleep(0.4); continue
+            if not line:
+                if os.path.getsize(path) < f.tell(): f.seek(0)  # the log was cleared: start again from the top
+                time.sleep(0.4); continue
             s = render(line)
             if s: print(s); sys.stdout.flush()
 
