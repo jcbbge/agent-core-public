@@ -55,6 +55,13 @@ case "${1:-}" in
     command -v jq >/dev/null 2>&1 || exit 0
     input=$(cat) || exit 0
     in_rex || deny "$harness" "$OUTSIDE_MSG"
+    tool=$(printf '%s' "$input" | jq -r '.tool_name // empty' 2>/dev/null)
+    case "$tool" in
+      Agent|Task|Workflow)
+        deny "$harness" "rex-required: every agent gets its own Rex tab; in-process subagents ($tool) are refused. \
+Start it visibly: agent-spawn \"\$REX_SESSION\" <name> -- <agent command...> (e.g. -- claude --dangerously-skip-permissions '<brief>'). \
+It reports back to you through agent-send." ;;
+    esac
     cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // .command // empty' 2>/dev/null) || exit 0
     [ -n "$cmd" ] || exit 0
     if printf '%s' "$cmd" | grep -Eq '(^|[;&|(` ])rex([[:space:]]+-[^[:space:]]+([[:space:]]+[^-[:space:]][^[:space:]]*)?)*[[:space:]]+capture([[:space:]]|$)' &&

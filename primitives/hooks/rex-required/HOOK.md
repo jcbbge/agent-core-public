@@ -20,6 +20,8 @@ opens Rex tabs).
 - launching an agent from a shell that is not inside Rex;
 - every tool call of an agent that is not inside Rex, so an agent started some other way does no
   work;
+- an in-process subagent (Claude Code's `Agent`, `Task` and `Workflow` tools): every agent gets its own
+  Rex tab, started with `agent-spawn`;
 - a shell command that reads a Rex terminal with `rex capture`, when the
   [teerex](../../tools/teerex/TOOL.md) tool is installed and its read-only observation of this
   pane succeeds. While teerex cannot reach the server (an unsupported Rex API revision, a machine
