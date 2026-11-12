@@ -1,0 +1,53 @@
+# shellcheck shell=bash disable=SC2034  # SID/WHERE are read by the scripts that source this
+# teerex-target: sourced by agent-spawn and agent-send. Every Rex action goes through teerex
+# (jcbbge/teerex), on the server that holds the session: this host's own, or the Mac's over ssh.
+#   resolve <session>  -> sets SID (full id) and WHERE (local | m5)
+#   tx <verb> args...  -> runs `teerex <verb> --socket <that server's socket> args...` where WHERE says
+
+REAL_REX="$HOME/opt/rex/bin/rex"                       # hive: the server binary (agent-core's rex wrapper may forward to the Mac)
+[ -x "$REAL_REX" ] || REAL_REX=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")
+MAC_REX="/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex"
+MAC_SOCK="/Users/jrg/Library/Application Support/rex/server.sock"
+SSH_M5=(ssh -o BatchMode=yes -o ConnectTimeout=8 m5)
+
+local_sock() {
+  case "${REX_SERVER:-}" in
+    unix://*) local u="${REX_SERVER#unix://}"; printf '%b' "${u//%/\\x}"; return ;;
+  esac
+  if [ "$(uname)" = Darwin ]; then printf '%s' "$HOME/Library/Application Support/rex/server.sock"
+  else printf '%s' "/run/user/$(id -u)/rex/server.sock"; fi
+}
+LSOCK=$(local_sock)
+
+resolve() { # <session label, suffix or id>
+  local out
+  if out=$("$REAL_REX" --autostart=false --server "unix://$LSOCK" session inspect "$1" --json 2>/dev/null); then
+    WHERE=local
+  elif [ "$(uname)" != Darwin ] && out=$("${SSH_M5[@]}" "$(printf '%q' "$MAC_REX") --autostart=false session inspect $(printf '%q' "$1") --json" 2>/dev/null); then
+    WHERE=m5
+  else
+    echo "teerex-target: no Rex session '$1' on this host's server or the Mac's" >&2; return 1
+  fi
+  SID=$(printf '%s' "$out" | jq -er .session_id)
+}
+
+tx() { # <verb> args...: teerex on the session's server. stdin passes through.
+  local verb=$1; shift
+  if [ "$WHERE" = local ]; then teerex "$verb" --socket "$LSOCK" "$@"
+  else "${SSH_M5[@]}" "PATH=\$HOME/.local/bin:$(printf '%q' "$(dirname "$MAC_REX")"):\$PATH teerex $(printf '%q ' "$verb" --socket "$MAC_SOCK" "$@")"; fi # teerex calls rex on PATH
+}
+
+rexat() { # rex args... on the session's server (for reads teerex does not offer, e.g. the vt format the typing guard needs)
+  if [ "$WHERE" = local ]; then "$REAL_REX" --autostart=false --server "unix://$LSOCK" "$@"
+  else "${SSH_M5[@]}" "$(printf '%q ' "$MAC_REX" --autostart=false "$@")"; fi
+}
+
+tx_send() { # <block> <from> <message on stdin>: teerex send, with the message as a private file on that server
+  if [ "$WHERE" = local ]; then
+    local f; f=$(mktemp); chmod 600 "$f"; cat > "$f"
+    teerex send --socket "$LSOCK" --session "$SID" --block "$1" --from "$2" --message-file "$f"; local rc=$?
+    rm -f "$f"; return $rc
+  else
+    "${SSH_M5[@]}" "f=\$(mktemp); chmod 600 \"\$f\"; cat > \"\$f\"; PATH=\$HOME/.local/bin:$(printf '%q' "$(dirname "$MAC_REX")"):\$PATH teerex send $(printf '%q ' --socket "$MAC_SOCK" --session "$SID" --block "$1" --from "$2") --message-file \"\$f\"; rc=\$?; rm -f \"\$f\"; exit \$rc"
+  fi
+}

@@ -59,58 +59,24 @@ if [ -e "$INBOX/${P##*:}.inbox" ]; then
   fi
   exit 0
 fi
-T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")
-LOCK="${TMPDIR:-/tmp}/agent-send.${P##*:}.lock"
-for i in $(seq 1 300); do mkdir "$LOCK" 2>/dev/null && break; sleep 0.2; [ "$i" -eq 300 ] && { echo "agent-send: pane $P busy for 60s" >&2; exit 1; }; done
-trap 'rmdir "$LOCK" 2>/dev/null' EXIT
-# Typing guard: hold the lock while the recipient finishes their input.
+# Delivery goes through teerex send (jcbbge/teerex): one paste of "FROM <from>: <message>", then Enter, under the
+# shared agent-send lock, on the server that holds the pane. teerex takes that lock itself, so this script never holds
+# it. The typing guard (wait while someone is typing, then restore their draft) stays here: teerex does not do it.
+. "$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0")")/teerex-target"
+resolve "$S"
 draft() {
-  "$T" block call -s "$S" -b "$P" format '{"format":"vt"}' 2>/dev/null | python3 -c "$GUARD_PY" || true # CHECK: rex api describe com.superlogical.terminal.format --json (C9)
+  rexat block call -s "$SID" -b "$P" format '{"format":"vt"}' 2>/dev/null | python3 -c "$GUARD_PY" || true # CHECK: C9
 }
 d=""
-for i in $(seq 1 30); do d=$(draft); [ -z "$d" ] && break; sleep 1; done
-restore_draft() {
-  [ -n "$d" ] || return 0
+for _ in $(seq 1 30); do d=$(draft); [ -z "$d" ] && break; sleep 1; done
+[ -n "$d" ] && { rexat send-key -s "$SID" -b "$P" ctrl+u >/dev/null 2>&1 || true; }
+OUT=$(printf '%s' "$MSG" | tx_send "$P" "$FROM") || {
+  echo "agent-send: teerex send did not confirm delivery to $P: $(printf '%s' "$OUT" | jq -c '{outcome, error}' 2>/dev/null || printf '%s' "$OUT" | head -c 300). Inspect the pane before resending." >&2
+  exit 1; }
+if [ -n "$d" ]; then
   sleep 0.4
-  local restore_sid="$SID"
-  if [ -z "$restore_sid" ]; then
-    restore_sid=$("$T" api call -s "$S" session.view | python3 -c 'import json,sys;print(json.load(sys.stdin)["session_id"])') # CHECK: C4
-  fi
-  local event
-  event=$(jq -nc --arg s "$restore_sid" --arg b "$P" --arg t "$d" '{session_id:$s,block_id:$b,event:{type:"paste",payload:{text:$t}}}')
-  "$T" api call -s "$S" block.event "$event" >/dev/null
+  EV=$(jq -nc --arg s "$SID" --arg b "$P" --arg t "$d" '{session_id:$s,block_id:$b,event:{type:"paste",payload:{text:$t}}}')
+  rexat api call -s "$SID" block.event "$EV" >/dev/null || true
   mkdir -p "$HOME/.local/state/agent-send"
   printf '%s %s draft restored (%s chars)\n' "$(date -u +%FT%TZ)" "$P" "${#d}" >> "$HOME/.local/state/agent-send/guard.log"
-}
-# Deliver the whole message as ONE paste event, line breaks kept, then one Enter (Rex block.event; research idea 6,
-# 2026-11-11). A paste is a single input event, so it is never cut or interleaved the way typed text was.
-SID=$("$T" api call -s "$S" session.view 2>/dev/null | python3 -c 'import json,sys;print(json.load(sys.stdin)["session_id"])' 2>/dev/null || true)
-if [ -n "$SID" ]; then
-  EV=$(jq -nc --arg s "$SID" --arg b "$P" --arg t "FROM ${FROM}: $MSG" '{session_id:$s,block_id:$b,event:{type:"paste",payload:{text:$t}}}')
-  "$T" send-key -s "$S" -b "$P" ctrl+u >/dev/null 2>&1 || true
-  if "$T" api call -s "$S" block.event "$EV" >/dev/null 2>&1; then
-    sleep 0.4
-    "$T" send-key -s "$S" -b "$P" Enter
-    restore_draft
-    exit 0
-  fi
 fi
-# Fallback, only if the paste failed: type it as numbered parts of at most 350 characters (typed text is cut in a
-# busy pane, seen 2026-11-10), split on spaces, all under the one lock, in order.
-MSG=$(printf '%s' "$MSG" | tr '\n' ' ')
-parts=()
-while [ ${#MSG} -gt 350 ]; do
-  cut=$(printf '%s' "${MSG:0:350}" | awk '{n=match($0, / [^ ]*$/); print (n>100 ? n-1 : 350)}')
-  parts+=("${MSG:0:$cut}"); MSG="${MSG:$cut}"; MSG="${MSG# }"
-done
-parts+=("$MSG"); n=${#parts[@]}
-for i in "${!parts[@]}"; do
-  tag="FROM ${FROM}:"; [ "$n" -gt 1 ] && tag="FROM ${FROM} ($((i+1))/$n):"
-  "$T" send-key -s "$S" -b "$P" ctrl+u >/dev/null 2>&1 || true
-  "$T" send -s "$S" -b "$P" "$tag ${parts[$i]}"
-  sleep 0.3
-  "$T" send-key -s "$S" -b "$P" Enter
-  sleep 0.5
-done
-
-restore_draft

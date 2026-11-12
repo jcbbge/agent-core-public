@@ -22,5 +22,13 @@ mkdir -p "$HOME/.local/state/rex-fleet"; printf '%s\n' "$A" > "$HOME/.local/stat
 echo "$B"
   exit 0
 fi
-"$T" window new -s "$S" "$N" --focus=false --json -- sh -c "$ENVS;$CMD" \
-  | python3 -c 'import json,sys; print(json.load(sys.stdin)["block_ids"][0])'
+# Every visible agent starts through teerex spawn (jcbbge/teerex), on the server that holds the session. teerex sets
+# AGENT_SESSION/PANE, LC_REX_SESSION/BLOCK, AGENT_NAME and AGENT_REPORT_TO (+LC_) itself; the command runs as given.
+. "$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0")")/teerex-target"
+read -r RS RB <<<"$REPORT"
+resolve "$RS"; RSID=$SID
+resolve "$S"
+if [ "$WHERE" = local ]; then CWD=$PWD; [ -d "$CWD" ] || CWD=$HOME; else CWD=/Users/jrg; fi
+OUT=$(tx spawn --session "$SID" --name "$N" --cwd "$CWD" --report-to-session "$RSID" --report-to-block "$RB" -- "$@") || {
+  echo "agent-spawn: teerex spawn did not confirm the new tab: $(printf '%s' "$OUT" | jq -c '{outcome, error}' 2>/dev/null || printf '%s' "$OUT" | head -c 300). Inspect the session before retrying." >&2; exit 1; }
+printf '%s' "$OUT" | jq -er .created.block_id
