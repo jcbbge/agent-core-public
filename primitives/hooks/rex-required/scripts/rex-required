@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# rex-required — every agent runs in a Rex pane; Rex terminal reads go through teerex.
+# Spec: ../HOOK.md
+#   rex-required check                      exit 0 inside Rex, 1 outside (reason on stderr)
+#   rex-required hook claude|codex|cursor   before-tool guard; harness JSON on stdin
+# Allows on its own failure. Refuses only on a positive finding.
+
+[ "${MW_WORKER:-}" = 1 ] && exit 0
+
+in_rex() {
+  { [ -n "${REX_SESSION:-}" ] && [ -n "${REX_BLOCK:-}" ]; } ||
+    { [ -n "${LC_REX_SESSION:-}" ] && [ -n "${LC_REX_BLOCK:-}" ]; }
+}
+
+OUTSIDE_MSG="rex-required: this agent is not running in a Rex pane. Every agent runs in Rex. \
+Quit and start it in a Rex pane: open a Rex tab and launch it there, or run \
+'rex run -- <agent> [args]' (e.g. 'rex run -- claude --continue')."
+
+# Local Rex socket path from REX_SERVER (unix:// URL, percent-encoded).
+rex_socket() {
+  local url="${REX_SERVER:-}"
+  case "$url" in
+    unix://*) url="${url#unix://}"; printf '%b' "${url//%/\\x}" ;;
+    "") [ -S "$HOME/Library/Application Support/rex/server.sock" ] &&
+          printf '%s' "$HOME/Library/Application Support/rex/server.sock" ;;
+  esac
+}
+
+# teerex is usable when its read-only observation of this pane succeeds.
+teerex_usable() {
+  command -v teerex >/dev/null 2>&1 || return 1
+  [ -n "${REX_SESSION:-}" ] && [ -n "${REX_BLOCK:-}" ] || return 1
+  local sock; sock=$(rex_socket); [ -S "$sock" ] || return 1
+  teerex observe --socket "$sock" --session "$REX_SESSION" --block "$REX_BLOCK" \
+    --max-bytes 256 --timeout-ms 1500 >/dev/null 2>&1
+}
+
+deny() { # $1 harness, $2 reason
+  case "$1" in
+    claude|codex) jq -n --arg r "$2" '{hookSpecificOutput:{hookEventName:"PreToolUse",
+                    permissionDecision:"deny", permissionDecisionReason:$r}}' ;;
+    cursor) jq -n --arg r "$2" '{permission:"deny", user_message:$r, agent_message:$r}' ;;
+  esac
+  exit 0
+}
+
+case "${1:-}" in
+  check)
+    in_rex && exit 0
+    echo "$OUTSIDE_MSG" >&2; exit 1 ;;
+  hook)
+    harness="${2:-claude}"
+    command -v jq >/dev/null 2>&1 || exit 0
+    input=$(cat) || exit 0
+    in_rex || deny "$harness" "$OUTSIDE_MSG"
+    cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // .command // empty' 2>/dev/null) || exit 0
+    [ -n "$cmd" ] || exit 0
+    if printf '%s' "$cmd" | grep -Eq '(^|[;&|(` ])rex([[:space:]]+-[^[:space:]]+([[:space:]]+[^-[:space:]][^[:space:]]*)?)*[[:space:]]+capture([[:space:]]|$)' &&
+       teerex_usable; then
+      sock=$(rex_socket)
+      deny "$harness" "rex-required: read Rex terminals with teerex, not 'rex capture'. \
+One read: teerex observe --socket '$sock' --session <session> --block <block> [--max-bytes N]. \
+Wait for a change: save that observation as a baseline, then teerex watch ... --baseline FILE \
+--timeout-ms N [--status-state done]. This pane is --session $REX_SESSION --block $REX_BLOCK."
+    fi
+    exit 0 ;;
+  *)
+    echo "usage: rex-required check | hook claude|codex|cursor" >&2; exit 2 ;;
+esac
