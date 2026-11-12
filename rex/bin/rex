@@ -3,6 +3,13 @@
 set -euo pipefail
 HR=${REX_HIVE_BIN:-$HOME/opt/rex/bin/rex}  # the hive server binary, installed without sudo
 if [ -n "${REX_SESSION:-}" ] && [ -x "$HR" ]; then exec "$HR" "$@"; fi
+# An explicit local socket (`--server unix:///...` or `-S unix:///...`, as teerex always passes) is this host's server.
+prev=""
+for a in "$@"; do
+  case "$prev" in --server|-S) case "$a" in unix:///*) [ -S "${a#unix://}" ] && [ -x "$HR" ] && exec "$HR" "$@" ;; esac ;; esac
+  case "$a" in --server=unix:///*) [ -S "${a#--server=unix://}" ] && [ -x "$HR" ] && exec "$HR" "$@" ;; esac
+  prev=$a
+done
 REX="/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex"
 args=$(printf " %q" "$@")
 exec ssh -o BatchMode=yes -o ConnectTimeout=8 m5 "$(printf %q "$REX")$args"
