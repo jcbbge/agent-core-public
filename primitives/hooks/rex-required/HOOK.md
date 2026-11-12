@@ -15,9 +15,14 @@ Rex pane is an agent the operator cannot see, address or return to.
 pane), or `LC_AGENT_REPORT_TO` naming a Rex block (an agent started by `agent-spawn`, which only
 opens Rex tabs).
 
+**Launching is one word (Josh, 2026-11-12: "I do not want to have to remember a shitload of flags").**
+Typing an agent's name (`claude`, `claude -c`, `pi`) is the whole launch. The shell wrapper adds that
+agent's standing flags (claude: `--dangerously-skip-permissions`), and from a shell outside Rex it
+opens the same command in a new Rex tab instead of refusing.
+
 **Refuses:**
 
-- launching an agent from a shell that is not inside Rex;
+- launching an agent from a shell outside Rex when no Rex tab can be opened;
 - every tool call of an agent that is not inside Rex, so an agent started some other way does no
   work;
 - an in-process subagent (Claude Code's `Agent`, `Task` and `Workflow` tools): every agent gets its own
