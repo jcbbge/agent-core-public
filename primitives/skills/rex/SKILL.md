@@ -15,11 +15,11 @@ Everything below adds to that guide. Where they differ, this file wins.
 
 ## 2. The law
 
-- **Every agent runs in a Rex pane.** The [rex-required](../../hooks/rex-required/HOOK.md) guard
-  refuses a launch, and every tool call, outside Rex. Start agents with `agent-spawn` (below) or
-  `rex run -- <agent> ...`, never with `&`, `nohup`, a background flag or a launchd job.
-- **Client work runs on hive** (`ssh hive`). Personal projects may run on the M5. The process is
-  the same on both machines: same skill, same guards, same commands.
+- **Every agent runs on hive**, whatever app is its window. Rex is one window; T3 Code, Claude
+  Desktop and a plain terminal are others. The [engine-host](../../hooks/engine-host/HOOK.md) guard
+  refuses every tool call of an agent anywhere else. A Rex pane is not required.
+- **Start agents visibly:** with `agent-spawn` (below) or `rex run -- <agent> ...`, never with `&`,
+  `nohup`, a background flag or a launchd job.
 - **Never restart the Rex server or kill Rex processes** without the operator's yes. A restart
   closes every pane. Before asking, write the accounting: every tab, what it runs, where, its
   resume command, and any unsent input that would be lost.

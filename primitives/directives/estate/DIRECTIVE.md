@@ -44,7 +44,7 @@ login), say which link failed and what it printed.
 From the ground up. Each layer only drives the one above it.
 
 1. **Machine.** The OS, its services (launchd on a Mac, systemd `--user` on hive), PATH, ssh.
-2. **Rex.** The terminal control plane. Every agent runs in a Rex pane, nothing hidden. The Rex app
+2. **Rex.** The terminal control plane, and one window onto agents among others. The Rex app
    runs on the m5; a Rex server runs on each machine (hive: `~/opt/rex/bin/rex`, `rex.service`).
    A pane's address is its session and block (`REX_SESSION`, `REX_BLOCK`; over ssh,
    `LC_REX_SESSION`, `LC_REX_BLOCK`).
@@ -58,9 +58,12 @@ From the ground up. Each layer only drives the one above it.
 4. **Rivet.** The engine on hive (127.0.0.1:6420, `rivet-node.service`, CLI `rv`). It drives work
    items through discovery, planning, implementation, tests, audit and the ship stop. Projects
    are inputs from `~/rivet/projects/<name>/`; the engine names no project.
-5. **Agents.** Claude, Codex, pi and the rest, any model. An agent is started by typing its name
-   (`claude`, `codex`, `pi`): its standing flags are added for you, and outside a Rex pane it
-   opens itself in a new Rex tab. Agents talk with `agent-send` / `agent-spawn` / `agent-ask`.
+5. **Agents.** Claude, Codex, pi and the rest, any model. **Every agent runs on hive**, whatever
+   app is its window (Rex, T3 Code, Claude Desktop, a terminal on any machine); the
+   [engine-host](../../hooks/engine-host/HOOK.md) guard refuses every tool call of an agent
+   anywhere else. An agent is started by typing its name (`claude`, `codex`, `pi`): on hive its
+   standing flags are added for you, and on a Mac it opens on hive over ssh. Agents talk with
+   `agent-send` / `agent-spawn` / `agent-ask`.
 6. **The seat.** The one agent the operator types to. Its pane is an inbox; questions for the
    operator go there, as decision cards.
 

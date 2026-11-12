@@ -1,7 +1,7 @@
 #!/bin/bash
 # agent-spawn <session> <name> -- <command...>: start an agent in a new visible tab; prints the new pane's id.
 # The command's shell has AGENT_SESSION and AGENT_PANE set to its own address (pass them on over ssh).
-# LC_REX_SESSION/LC_REX_BLOCK carry its Rex pane over ssh (rex-required). It also carries AGENT_NAME and AGENT_REPORT_TO="<session> <pane>" (the starter), plus their LC_ forms, which cross
+# LC_REX_SESSION/LC_REX_BLOCK carry its Rex pane over ssh. It also carries AGENT_NAME and AGENT_REPORT_TO="<session> <pane>" (the starter), plus their LC_ forms, which cross
 # ssh. agent-stop-alert reads them: when the agent finishes or dies, its starter is told automatically.
 set -euo pipefail
 DETACHED=false

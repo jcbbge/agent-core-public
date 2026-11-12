@@ -1,6 +1,6 @@
 /**
- * rex-required — pi extension. Spec: ../HOOK.md
- * Delegates every tool call to the shared `rex-required hook claude` script so the
+ * engine-host — pi extension. Spec: ../HOOK.md
+ * Delegates every tool call to the shared `engine-host hook claude` script so the
  * rule lives in one place; blocks only when the script returns a deny decision.
  */
 import { spawnSync } from "node:child_process";
@@ -10,8 +10,8 @@ import { fileURLToPath } from "node:url";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const SCRIPT =
-  process.env.REX_REQUIRED_BIN ??
-  join(dirname(realpathSync(fileURLToPath(import.meta.url))), "rex-required");
+  process.env.ENGINE_HOST_BIN ??
+  join(dirname(realpathSync(fileURLToPath(import.meta.url))), "engine-host");
 
 export default function (pi: ExtensionAPI) {
   pi.on("tool_call", async (event, ctx) => {

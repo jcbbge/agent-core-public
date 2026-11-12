@@ -18,5 +18,5 @@ Remove = delete the link and the folder. It changes no Rex configuration and sta
 **Compatibility (v0.1.0-alpha.1):** macOS only (observe/watch); tested against Rex 0.1.0-preview.16,
 API revision 13. An older server returns `unsupported Rex API revision`.
 
-The [rex-required](../../hooks/rex-required/HOOK.md) guard sends `rex capture` here once teerex
+The [engine-host](../../hooks/engine-host/HOOK.md) guard sends `rex capture` here once teerex
 is present. How to use it lives in the `rex` skill.

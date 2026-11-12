@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+# engine-host — every agent runs on the engine's host (hive), whatever app is its window.
+# Spec: ../HOOK.md
+#   engine-host check                      exit 0 on the engine's host, 1 elsewhere (reason on stderr)
+#   engine-host hook claude|codex|cursor   before-tool guard; harness JSON on stdin
+# Allows on its own failure. Refuses only on a positive finding.
+
+# The engine's host, by its kernel hostname. Rivet's sandboxed workers share it, so they pass.
+ENGINE_HOST="${ENGINE_HOST:-optimistic-wiles.hivelocitydns.com}"
+ENGINE_SSH="${ENGINE_SSH:-hive}"
+
+on_engine_host() { [ "$(uname -n 2>/dev/null)" = "$ENGINE_HOST" ]; }
+
+ELSEWHERE_MSG="engine-host: this agent is running on $(uname -n 2>/dev/null), not on hive. \
+Every agent runs on hive, where the Rivet engine is; the app you see it in (Rex, T3, Claude \
+Desktop, a terminal) is only the window. Quit and start it on hive: type its name in a shell on \
+this Mac (it opens on hive), or run 'ssh -t $ENGINE_SSH <agent> [args]'. Reach this Mac from hive \
+with 'ssh m5 <cmd>'."
+
+# Local Rex socket path from REX_SERVER (unix:// URL, percent-encoded).
+rex_socket() {
+  local url="${REX_SERVER:-}"
+  case "$url" in
+    unix://*) url="${url#unix://}"; printf '%b' "${url//%/\\x}" ;;
+    "") [ -S "$HOME/Library/Application Support/rex/server.sock" ] &&
+          printf '%s' "$HOME/Library/Application Support/rex/server.sock" ;;
+  esac
+}
+
+# teerex is usable when its read-only observation of this pane succeeds.
+teerex_usable() {
+  command -v teerex >/dev/null 2>&1 || return 1
+  [ -n "${REX_SESSION:-}" ] && [ -n "${REX_BLOCK:-}" ] || return 1
+  local sock; sock=$(rex_socket); [ -S "$sock" ] || return 1
+  teerex observe --socket "$sock" --session "$REX_SESSION" --block "$REX_BLOCK" \
+    --max-bytes 256 --timeout-ms 1500 >/dev/null 2>&1
+}
+
+deny() { # $1 harness, $2 reason
+  case "$1" in
+    claude|codex) jq -n --arg r "$2" '{hookSpecificOutput:{hookEventName:"PreToolUse",
+                    permissionDecision:"deny", permissionDecisionReason:$r}}' ;;
+    cursor) jq -n --arg r "$2" '{permission:"deny", user_message:$r, agent_message:$r}' ;;
+  esac
+  exit 0
+}
+
+case "${1:-}" in
+  check)
+    on_engine_host && exit 0
+    echo "$ELSEWHERE_MSG" >&2; exit 1 ;;
+  hook)
+    harness="${2:-claude}"
+    command -v jq >/dev/null 2>&1 || exit 0
+    input=$(cat) || exit 0
+    on_engine_host || deny "$harness" "$ELSEWHERE_MSG"
+    tool=$(printf '%s' "$input" | jq -r '.tool_name // empty' 2>/dev/null)
+    case "$tool" in
+      Agent|Task|Workflow)
+        deny "$harness" "engine-host: every agent is visible as its own session; in-process subagents ($tool) are refused. \
+Start it visibly: agent-spawn \"\$REX_SESSION\" <name> -- <agent command...> (e.g. -- claude --dangerously-skip-permissions '<brief>'). \
+It reports back to you through agent-send." ;;
+    esac
+    cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // .command // empty' 2>/dev/null) || exit 0
+    [ -n "$cmd" ] || exit 0
+    if printf '%s' "$cmd" | grep -Eq '(^|[;&|(` ])rex([[:space:]]+-[^[:space:]]+([[:space:]]+[^-[:space:]][^[:space:]]*)?)*[[:space:]]+capture([[:space:]]|$)' &&
+       teerex_usable; then
+      sock=$(rex_socket)
+      deny "$harness" "engine-host: read Rex terminals with teerex, not 'rex capture'. \
+One read: teerex observe --socket '$sock' --session <session> --block <block> [--max-bytes N]. \
+Wait for a change: save that observation as a baseline, then teerex watch ... --baseline FILE \
+--timeout-ms N [--status-state done]. This pane is --session $REX_SESSION --block $REX_BLOCK."
+    fi
+    exit 0 ;;
+  *)
+    echo "usage: engine-host check | hook claude|codex|cursor" >&2; exit 2 ;;
+esac
