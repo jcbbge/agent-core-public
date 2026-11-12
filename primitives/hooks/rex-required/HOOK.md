@@ -16,8 +16,9 @@ pane), or `LC_AGENT_REPORT_TO` naming a Rex block (an agent started by `agent-sp
 opens Rex tabs).
 
 **Launching is one word (Josh, 2026-11-12: "I do not want to have to remember a shitload of flags").**
-Typing an agent's name (`claude`, `claude -c`, `pi`) is the whole launch. The shell wrapper adds that
-agent's standing flags (claude: `--dangerously-skip-permissions`), and from a shell outside Rex it
+Typing an agent's name (`claude`, `codex`, `pi`) is the whole launch. The shell wrapper adds that
+agent's standing flags (claude: `--dangerously-skip-permissions`; codex:
+`--dangerously-bypass-approvals-and-sandbox`, its yolo mode), and from a shell outside Rex it
 opens the same command in a new Rex tab instead of refusing.
 
 **Refuses:**

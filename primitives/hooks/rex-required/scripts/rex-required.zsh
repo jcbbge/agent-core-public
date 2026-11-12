@@ -7,7 +7,7 @@
 
 _rexreq_bin="${0:A:h}/rex-required"
 _rexreq_agents=(claude codex cursor-agent agent pi amp opencode gemini)
-typeset -gA _rexreq_flags=(claude --dangerously-skip-permissions)
+typeset -gA _rexreq_flags=(claude --dangerously-skip-permissions codex --dangerously-bypass-approvals-and-sandbox)
 
 # _rexreq_launch <name> <runner> [args...]: standing flags added once, in this pane or a new Rex tab.
 _rexreq_launch() {
