@@ -9,7 +9,9 @@
 
 in_rex() {
   { [ -n "${REX_SESSION:-}" ] && [ -n "${REX_BLOCK:-}" ]; } ||
-    { [ -n "${LC_REX_SESSION:-}" ] && [ -n "${LC_REX_BLOCK:-}" ]; }
+    { [ -n "${LC_REX_SESSION:-}" ] && [ -n "${LC_REX_BLOCK:-}" ]; } ||
+    # agent-spawn only opens Rex tabs; agents it started before it exported LC_REX_* carry this.
+    case "${LC_AGENT_REPORT_TO:-}" in *block:*) true ;; *) false ;; esac
 }
 
 OUTSIDE_MSG="rex-required: this agent is not running in a Rex pane. Every agent runs in Rex. \

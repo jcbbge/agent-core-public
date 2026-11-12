@@ -12,7 +12,8 @@ Rex pane is an agent the operator cannot see, address or return to.
 
 **Inside Rex means:** the process carries a Rex pane address, either `REX_SESSION` and `REX_BLOCK`
 (a local Rex pane) or `LC_REX_SESSION` and `LC_REX_BLOCK` (a shell reached over ssh from a Rex
-pane).
+pane), or `LC_AGENT_REPORT_TO` naming a Rex block (an agent started by `agent-spawn`, which only
+opens Rex tabs).
 
 **Refuses:**
 
