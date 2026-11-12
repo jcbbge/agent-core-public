@@ -33,8 +33,9 @@ refuses only on a positive finding, never because of its own bug.
 
 **Off switch:** remove the hook entry or the launch wrapper. There is no per-call override.
 
-Refusal enforcement follows the [worker exception](../../rules/worker-guards/RULE.md): `MW_WORKER=1`
-passes silently, checked before anything else.
+**No worker exception.** Josh, 2026-11-12: "If it runs on my machine, I'm running it through
+Rex. No ifs, no ands, no buts." Engine workers (Rivet, `MW_WORKER=1`) are agents and run in Rex
+tabs like any other. This guard overrides the [worker exception](../../rules/worker-guards/RULE.md).
 
 `scripts/` holds the reference implementation:
 

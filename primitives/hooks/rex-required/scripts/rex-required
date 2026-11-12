@@ -5,7 +5,7 @@
 #   rex-required hook claude|codex|cursor   before-tool guard; harness JSON on stdin
 # Allows on its own failure. Refuses only on a positive finding.
 
-[ "${MW_WORKER:-}" = 1 ] && exit 0
+# No worker exception (Josh, 2026-11-12): Rivet and engine workers run in Rex tabs too.
 
 in_rex() {
   { [ -n "${REX_SESSION:-}" ] && [ -n "${REX_BLOCK:-}" ]; } ||

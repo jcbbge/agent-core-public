@@ -15,7 +15,6 @@ const SCRIPT =
 
 export default function (pi: ExtensionAPI) {
   pi.on("tool_call", async (event, ctx) => {
-    if (process.env.MW_WORKER === "1") return undefined;
     const input = JSON.stringify({ tool_name: event.toolName, tool_input: event.input ?? {} });
     const r = spawnSync(SCRIPT, ["hook", "claude"], { input, encoding: "utf8", timeout: 5000 });
     if (r.status !== 0 || !r.stdout) return undefined; // own failure allows
