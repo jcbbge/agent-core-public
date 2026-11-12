@@ -51,6 +51,12 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
    sure the starter hears: `agent-spawn` carries `AGENT_NAME` and `AGENT_REPORT_TO`, and the harness's stop and
    stop-failure hooks run `agent-stop-alert`, which sends the starter the agent's last words or its error. A
    starter watches its own inbox; it never waits to be prompted.
+7. **Long output is a document, read in leaf (Josh, 2026-11-12).** Anything for the human longer than a few lines
+   (a task list, a table, a QA brief, a report) is written as a `.md` file in the item's work folder, never printed
+   into a pane. It is opened in `leaf` (a terminal document reader, installed on the Mac and on hive) in a pane
+   beside the agent: `rex run -s <session> -b <agent pane> --split=right -- ssh -t hive 'leaf open <file.md>'`. An
+   agent without that access sends the seat the file's path and the seat opens it. In Rex, Cmd+Shift+P → Leaf opens
+   any document too.
 
 ## Never
 
