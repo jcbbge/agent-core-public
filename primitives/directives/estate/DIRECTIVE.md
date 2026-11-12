@@ -28,8 +28,8 @@ login), say which link failed and what it printed.
   the M5's Chrome to hive's 127.0.0.1:9222.
 - Connections are shared (ControlMaster): a second `ssh <name> <cmd>` costs under 0.1 s. Call it
   as often as the work needs.
-- **Finder view, on the M5:** `~/Machines/hive` (hive's home) and `~/Machines/m1` (the M1's home)
-  are the other machines' files. They are a view for the operator, not a second copy: an agent
+- **Finder view, on the M5 (being set up):** `~/Machines/hive` (hive's home) and `~/Machines/m1`
+  (the M1's home) are the other machines' files. They are a view for the operator, not a second copy: an agent
   works on a file where it lives, over ssh.
 
 ## Where things live (one place each)
