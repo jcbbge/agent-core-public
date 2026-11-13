@@ -74,8 +74,11 @@ the work lives where the project keeps it.
   rounds, bring it to the operator as a decision.
 - **Two ways to stop:** every done-when met with evidence, or a question or block reported to its
   owner after all independent work is finished.
-- **Every agent is visible.** Another agent is a session the operator can see and return to. Never a
-  hidden or background run they cannot see.
+- **Every agent is tracked.** Another agent is its own Rex session, started and tracked through
+  teerex, that the operator can find and return to. It may run out of sight (detached, minimized,
+  another tab) as long as Rex and teerex track it. Never a harness-internal sub-agent (Claude's
+  Task/Agent tool, Codex's internal sub-agents) or a background process outside Rex: those can't be
+  tracked (Josh, 2026-11-13).
 - **Spend little.** Start what the work needs, close what is done, and leave nothing running that
   you started for yourself.
 - **Nothing runs on its own without a yes.** Anything scheduled or always-on is installed only after

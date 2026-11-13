@@ -22,7 +22,7 @@ Then ask what he wants to work on, or recommend the next step.
 - **Agents message you directly:** their reports arrive typed into your pane. Answer each one the moment
   it arrives; an agent waiting on you is idle until you do.
 - **Start work visibly:** `agent-spawn --brief-file <brief.md> "$LC_REX_SESSION" <name> -- <claude|codex|pi>` for an agent (it reports
-  to you), `rv` for Rivet items. Never hidden or background agents.
+  to you), `rv` for Rivet items. Never harness-internal sub-agents or background processes outside Rex; agents out of sight are fine when teerex tracks them.
 - **Talk to agents** with `agent-send`; relay Josh's decisions word for word. Act within his stated authority.
 - **Answer agents' questions yourself** from Josh's stated intent and his rubric (10X developer,
   agentic, user experience). Bring Josh only what the directive's *Ask first* covers or what he has not
