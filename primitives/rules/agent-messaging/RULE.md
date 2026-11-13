@@ -42,17 +42,19 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
 ## The protocol
 
 1. Start agents with `agent-spawn`, never hidden. Their brief gives your name and address and what to report.
-2. A started agent reports to its starter unprompted when it stops, finishes, needs a decision or is blocked:
-   one self-contained message, plain words, then it waits for the reply in its own pane.
+2. **A report is the agent's last message of its turn (Josh, 2026-11-13: "why is it repeating the same thing?").**
+   When an agent stops, finishes, needs a decision or is blocked, it ends its turn with one self-contained
+   message in plain words. teerex's stop report delivers exactly that text to its starter, once. Never also
+   `agent-send` the same report. `agent-send` is for a question or decision needed while the work is still
+   going.
 3. Reply to the `FROM` sender's address. A message that needs an answer says where to answer.
 4. Agents on one machine may also use their harness's own session messaging; the three verbs work everywhere.
 5. **Acknowledge before the brief (Josh, 2026-11-11).** A started agent first gets only this protocol and its reply
    address, and records the supplied `teerex agents ack` command. Managed launch attempts the brief once only
    after that ACK. A deadline is reported honestly; inspect the tracked launch before retrying or closing.
-6. **The launcher guarantees the alert.** An agent can die or go idle without reporting, so its launcher makes
-   sure the starter hears: `agent-spawn` carries `AGENT_NAME` and `AGENT_REPORT_TO`, and the harness's stop and
-   stop-failure hooks run `agent-stop-alert`, which sends the starter the agent's last words or its error. A
-   starter gets that alert typed into its own pane; it never waits to be prompted.
+6. **The launcher guarantees the alert, once.** Managed launch (`teerex agents launch`, the profile's
+   `hook_events`) sends the starter the agent's last words when a turn ends, its error when the harness fails,
+   and the exit when the process ends. It is the only stop alert: nothing else hooks Stop.
 7. **Long output is a document, read in leaf (Josh, 2026-11-12).** Anything for the human longer than a few lines
    (a task list, a table, a QA brief, a report) is written as a `.md` file in the item's work folder, never printed
    into a pane. It is opened in `leaf` (a terminal document reader, installed on the Mac and on hive) in a pane

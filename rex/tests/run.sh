@@ -15,7 +15,7 @@ else printf 'SKIP shellcheck (unavailable)\n'; fi
 python3 - <<'PY'
 import json, subprocess
 from pathlib import Path
-for name in ('agent-ask','agent-stop-alert'):
+for name in ('agent-ask',):
     p=Path('primitives/tools/agent-messaging')/name
     compile(p.read_text(),str(p),'exec')
 print('PASS Python syntax')
