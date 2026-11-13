@@ -41,6 +41,8 @@ visible runs and recovery are documented in the upstream guide rather than copie
 |---|---|---|
 | `cartridges` | List, preview, install, run or remove the separately packaged native payloads. Plan first; `--apply` mutates; `run` holds the in-use lease (calling a payload directly does not). | `teerex cartridges install --all --catalog "$CATALOG" --allow-experimental` |
 
+Prefer ready cartridges: `teerex cartridges install --all --catalog "$CATALOG"` installs only evidence-ready items; `compatibility.readiness` names the proving record.
+
 `seat` uses native server-wide ensure; it has no private pointer or lock. Its creation session is
 `SEAT_SESSION` (default `rivet`) on hive. `agent-read` returns native `observe --state` JSON, including evidence lines and unknowns; use `observe --tail` when you need newest raw text.
 
