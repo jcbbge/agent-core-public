@@ -15,11 +15,9 @@ if [ -n "$CHANNEL" ]; then
     echo "agent-send: destination is outside this launch's delivery channel" >&2
     exit 2
   fi
-  DROP=()
-  [ "${AGENT_CHANNEL_DROP:-0}" != 1 ] || DROP=(--drop)
   REQUEST=$(python3 -c 'import secrets; print(secrets.token_hex(16))')
   printf '%s' "$MSG" | teerex agents channel --handle "$CHANNEL" --request-id "$REQUEST" \
-    --operation send --to "$DEST" --message-file - "${DROP[@]}"
+    --operation send --to "$DEST" --message-file -
   exit $?
 fi
 TX=(teerex --config "${TEEREX_HOSTS:-$HOME/.config/teerex/hosts.json}" --host "${TEEREX_HOST:-hive}")

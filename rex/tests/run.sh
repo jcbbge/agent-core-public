@@ -77,10 +77,6 @@ with tempfile.TemporaryDirectory() as d:
     assert args[args.index('--to')+1]=='report-to'
     token=args[args.index('--request-id')+1]
     assert len(token)==32 and all(c in '0123456789abcdef' for c in token)
-    env['AGENT_CHANNEL_DROP']='1'
-    r=subprocess.run([sender,'session:fixed','block:fixed','worker',body],env=env,text=True,capture_output=True)
-    assert r.returncode==0,r.stderr
-    assert '--drop' in json.loads((root/'request').read_text())['argv']
     (root/'request').unlink()
     r=subprocess.run([sender,'session:other','block:other','worker',body],env=env,text=True,capture_output=True)
     assert r.returncode==2 and not (root/'request').exists()
