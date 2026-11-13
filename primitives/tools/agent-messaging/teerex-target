@@ -41,8 +41,8 @@ resolve() {
   host_info
 }
 
-# no teerex verb: jcbbge/teerex#4 (VT draft detection/restoration).
-# Only callers retaining that unsupported boundary use Rex directly, pinned by the named-host record.
+# no teerex verb: jcbbge/teerex#2 (session label/suffix lookup, including empty sessions).
+# Only the unresolved session lookup uses Rex directly, pinned by the named-host record.
 rexat() {
   local binary transport address port identity known command
   binary=$(printf '%s' "$HOST_INFO" | jq -er '.host.rex')

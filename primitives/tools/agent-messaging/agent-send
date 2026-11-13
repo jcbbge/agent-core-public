@@ -1,50 +1,7 @@
 #!/bin/bash
 # agent-send <session> <pane> <from> <message...>
-# One agent-to-agent message, delivered whole: lock the receiving pane, clear its input line, type
-# "FROM <from>: <message>", press Enter, unlock. Concurrent senders to one pane queue on the lock.
-# Transport: the terminal multiplexer's CLI (today Rex), run where its server is. Elsewhere, a forwarder calls this.
+# teerex owns serialization, draft protection, paste and Enter.
 set -euo pipefail
-# Read only actual input, excluding dim and grey completion suggestions.
-GUARD_PY=$(cat <<'PYGUARD'
-import json,re,sys
-try:
-    text=json.load(sys.stdin)['text']
-    lines=[line for line in text.splitlines() if re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]', '',line).strip()][-15:]
-    draft=''
-    for line in lines:
-        plain=re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]', '',line)
-        if not re.match(r'^\s*[│┃|]?\s*[>❯]\s?(.*?)\s*[│┃|]?\s*$', plain):
-            continue
-        dim=False; grey=False; out=[]
-        for part in re.split(r'(\x1b\[[0-?]*[ -/]*[@-~])', line):
-            if part.startswith('\x1b['):
-                if part.endswith('C'):  # cursor-forward: Claude Code draws runs of spaces this way
-                    if not dim and not grey: out.append(' '*int(part[2:-1] or 1))
-                    continue
-                if not part.endswith('m'): continue
-                codes=[int(c or 0) for c in part[2:-1].split(';')]
-                i=0
-                while i<len(codes):
-                    c=codes[i]
-                    if c==0: dim=grey=False
-                    elif c==2: dim=True
-                    elif c==22: dim=False
-                    elif c==90: grey=True
-                    elif c==39 or 30<=c<=37 or 91<=c<=97: grey=False
-                    elif c==38 and i+2<len(codes) and codes[i+1]==5:
-                        grey=240<=codes[i+2]<=250; i+=2
-                    elif c==38 and i+4<len(codes) and codes[i+1]==2:
-                        red,green,blue=codes[i+2:i+5]; grey=red==green==blue and red<160; i+=4
-                    i+=1
-            elif not dim and not grey: out.append(part)
-        m=re.match(r'^\s*[│┃|]?\s*[>❯]\s?(.*?)\s*[│┃|]?\s*$', ''.join(out))
-        draft=m.group(1).strip() if m else ''
-    print(draft)
-except (ValueError,KeyError,TypeError,AttributeError):
-    pass
-PYGUARD
-)
-if [ "${1:-}" = --guard-test ]; then python3 -c "$GUARD_PY"; exit 0; fi
 [ $# -ge 4 ] || { echo "usage: agent-send <session> <pane> <from> <message...>" >&2; exit 2; }
 S=$1; P=$2; FROM=$3; shift 3; MSG="$*"
 # Fenced Rivet workers hand delivery to the existing relay.
@@ -58,20 +15,6 @@ fi
 # shellcheck source=primitives/tools/agent-messaging/teerex-target
 . "$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0")")/teerex-target"
 resolve "$S"
-# no teerex verb: jcbbge/teerex#4 (draft guard).
-draft() {
-  rexat block call -s "$SID" -b "$P" format '{"format":"vt"}' 2>/dev/null | python3 -c "$GUARD_PY" || true # no teerex verb: jcbbge/teerex#4
-}
-d=""
-for _ in $(seq 1 30); do d=$(draft); [ -z "$d" ] && break; sleep 1; done
-[ -n "$d" ] && { rexat send-key -s "$SID" -b "$P" ctrl+u >/dev/null 2>&1 || true; } # no teerex verb: jcbbge/teerex#4
 OUT=$(printf '%s' "$MSG" | tx send --session "$SID" --block "$P" --from "$FROM" --message-file -) || {
   echo "agent-send: teerex send did not confirm delivery to $P: $OUT. Inspect the pane before resending." >&2
   exit 1; }
-if [ -n "$d" ]; then
-  sleep 0.4
-  EV=$(jq -nc --arg s "$SID" --arg b "$P" --arg t "$d" '{session_id:$s,block_id:$b,event:{type:"paste",payload:{text:$t}}}')
-  rexat api call -s "$SID" block.event "$EV" >/dev/null || true # no teerex verb: jcbbge/teerex#4
-  mkdir -p "$HOME/.local/state/agent-send"
-  printf '%s %s draft restored (%s chars)\n' "$(date -u +%FT%TZ)" "$P" "${#d}" >> "$HOME/.local/state/agent-send/guard.log"
-fi

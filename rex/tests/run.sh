@@ -19,12 +19,6 @@ for name in ('agent-ask',):
     p=Path('primitives/tools/agent-messaging')/name
     compile(p.read_text(),str(p),'exec')
 print('PASS Python syntax')
-for line,want in [('│ ❯ │',''),('│ ❯ \x1b[2msuggest\x1b[0m │',''),('│ ❯ \x1b[90msuggest\x1b[0m │',''),('│ ❯ fix the tests │','fix the tests'),('│ ❯ fix\x1b[38;5;245m suggestion\x1b[0m │','fix'),('│ ❯ \x1b[38;2;100;100;100msuggest\x1b[0m │',''),('❯\xa0a\x1b[1Cb\x1b[2Cc\x1b[1Cdd','a b  c dd'),('❯ my\x1b[1Cunsent\x1b[1Cdraft','my unsent draft')]:
-    r=subprocess.run(['primitives/tools/agent-messaging/agent-send','--guard-test'],input=json.dumps({'text':line}),text=True,capture_output=True,check=True)
-    assert r.stdout.strip()==want,(line,r.stdout)
-r=subprocess.run(['primitives/tools/agent-messaging/agent-send','--guard-test'],input='invalid',text=True,capture_output=True,check=True)
-assert not r.stdout.strip()
-print('PASS draft guard input fixtures')
 hook='primitives/hooks/engine-host/scripts/engine-host'
 deny=('rex capture -s session:x -b block:x', 'rex --server unix:///missing capture', 'rex -S hive block capture -s s -b b',
       'cd ~ && rex capture -s s', 'X=1 rex capture', 'echo $(rex capture -s s)', 'ls\nrex capture',
