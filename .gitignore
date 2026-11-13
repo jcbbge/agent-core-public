@@ -4,3 +4,4 @@
 .coraline/
 .pi/
 node_modules/
+__pycache__/
