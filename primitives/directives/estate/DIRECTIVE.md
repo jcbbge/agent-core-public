@@ -69,7 +69,7 @@ From the ground up. Each layer only drives the one above it.
    suggestion, not a block: nothing refuses an agent for the machine it is on. An agent is started
    by typing its name (`claude`, `codex`, `pi`): native `teerex agents human` applies profile
    standing flags and opens a tracked visible tab; rexconfig owns the Mac route to hive. Agents talk with
-   `agent-send` / `agent-spawn` / `agent-ask`.
+   `agent-send` / `agent-spawn`; complete decision cards use native `teerex ask`.
 6. **The seat.** The one agent the operator types to, his concierge for the session. He starts it
    by typing `seat` in any Rex tab (Mac or hive); if a seat is already running, `seat` switches to
    it instead. Its Rex tab is named "seat". Agents message it directly with `agent-send`, typed into

@@ -33,6 +33,8 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
 - **No agent outside the seat ever stops on an on-screen prompt**: no question menus, no "choose an option"
   dialogs, no waiting on input in its own pane. A pane nobody watches is a dead end.
 - The seat relays the human's answer word for word to whoever asked, with `agent-send`.
+- Complete decision cards and their resolutions can use native `teerex ask`; it types into the
+  addressed pane through guarded send. Read `teerex ask --help`; no seat inbox is required.
 - If you do not know who the seat is, ask your starter. A brief always names the seat and its address.
 - **Agents message the seat directly (Josh, 2026-11-13: "Disable the feature let agents communicate directly to
   you").** `agent-send` types into the seat's pane like any other pane, so every report reaches the seat as input

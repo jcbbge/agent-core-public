@@ -14,11 +14,6 @@ if command -v shellcheck >/dev/null; then
 else printf 'SKIP shellcheck (unavailable)\n'; fi
 python3 - <<'PY'
 import json, subprocess
-from pathlib import Path
-for name in ('agent-ask',):
-    p=Path('primitives/tools/agent-messaging')/name
-    compile(p.read_text(),str(p),'exec')
-print('PASS Python syntax')
 hook='primitives/hooks/engine-host/scripts/engine-host'
 deny=('rex capture -s session:x -b block:x', 'rex --server unix:///missing capture', 'rex -S hive block capture -s s -b b',
       'cd ~ && rex capture -s s', 'X=1 rex capture', 'echo $(rex capture -s s)', 'ls\nrex capture',
