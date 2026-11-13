@@ -1,9 +1,6 @@
 # shellcheck shell=bash disable=SC2034
 # Shared named-host selection. No private socket forwarding or transport fallback.
 TEEREX_HOSTS=${TEEREX_HOSTS:-$HOME/.config/teerex/hosts.json}
-if [ ! -f "$TEEREX_HOSTS" ] && [ "$(uname)" = Darwin ]; then
-  TEEREX_HOSTS=$HOME/.local/state/teerex-boards/hosts.json
-fi
 
 tx() { teerex --config "$TEEREX_HOSTS" --host "$WHERE" "$@"; }
 

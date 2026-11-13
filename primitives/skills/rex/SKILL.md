@@ -104,7 +104,7 @@ Full flags: `teerex <command> --help`.
 |---|---|---|
 | `surfaces` | You need a tiled, floating or tab pane with its real geometry read back, or to move, focus or close one by address. | `teerex surfaces open --socket "$sock" --session "$S" --layout float --label logs -- tail -f app.log` |
 | `jobs` | You track who owns a pane, or bring a finished pane beside you. Never closes anything. | `teerex jobs present --registry "$REG" --socket "$sock" --session "$S" --block "$B" --owner seat --generation 1 --reason review --anchor "$ME" --focus no` |
-| `boards fleet` | The operator wants the live read-only fleet board. Not for messages: the seat has no inbox; message it with `agent-send`. | `teerex boards fleet --store "$ST" --config "$ST/hosts.json" --hosts m5,hive` in a visible tab |
+| `boards fleet` | The operator wants the live read-only fleet board. Not for messages: the seat has no inbox; message it with `agent-send`. | `teerex boards fleet --store "$ST" --config "$HOME/.config/teerex/hosts.json" --hosts m5,hive` in a visible tab |
 | `agents` | Managed launch from a profile: the agent ACKs the protocol before one brief, its job is tracked, its stop is reported honestly. | `teerex agents launch --config "$PROFILES" --profile worker --brief-file brief.md …` |
 | `recovery` | Before a Rex restart: `update --snapshot` lists panes at risk; `snapshot` saves layout and launch metadata; `restore` previews, then applies on an empty server. | `teerex recovery update --socket "$sock" --snapshot` |
 | `targets` | A command should run on a named machine (`m5`, `hive`, `m1`) from one hosts config, not a socket path. | `teerex --config "$HOSTS" --host hive observe …` |
@@ -118,3 +118,6 @@ tracks the job, and gives the fleet board owner and purpose. A recorded ACK is n
 a finished turn is idle, not process death. Inspect an uncertain launch before retrying.
 `agent-send` uses `teerex send`; stop hooks report to the starter. Gaps belong in
 jcbbge/teerex, never in hand-built transport beside it.
+
+Rex and teerex configuration is owned by `~/rexconfig` on each machine. See its README
+and `./install --check`; agent-core-sync does not install or replace those files.

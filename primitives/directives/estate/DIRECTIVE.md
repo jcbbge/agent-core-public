@@ -27,7 +27,7 @@ login), say which link failed and what it printed.
   forwards: Rivet engine at the M5's 127.0.0.1:6420, the M5's Chrome to hive's 127.0.0.1:9222.
 - Rex reaches hive's Rex server natively: the M5's Rex host `hive` is
   `ssh://jrg@hive/run/user/1000/rex/server.sock` (`rex -S hive ...`). teerex reaches both machines
-  through its named-host config on the M5, `~/.local/state/teerex-boards/hosts.json`
+  through its named-host config on the M5, `~/.config/teerex/hosts.json`
   (`teerex --config <it> --host hive ...`). No hand-built socket forward.
 - Connections are shared (ControlMaster): a second `ssh <name> <cmd>` costs under 0.1 s. Call it
   as often as the work needs.
@@ -36,6 +36,9 @@ login), say which link failed and what it printed.
   works on a file where it lives, over ssh.
 
 ## Where things live (one place each)
+
+- Rex and teerex configuration: `~/rexconfig` on hive and m5; install with its `./install`.
+  Rex reads `~/.config/rex/init.lua`; teerex named hosts read `~/.config/teerex/hosts.json`.
 
 - Code, checkouts, Rivet, work items, agent sessions: **hive**.
 - Anything the operator looks at (Rex windows, Chrome, Finder): **m5**.

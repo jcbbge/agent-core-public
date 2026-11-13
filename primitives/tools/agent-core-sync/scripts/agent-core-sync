@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # agent-core-sync [--check]: this machine's agents load exactly what agent-core says. Spec: ../TOOL.md
 set -euo pipefail
+# Rex and teerex config belongs to ~/rexconfig (its ./install manages it).
 AC="${AGENT_CORE:-$HOME/agent-core}"
 CHECK=false; [ "${1:-}" = --check ] && CHECK=true
 
