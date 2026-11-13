@@ -74,12 +74,12 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
 7. **The launcher guarantees the alert, once.** Managed launch (`teerex agents launch`, the profile's
    `hook_events`) sends the starter the agent's last words when a turn ends, its error when the harness fails,
    and the exit when the process ends. It is the only stop alert: nothing else hooks Stop.
-8. **Long output is a document, read in leaf (Josh, 2026-11-12).** Anything for the human longer than a few lines
+8. **Long output is a document, read in leaf (Josh, 2026-11-12/13).** Anything for the human longer than a few lines
    (a task list, a table, a QA brief, a report) is written as a `.md` file in the item's work folder, never printed
-   into a pane. It is opened in `leaf` (a terminal document reader, installed on the Mac and on hive) in a pane
-   beside the agent: `teerex surfaces open --layout tiled --anchor <agent pane> -- ssh -t hive 'leaf open <file.md>'`. An
-   agent without that access sends the seat the file's path and the seat opens it. In Rex, Cmd+Shift+P → Leaf opens
-   any document too.
+   into a pane. Never hand Josh a path to click: in the Mac Rex app a clicked path opens in the Mac's default app
+   (Zed), not leaf, and the file lives on hive anyway. The seat opens it for him as a floating leaf layer over the
+   seat: `teerex surfaces open --layout float --anchor <seat pane> --bounds '[0.08,0.05,0.84,0.9]' --label <name>
+   -- leaf open <file.md>` (q closes it). Other agents send the seat the path; the seat opens it.
 
 ## Never
 
