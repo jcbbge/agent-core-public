@@ -63,8 +63,11 @@ From the ground up. Each layer only drives the one above it.
    by typing its name (`claude`, `codex`, `pi`): on hive its standing flags are added for you, and
    on a Mac it opens on hive over ssh (`command claude` runs it on the Mac). Agents talk with
    `agent-send` / `agent-spawn` / `agent-ask`.
-6. **The seat.** The one agent the operator types to. Its pane is an inbox; questions for the
-   operator go there, as decision cards.
+6. **The seat.** The one agent the operator types to, his concierge for the session. He starts it
+   by typing `seat` in any Rex tab (Mac or hive); if a seat is already running, `seat` switches to
+   it instead. Its Rex tab is named "seat" and its pane is an inbox: questions for the operator go
+   there as decision cards, into one log that every seat inherits
+   (`~/.local/state/agent-inbox/seat-inbox.log`). Its brief is `tools/agent-messaging/SEAT.md`.
 
 ## Words
 

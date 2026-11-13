@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# seat — start the session's one concierge agent, or go to it if it is already open.
+# Type `seat` in any Rex tab, on a Mac or on hive (Josh, 2026-11-13: "I want to start every session
+# with a single concierge ... terminal agent").
+#   - A seat already running: focus its tab, start nothing.
+#   - Otherwise this tab becomes the seat: labelled "seat", marked an inbox with its viewer beside it
+#     (agent-seat), and Claude starts on hive with the seat brief (SEAT.md).
+# One inbox log for every seat: ~/.local/state/agent-inbox/seat-inbox.log. Each seat pane's
+# <id>.log links to it, so agents started under an earlier seat still reach the current one.
+set -euo pipefail
+
+if [ "$(uname -n)" != "${ENGINE_HOST:-optimistic-wiles.hivelocitydns.com}" ]; then
+  [ -n "${REX_BLOCK:-}" ] && [ -n "${REX_SESSION:-}" ] || { echo "seat: run it in a Rex tab" >&2; exit 1; }
+  export LC_REX_BLOCK="$REX_BLOCK" LC_REX_SESSION="$REX_SESSION"
+  # shellcheck disable=SC2088  # ~ expands on hive, by design
+  exec ssh -t "${ENGINE_SSH:-hive}" '~/.local/bin/seat'
+fi
+
+B=${REX_BLOCK:-${LC_REX_BLOCK:-}}; S=${REX_SESSION:-${LC_REX_SESSION:-}}
+[ -n "$B" ] && [ -n "$S" ] || { echo "seat: no Rex pane address; start it from a Rex tab" >&2; exit 1; }
+D=${AGENT_INBOX_DIR:-$HOME/.local/state/agent-inbox}; mkdir -p "$D"
+CUR=$D/current-seat LOG=seat-inbox.log
+
+# A seat is running when its pane exists and its program is not a bare shell.
+seat_running() {
+  local fg
+  rex block list -s "$S" --json 2>/dev/null | grep -q "\"$1\"" || return 1
+  fg=$(rex block call -s "$S" -b "$1" process 2>/dev/null | jq -r '.foreground.name // empty')
+  case "$fg" in ""|zsh|bash|sh|-zsh|login) return 1 ;; esac
+}
+
+if [ -s "$CUR" ]; then
+  old=$(cat "$CUR")
+  if [ "$old" != "$B" ] && seat_running "$old"; then
+    rex block focus -s "$S" "$old" >/dev/null 2>&1 || true
+    echo "The seat is already open in the tab named \"seat\". Switched to it."
+    exit 0
+  fi
+fi
+
+id=${B##*:}
+touch "$D/$LOG" "$D/$id.inbox"
+[ -L "$D/$id.log" ] || { [ -s "$D/$id.log" ] && cat "$D/$id.log" >> "$D/$LOG"; rm -f "$D/$id.log"; }
+ln -sfn "$LOG" "$D/$id.log"
+printf '%s\n' "$B" > "$CUR"
+
+W=$(rex block list -s "$S" --json | jq -r --arg b "$B" '.blocks[] | select(.block_id==$b) | .window_id')
+[ -n "$W" ] && rex window rename -s "$S" "$W" seat >/dev/null 2>&1 || true
+env -u AGENT_PANE -u LC_AGENT_NAME "$(dirname "$(readlink -f "$0")")/agent-seat" || true
+
+cd "$HOME"
+exec "$HOME/.local/bin/claude" --dangerously-skip-permissions \
+  "You are the seat. Read $(dirname "$(readlink -f "$0")")/SEAT.md and follow it. Your pane is $B in session $S."

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
-# agent-seat: make the pane the human just logged in from a seat. It marks the pane as an inbox (agents never type
-# into it) and opens the inbox viewer beside it at one third of the width. It is silent, runs at most once per pane,
-# and is safe to run again.
-# It runs automatically from an interactive login shell on hive (~/.zshrc), when the operator's terminal passed its
-# pane over ssh (LC_REX_BLOCK, LC_REX_SESSION; sshd accepts LC_*). Agents started by agent-spawn carry AGENT_PANE
-# (LC_AGENT_NAME over ssh) and are skipped: those panes belong to agents, and agents are typed into.
+# agent-seat: mark a pane as the seat's inbox (agents never type into it) and open the inbox viewer beside it at
+# one third of the width. Silent, at most once per pane, safe to run again. Called by `seat`, which is the only way
+# a seat starts (Josh, 2026-11-13: one concierge per session); it no longer runs on every hive login. Agents started
+# by agent-spawn carry AGENT_PANE (LC_AGENT_NAME over ssh) and are skipped.
 set -euo pipefail
 [ -n "${AGENT_PANE:-}${LC_AGENT_NAME:-}" ] && exit 0 # an agent (its name crosses ssh as LC_AGENT_NAME), not the human
 B=${REX_BLOCK:-${LC_REX_BLOCK:-}}; S=${REX_SESSION:-${LC_REX_SESSION:-}}
