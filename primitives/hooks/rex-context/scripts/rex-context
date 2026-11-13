@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
-# rex-context: provide live Rex API context without delaying session start.
+# rex-context: point to the installed guides; no private API cache or background refresh.
 set -euo pipefail
 command -v rex >/dev/null || exit 0
-C="${XDG_CACHE_HOME:-$HOME/.cache}/rex"; F="$C/api.json"; mkdir -p "$C"
-# Refresh in the background when missing or older than 6 hours, so session start never waits on ssh.
-if [ ! -s "$F" ] || [ -n "$(find "$F" -mmin +360 2>/dev/null)" ]; then
-  # shellcheck disable=SC2015 # Failed validation or rename must also remove the temporary file.
-  ( timeout 20 rex api list --json > "$F.tmp" 2>/dev/null && [ -s "$F.tmp" ] && mv "$F.tmp" "$F" || rm -f "$F.tmp" ) \
-    </dev/null >/dev/null 2>&1 & disown
-fi
-cat <<EOF
-Rex (the terminal multiplexer this session runs in) has a self-describing API. Never guess a method's arguments:
-- Exact schema of one method: rex api describe <method> --json   (e.g. session.new_split)
-- Every method, cached: $F   (jq '.. | objects | select(.name? == "session.view")' $F)
-- Find a docs section: curl -s 'https://www.superlogical.com/rex/docs/search.json?q=<words>'
-- The full guide for agents: rex skill show
+cat <<'EOF'
+Rex and teerex provide their own command guides. Read them before operating a pane:
+- Rex guide: rex __internal skill
+- teerex commands: teerex --help
+- Named-host commands: teerex --config ~/.config/teerex/hosts.json --host hive <command> (use --host m5 for the Mac)
+- Read a terminal: teerex observe; wait for a change: teerex watch
+Use teerex surfaces for pane operations. A missing verb is a teerex gap, not a reason to build plumbing.
 Rex says "block" for what agent messaging calls a "pane"; the ids are the same.
 EOF
-

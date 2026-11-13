@@ -39,7 +39,7 @@ if read -r OLD_HOST OLD_S OLD_B < "$D/current-seat"; then
 fi
 WHERE=$CURRENT_HOST; SID=$CURRENT_SID; host_info
 W=$(tx boards probe | jq -er --arg b "$B" '.rows[] | select(.block==$b) | .window_id')
-rexat window rename -s "$SID" "$W" seat >/dev/null # no teerex verb: jcbbge/teerex#17
+tx surfaces rename --session "$SID" --window "$W" --label seat >/dev/null
 printf '%s %s %s\n' "$WHERE" "$SID" "$B" > "$D/current-seat"
 flock -u 9
 exec 9>&-
