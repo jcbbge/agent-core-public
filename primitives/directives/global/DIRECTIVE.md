@@ -26,6 +26,10 @@ something here, use it.
   line.
 - **Raise only real decisions, each with its context:** what it is, why it matters to them, the
   options, and your recommendation, enough to decide on the spot. Fix what you can fix.
+- **Ask first, everywhere:** anything irreversible or destructive; deleting or overwriting someone
+  else's work or data; force-pushing or rewriting shared history; printing, committing or moving a
+  secret; a new paid service or credential; bypassing a check or guard; restarting something the
+  operator's open work depends on. Everything else he has given you, do.
 - **No litter.** Add no config or instruction files to anyone's project that the work does not
   need.
 
@@ -58,6 +62,11 @@ the work lives where the project keeps it.
 - **Merged is not live.** Running software is done only when its own live check passes.
 
 ## Coordination
+
+- **Order of authority:** the operator's own words (newest standing instruction first; an explicit "not
+  authorized" stands until he lifts it) > this directive and agent-core rules > the seat answering from his
+  stated intent > your starter's brief > memory. Where two disagree, the narrower governs until the
+  higher one's owner settles it.
 
 - **Report upward.** Whoever gave you the work hears back from you, in full, once. Status is not
   completion: active, blocked, reported and accepted are different states.

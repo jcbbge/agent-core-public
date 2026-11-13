@@ -36,6 +36,20 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
 - Complete decision cards and their resolutions can use native `teerex ask`; it types into the
   addressed pane through guarded send. Read `teerex ask --help`; no seat inbox is required.
 - If you do not know who the seat is, ask your starter. A brief always names the seat and its address.
+- **Prepared questions.** A question for the seat also states three things, so it can be answered from
+  the message alone:
+  - **Checked:** what you already looked at (settings, prior decisions, evidence) and why that did not
+    settle it.
+  - **If no answer:** what you will and will not do while it is open. Silence never authorizes an option
+    that is irreversible, destructive, security-relevant or outside your permission; those wait. A choice
+    you would make on silence was yours to make: make it and report the reading instead of asking.
+  - **Continuing:** the independent, authorized work that proceeds meanwhile, or "none" and why.
+  With `teerex ask --deliver paste` these are the card's `prepared` fields; mark irreversible options.
+- **Evidence by reference.** Point to private material (captures, transcripts, notes, logs) by path or
+  ID; never paste it into a question, and never reuse it as an example, fixture or template without
+  Josh's consent.
+- **One question, sent when it blocks.** Send each blocking decision the moment it blocks, one per
+  message. Non-blocking decisions wait for your report's *Decisions owed*.
 - **Agents message the seat directly (Josh, 2026-11-13: "Disable the feature let agents communicate directly to
   you").** `agent-send` types into the seat's pane like any other pane, so every report reaches the seat as input
   and gets an answer. There is no seat inbox, log or board to check. `agent-send`'s typing guard waits while the
@@ -50,14 +64,17 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
    `agent-send` the same report. `agent-send` is for a question or decision needed while the work is still
    going.
 3. Reply to the `FROM` sender's address. A message that needs an answer says where to answer.
-4. Agents on one machine may also use their harness's own session messaging; the three verbs work everywhere.
-5. **Acknowledge before the brief (Josh, 2026-11-11).** A started agent first gets only this protocol and its reply
+4. **Conflicting permission.** When two sources of authority disagree (see the directive's order of
+   authority), act on the narrower and send the conflict to the seat, naming both sources. Never resolve it
+   by taking the broader reading. Work both permit proceeds.
+5. Agents on one machine may also use their harness's own session messaging; the three verbs work everywhere.
+6. **Acknowledge before the brief (Josh, 2026-11-11).** A started agent first gets only this protocol and its reply
    address, and records the supplied `teerex agents ack` command. Managed launch attempts the brief once only
    after that ACK. A deadline is reported honestly; inspect the tracked launch before retrying or closing.
-6. **The launcher guarantees the alert, once.** Managed launch (`teerex agents launch`, the profile's
+7. **The launcher guarantees the alert, once.** Managed launch (`teerex agents launch`, the profile's
    `hook_events`) sends the starter the agent's last words when a turn ends, its error when the harness fails,
    and the exit when the process ends. It is the only stop alert: nothing else hooks Stop.
-7. **Long output is a document, read in leaf (Josh, 2026-11-12).** Anything for the human longer than a few lines
+8. **Long output is a document, read in leaf (Josh, 2026-11-12).** Anything for the human longer than a few lines
    (a task list, a table, a QA brief, a report) is written as a `.md` file in the item's work folder, never printed
    into a pane. It is opened in `leaf` (a terminal document reader, installed on the Mac and on hive) in a pane
    beside the agent: `teerex surfaces open --layout tiled --anchor <agent pane> -- ssh -t hive 'leaf open <file.md>'`. An

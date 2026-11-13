@@ -1,6 +1,7 @@
 #!/bin/bash
 # agent-send <session> <pane> <from> <message...>
 # teerex owns serialization, draft protection, paste and Enter.
+export TEEREX_CALLER=agent-send
 set -euo pipefail
 [ $# -ge 4 ] || { echo "usage: agent-send <session> <pane> <from> <message...>" >&2; exit 2; }
 S=$1; P=$2; FROM=$3; shift 3; MSG="$*"

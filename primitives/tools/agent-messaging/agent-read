@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
+export TEEREX_CALLER=agent-read
 set -euo pipefail
 [ $# -eq 2 ] || { echo "usage: agent-read <session> <pane>" >&2; exit 2; }
 TX=(teerex --config "${TEEREX_HOSTS:-$HOME/.config/teerex/hosts.json}" --host "${TEEREX_HOST:-hive}")
 TARGET=$("${TX[@]}" surfaces resolve --session "$1" --pane "$2")
 SID=$(printf '%s' "$TARGET" | jq -er '.resolved.session_id')
 P=$(printf '%s' "$TARGET" | jq -er '.resolved.block_id')
-"${TX[@]}" observe --tail --session "$SID" --block "$P" --max-bytes 65536 | jq -er '.capture.content'
+"${TX[@]}" observe --state --session "$SID" --block "$P" --max-bytes 65536

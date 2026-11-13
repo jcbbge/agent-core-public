@@ -25,10 +25,12 @@ told apart from one nobody checked.
 2. **What is unproven.** Split the delta in two. Measured — and by what, run this session.
    Unproven — and what would prove it and why you could not. "Wired" is not "works";
    "committed" is not "landed"; "it should" is not a measurement.
+   Name the `teerex records` id that holds the checks, omissions and cleanup behind this section when one exists.
 3. **Decisions owed.** Only those that block the work or need the operator's judgment on
    direction, risk or cost. Settle anything looking could settle and report the ruling in the
    delta instead. For each real decision: the issue, why now, the options with what each gains and
    loses, and your recommendation with its reason. Always recommend.
+   A decision you settled goes in the delta with its `teerex records` id. A decision you need goes here.
 4. **Next.** What runs the moment the decisions land, and what proceeds regardless. If you are
    blocked and nothing proceeds regardless, you stopped early.
 5. **Still running.** Everything you started that still uses resources: what it is, whether it is

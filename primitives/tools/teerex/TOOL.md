@@ -1,6 +1,6 @@
 ---
 name: teerex
-description: Rex extensions CLI (jcbbge/teerex) - bounded pane reads and waits (observe, watch, compare, filter), supervised runs (run, offstage), visible agents and messages (spawn, send, agents, jobs), and the alpha.5 operating layer (surfaces, fleet boards, direct messages, recovery snapshot/restore and update impact, named hosts and fleet install). Use instead of `rex capture`, sleep-poll loops and hand-written restart scripts.
+description: Rex extensions CLI (jcbbge/teerex) - bounded pane reads and waits (observe, watch, compare, filter), supervised runs (run, offstage), visible agents and messages (spawn, send, agents, jobs), and the alpha.6 operating layer (surfaces, fleet boards, direct messages, recovery snapshot/restore and update impact, named hosts and fleet install). Use instead of `rex capture`, sleep-poll loops and hand-written restart scripts.
 ---
 
 # teerex
@@ -8,8 +8,8 @@ description: Rex extensions CLI (jcbbge/teerex) - bounded pane reads and waits (
 Source and releases: https://github.com/jcbbge/teerex. A utility CLI on top of Rex, never an agent.
 On PATH as `teerex`. How to use each command lives in the [`rex` skill](../../skills/rex/SKILL.md).
 
-**Installed:** v0.1.0-alpha.5 on m5 (Apple silicon) and hive (Linux x86_64), managed root
-`~/.local/opt/teerex-managed` (`current` → `versions/<tag>`); alpha.4 retained for rollback.
+**Installed:** v0.1.0-alpha.6 on m5 (Apple silicon) and hive (Linux x86_64), managed root
+`~/.local/opt/teerex-managed` (`current` → `versions/<tag>`); 4359c0e and alpha.5 retained for rollback.
 
 **Present when:** `teerex --version` prints the expected tag **and** `teerex observe` of the
 caller's own pane exits 0. Help answering is not enough: the binary refuses a Rex server whose API
@@ -31,7 +31,7 @@ Rollback: `teerex-install rollback --version <old tag>`. Read the release notes 
 `teerex fleet install --config <hosts.json> --host <name> --version <tag>` plans the install on a
 named machine and `--apply` performs it (hosts config: `~/.config/teerex/hosts.json`, owned by `~/rexconfig`).
 
-**Compatibility (alpha.5):** Rex integer API 10–13; `jobs`, `boards`, `agents` and `recovery
+**Compatibility (alpha.6):** Rex integer API 10–13; `jobs`, `boards`, `agents` and `recovery
 snapshot/restore` need API 13 (both machines run API 13). `run` and `offstage` are Mac-only; `doctor` supports Linux and macOS. The operating-layer commands (`surfaces`, `boards`, `agents`, `recovery`, `targets`,
 fleet) need Python 3.9+.
 

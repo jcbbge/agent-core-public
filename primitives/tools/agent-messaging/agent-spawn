@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Managed agent launch; arbitrary commands require --non-agent.
+export TEEREX_CALLER=agent-spawn
 set -euo pipefail
 OWNER=${AGENT_NAME:-${LC_AGENT_NAME:-seat}}
 PURPOSE=

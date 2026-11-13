@@ -40,6 +40,7 @@ login), say which link failed and what it printed.
 - Rex and teerex configuration: `~/rexconfig` on hive and m5; install with its `./install`.
   Rex reads `~/.config/rex/init.lua`; teerex named hosts read `~/.config/teerex/hosts.json`.
 
+- teerex cartridges: `~/.local/opt/teerex-cartridges`, managed by `teerex cartridges`.
 - Code, checkouts, Rivet, work items, agent sessions: **hive**.
 - Anything the operator looks at (Rex windows, Chrome, Finder): **m5**.
 - A file never gets copied between machines to work on it. Read and write it where it lives.
@@ -57,8 +58,8 @@ From the ground up. Each layer only drives the one above it.
 3. **teerex.** The Rex extensions CLI: bounded reads and waits, supervised runs, visible agents and
    messages, and the operating layer (panes, fleet board, restart snapshot/restore, named
    hosts). Every agent uses it for everything it does, and nothing is hand-built beside it; how is
-   in the `rex` skill. Installed: v0.1.0-alpha.5 on m5 and hive (`~/.local/opt/teerex-managed`,
-   alpha.4 retained). Both Rex servers are API 13. Named-host commands reach M5 panes from hive:
+   in the `rex` skill. Installed: v0.1.0-alpha.6 on m5 and hive (`~/.local/opt/teerex-managed`;
+   4359c0e and alpha.5 retained). Both Rex servers are API 13. Named-host commands reach M5 panes from hive:
    `teerex --config ~/.config/teerex/hosts.json --host m5 observe ...`.
    Configuration and installation belong to `~/rexconfig`; see its README and `./install --check`.
 4. **Rivet.** The engine on hive (127.0.0.1:6420, `rivet-node.service`, CLI `rv`). It drives work

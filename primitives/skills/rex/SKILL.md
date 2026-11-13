@@ -9,6 +9,7 @@ Read the installed Rex guide with `rex __internal skill`, then read the
 [teerex agent guide](https://github.com/jcbbge/teerex/blob/main/docs/agents.md).
 The source on hive is `~/teerex/docs/agents.md`; from another machine read it with
 `ssh hive cat /home/jrg/teerex/docs/agents.md`. Do not duplicate its command recipes here.
+Also read the [teerex README](https://github.com/jcbbge/teerex/blob/main/README.md).
 Check `teerex COMMAND --help` for the installed interface.
 
 Estate policy:
@@ -41,4 +42,8 @@ visible runs and recovery are documented in the upstream guide rather than copie
 | `cartridges` | List, preview, install, run or remove the separately packaged native payloads. Plan first; `--apply` mutates; `run` holds the in-use lease (calling a payload directly does not). | `teerex cartridges install --all --catalog "$CATALOG" --allow-experimental` |
 
 `seat` uses native server-wide ensure; it has no private pointer or lock. Its creation session is
-`SEAT_SESSION` (default `rivet`) on hive. `agent-read` selects native `observe --tail` for newest output.
+`SEAT_SESSION` (default `rivet`) on hive. `agent-read` returns native `observe --state` JSON, including evidence lines and unknowns; use `observe --tail` when you need newest raw text.
+
+**Records.** When a check result, open question or handoff must outlive your turn, write it with `teerex records` in `~/.local/state/teerex-records` (once: `teerex records init --store ~/.local/state/teerex-records`). Put private text in a JSON `--fields-file -` rather than flags. **Before you stop on unfinished work, park:** `teerex records park --store … --host <host> --socket <socket> --session "$REX_SESSION" --block "$REX_BLOCK" --writer <your name> --fields-file -` with `question` and `next_action {actor, step, stop_when}`. Attach every teerex receipt that matters: `teerex records attach --id <id> --by <you> --evidence <packet.json> --check-command "<argv>" --assertion passed|failed|unknown --establishes "…" --does-not-establish "…"`. Never infer the assertion from exit 0. Record skipped checks with `records add omission` and leftovers with `records add cleanup`. In a decision card's `context`, add `records: teerex records resume --id <id>`. Run `records lint --id <id>` before reporting and name the id in your report. To pick work up, run `teerex records resume --id <id>` first; use `records navigate --focus yes` only if you need the pane.
+
+**Decisions.** When you settle a decision that someone could later reasonably reopen, record it with `teerex records new --kind decision` in `~/.local/state/teerex-records`. Include the claims it rests on (`--depends-on` pins for each version, ref or issue state they assume), at least one rejected option with `revisit_when`, and an invalidator. Before acting on an older decision, run `records revalidate --id <id>`. If it says `needs_review`, report that instead of acting on it. Never reopen a rejected option whose condition has not changed; ask the seat if you think it should be.
