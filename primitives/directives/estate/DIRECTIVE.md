@@ -48,13 +48,12 @@ From the ground up. Each layer only drives the one above it.
    runs on the m5; a Rex server runs on each machine (hive: `~/opt/rex/bin/rex`, `rex.service`).
    A pane's address is its session and block (`REX_SESSION`, `REX_BLOCK`; over ssh,
    `LC_REX_SESSION`, `LC_REX_BLOCK`).
-3. **teerex.** Bounded reads of a Rex pane (observe, watch, run), plus read-only adapters with
-   receipts. Use it instead of `rex capture` and sleep loops. Installed: v0.1.0-alpha.4 on m5 and
-   hive (`~/.local/opt/teerex-managed`; alpha.3 kept in `~/.local/opt/teerex`). Where it works today:
-   on the m5 against the m5's Rex server, everything, `jobs` included (the m5 server is
-   0.1.0-preview.16, API 13). On hive, `observe` / `watch` / `jobs` cannot read the agent panes (they are
-   hosted on the m5): jcbbge/teerex#10. From hive, read a pane with `rex block capture` until it is
-   fixed.
+3. **teerex.** The Rex extensions CLI: bounded reads and waits, supervised runs, visible agents and
+   messages, and the operating layer (panes, seat/inbox boards, restart snapshot/restore, named
+   hosts). Use it instead of `rex capture`, sleep loops and hand-written restart scripts; how is in
+   the `rex` skill. Installed: v0.1.0-alpha.5 on m5 and hive (`~/.local/opt/teerex-managed`,
+   alpha.4 retained). Both Rex servers are API 13. From hive, teerex cannot read panes hosted on
+   the m5 (jcbbge/teerex#10): read those with `rex block capture` until it is fixed.
 4. **Rivet.** The engine on hive (127.0.0.1:6420, `rivet-node.service`, CLI `rv`). It drives work
    items through discovery, planning, implementation, tests, audit and the ship stop. Projects
    are inputs from `~/rivet/projects/<name>/`; the engine names no project.
