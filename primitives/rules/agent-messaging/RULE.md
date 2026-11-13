@@ -35,10 +35,10 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
 - The seat relays the human's answer word for word to whoever asked, with `agent-send`.
 - If you do not know who the seat is, ask your starter. A brief always names the seat and its address.
 - **The seat's pane is never typed into (Josh, 2026-11-11: "i cant type without the agents message overwriting my
-  words").** The seat's pane is marked an inbox (`~/.local/state/agent-inbox/<pane id>.inbox` on the machine running
-  the multiplexer). `agent-send` to it appends the whole message to `<pane id>.log` instead of typing; a sidecar tab
-  shows the log to the human, and the seat reads the log when it works. Senders change nothing: same verb, same
-  address.
+  words").** The seat is registered with teerex (`teerex boards seat register`). `agent-send` to it is kept in its
+  inbox instead of being typed; `teerex boards inbox` shows the inbox to the human beside the seat, and the seat
+  reads it when it works. One inbox: the old `~/.local/state/agent-inbox/seat-inbox.log` is moving into teerex's
+  (2026-11-13), never kept beside it. Senders change nothing: same verb, same address.
 
 ## The protocol
 
@@ -57,7 +57,7 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
 7. **Long output is a document, read in leaf (Josh, 2026-11-12).** Anything for the human longer than a few lines
    (a task list, a table, a QA brief, a report) is written as a `.md` file in the item's work folder, never printed
    into a pane. It is opened in `leaf` (a terminal document reader, installed on the Mac and on hive) in a pane
-   beside the agent: `rex run -s <session> -b <agent pane> --split=right -- ssh -t hive 'leaf open <file.md>'`. An
+   beside the agent: `teerex surfaces open --layout tiled --anchor <agent pane> -- ssh -t hive 'leaf open <file.md>'`. An
    agent without that access sends the seat the file's path and the seat opens it. In Rex, Cmd+Shift+P → Leaf opens
    any document too.
 
@@ -70,6 +70,5 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
 
 ## Transport
 
-The verbs run on the terminal multiplexer's command line (today Rex, whose server runs on the Mac). A machine
-without that server gets forwarders for the three verbs that run them on the Mac (on hive, through the
-always-on tunnel). Swapping the transport changes the three scripts, never this protocol.
+The verbs are Rex, through teerex (jcbbge/teerex): `agent-spawn` is `teerex spawn`, `agent-send` is `teerex send`,
+the seat and its inbox are `teerex boards`. Nothing is hand-built beside them; a gap is a teerex issue.

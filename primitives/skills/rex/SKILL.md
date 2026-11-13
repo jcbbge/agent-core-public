@@ -18,8 +18,13 @@ Everything below adds to that guide. Where they differ, this file wins.
 - **Agents should run on hive**, whatever app is their window. Rex is one window; T3 Code, Claude
   Desktop and a plain terminal are others. The [engine-host](../../hooks/engine-host/HOOK.md) guard
   suggests it (a Mac launch opens on hive) and refuses nothing for the machine. A Rex pane is not required.
-- **Start agents visibly:** with `agent-spawn` (below) or `rex run -- <agent> ...`, never with `&`,
-  `nohup`, a background flag or a launchd job.
+- **Use Rex and teerex for everything they do.** teerex is the operating layer built for agents:
+  panes, reads, waits, runs, agents, messages, the seat, boards and restarts all go through it. Never
+  hand-build Rex plumbing beside it (wrapper scripts, split-and-resize code, log tailers, restart
+  scripts, fallbacks). Where teerex cannot do a thing yet, file a jcbbge/teerex issue and say so in
+  your report; do not build around it.
+- **Start agents visibly** through teerex (`agent-spawn` calls `teerex spawn`; `teerex agents launch`
+  once profiles exist), never with `&`, `nohup`, a background flag or a launchd job.
 - **Never restart the Rex server or kill Rex processes** without the operator's yes. A restart
   closes every pane. Before asking, run `teerex recovery update --socket "$sock" --snapshot` (the
   panes at risk, plus a private snapshot) and write what it cannot know: each agent's resume
@@ -53,8 +58,8 @@ teerex run --socket "$sock" --cwd "$PWD" --timeout-ms 600000 -- npm test   # Mac
 - `offstage` (Mac) runs one short non-agent command in a throwaway terminal and closes it.
 - These commands read only. To type into an agent's pane use `agent-send` (below), never your own
   pane or the operator's.
-- If teerex reports `unsupported Rex API revision`, the server is older than teerex supports. Use
-  `rex capture --trim` until Rex is updated, and say so in your report.
+- If teerex reports `unsupported Rex API revision`, the server is older than teerex supports. Stop
+  and tell your starter; updating Rex is the operator's call.
 
 ## 4. Agents talk to each other through Rex
 
@@ -78,18 +83,17 @@ Anything for the human longer than a few lines goes in a `.md` file, opened in `
 pane:
 
 ```sh
-rex split -s "$REX_SESSION" -b "$REX_BLOCK" --split=right --focus=false -- leaf open /abs/path/file.md
-rex split -s "$S" -b "$B" --split=right --focus=false -- ssh -t hive 'leaf open /home/jrg/.../file.md'
+teerex surfaces open --socket "$sock" --session "$S" --layout tiled --anchor "$B" --direction right \
+  --label doc -- ssh -t hive 'leaf open /home/jrg/.../file.md'
 ```
 
 ## 6. Layouts that pay off
 
 - One tab per agent, named for its work (`agent-spawn` does this). Supporting panes (leaf, logs,
-  dev server) split beside the agent they serve, `--focus=false`.
-- Dev servers and watchers: `rex window new ... --keep-open --focus=false -- <cmd>`. Record the
-  block id and close it when your work lands.
-- Tests and builds: `teerex run` when you only need the result; `rex run --wait --keep-open` when
-  the human should see the output.
+  dev server) open beside the agent they serve with `teerex surfaces open --layout tiled --anchor`.
+- Dev servers and watchers: `teerex surfaces open --layout tab --label <name> -- <cmd>`. Record the
+  block id and close it with `teerex surfaces close` when your work lands.
+- Tests and builds: `teerex run`.
 
 ## 7. The teerex operating layer (alpha.5)
 
@@ -108,7 +112,9 @@ Full flags: `teerex <command> --help`.
 | `fleet install` | Install or roll back teerex on a named machine: plan first, `--apply` to do it. | `teerex fleet install --config "$HOSTS" --host hive --version v0.1.0-alpha.5 --apply` |
 | `doctor`, `adapters`, `maneuver-check` | Check the server offers what teerex needs (Mac); generate five read-only Rex tools for an agent; check a saved read against an expected starting screen. | `teerex doctor --socket "$sock"` |
 
-Not set up yet: no hosts config, `agents` profiles or `boards` store exists. Until they do,
-`agent-spawn` / `agent-send` / `agent-inbox` (section 4) stay the way to start, message and watch
-agents. They are retired only when the teerex replacement is proven to do the same job. Open gaps
-are listed in [TOOL.md](../../tools/teerex/TOOL.md).
+In use: the seat is registered with `teerex boards seat register`, and the boards store is
+`/Users/jrg/.local/state/teerex-boards` on the m5 (it holds the seat and the fleet board's
+`targets.json`). `agent-spawn` and `agent-send` are names for `teerex spawn` and `teerex send`. Every
+remaining piece moves onto teerex (seat inbox onto `boards inbox`, launches onto `agents` profiles,
+host routing onto `targets`). Gaps are jcbbge/teerex issues, listed in
+[TOOL.md](../../tools/teerex/TOOL.md); nothing is built around them.

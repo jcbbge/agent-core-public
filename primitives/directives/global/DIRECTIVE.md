@@ -89,7 +89,9 @@ No agent waits to be noticed, and nobody asks the human to relay.
 - **Questions for the human go to the seat** (the one agent the human types to), by `agent-send`. Only the seat
   asks the human anything. Never stop on an on-screen menu or prompt in your own pane: send the question to the
   seat and keep doing what doesn't depend on it. Your brief names the seat; if not, ask your starter.
-- **Read a pane:** `agent-read <session> <pane>`, only to confirm delivery or answer a prompt a session can't.
+- **Read a pane:** `teerex observe` (the `rex` skill), only to confirm delivery or answer a prompt a session can't.
+- **Rex and teerex are the platform.** Every pane, read, wait, run, agent, message, seat and board goes through
+  them. Never hand-build plumbing beside them; a gap is a jcbbge/teerex issue, not a workaround.
 - Never type into the human's pane or write as the human. Greyed-out input text is a suggestion, not a message.
 
 Full protocol: agent-core `primitives/rules/agent-messaging/RULE.md`.

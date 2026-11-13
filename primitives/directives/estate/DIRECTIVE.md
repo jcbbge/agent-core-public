@@ -50,10 +50,10 @@ From the ground up. Each layer only drives the one above it.
    `LC_REX_SESSION`, `LC_REX_BLOCK`).
 3. **teerex.** The Rex extensions CLI: bounded reads and waits, supervised runs, visible agents and
    messages, and the operating layer (panes, seat/inbox boards, restart snapshot/restore, named
-   hosts). Use it instead of `rex capture`, sleep loops and hand-written restart scripts; how is in
-   the `rex` skill. Installed: v0.1.0-alpha.5 on m5 and hive (`~/.local/opt/teerex-managed`,
+   hosts). Every agent uses it for everything it does, and nothing is hand-built beside it; how is
+   in the `rex` skill. Installed: v0.1.0-alpha.5 on m5 and hive (`~/.local/opt/teerex-managed`,
    alpha.4 retained). Both Rex servers are API 13. From hive, teerex cannot read panes hosted on
-   the m5 (jcbbge/teerex#10): read those with `rex block capture` until it is fixed.
+   the m5 (jcbbge/teerex#10): run teerex on the m5 for those (`ssh m5 teerex observe ...`).
 4. **Rivet.** The engine on hive (127.0.0.1:6420, `rivet-node.service`, CLI `rv`). It drives work
    items through discovery, planning, implementation, tests, audit and the ship stop. Projects
    are inputs from `~/rivet/projects/<name>/`; the engine names no project.
@@ -66,8 +66,8 @@ From the ground up. Each layer only drives the one above it.
 6. **The seat.** The one agent the operator types to, his concierge for the session. He starts it
    by typing `seat` in any Rex tab (Mac or hive); if a seat is already running, `seat` switches to
    it instead. Its Rex tab is named "seat" and its pane is an inbox: questions for the operator go
-   there as decision cards, into one log that every seat inherits
-   (`~/.local/state/agent-inbox/seat-inbox.log`). Its brief is `tools/agent-messaging/SEAT.md`.
+   there as decision cards, into the one inbox every seat inherits: teerex's (`teerex boards`),
+   registered with `teerex boards seat register`. Its brief is `tools/agent-messaging/SEAT.md`.
 
 ## Words
 
