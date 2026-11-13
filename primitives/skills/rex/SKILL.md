@@ -35,3 +35,7 @@ Estate policy:
 `teerex boards calls --once --json --limit N` reads the native call log without message bodies.
 Read its `--help` for cross-host selection. Cartridge management, doctor, surfaces, jobs, watches,
 visible runs and recovery are documented in the upstream guide rather than copied here.
+
+| Command | Use | Example |
+|---|---|---|
+| `cartridges` | List, preview, install, run or remove the separately packaged native payloads. Plan first; `--apply` mutates; `run` holds the in-use lease (calling a payload directly does not). | `teerex cartridges install --all --catalog "$CATALOG" --allow-experimental` |
