@@ -1,39 +1,58 @@
 #!/usr/bin/env bash
-# Visible argv spawn; managed cross-host protocol launch is blocked by jcbbge/teerex#14.
+# Managed agent launch; arbitrary commands require --non-agent.
 set -euo pipefail
 OWNER=${AGENT_NAME:-${LC_AGENT_NAME:-seat}}
 PURPOSE=
+BRIEF=
+NON_AGENT=false
 while [ $# -gt 0 ]; do
   case "$1" in
-    --owner|--purpose)
+    --owner|--purpose|--brief-file)
       [ $# -ge 2 ] || { echo "agent-spawn: $1 needs text" >&2; exit 2; }
-      case "$1" in --owner) OWNER=$2 ;; --purpose) PURPOSE=$2 ;; esac
+      case "$1" in --owner) OWNER=$2 ;; --purpose) PURPOSE=$2 ;; --brief-file) BRIEF=$2 ;; esac
       shift 2 ;;
+    --non-agent) NON_AGENT=true; shift ;;
     --detached) echo "agent-spawn: detached agents are retired; start a visible tab" >&2; exit 2 ;;
     *) break ;;
   esac
 done
-[ $# -ge 4 ] && [ "$3" = -- ] || { echo "usage: agent-spawn [--owner TEXT] [--purpose TEXT] <session> <name> -- <command...>" >&2; exit 2; }
+[ $# -ge 4 ] && [ "$3" = -- ] || { echo "usage: agent-spawn [--owner TEXT] [--purpose TEXT] --brief-file FILE <session> <name> -- <claude|codex|pi> (or --non-agent ... -- <command...>)" >&2; exit 2; }
 S=$1; N=$2; shift 3
 PURPOSE=${PURPOSE:-$N}
-REPORT=${AGENT_SPAWN_REPORT_TO:-"${AGENT_SESSION:-${REX_SESSION:-${LC_REX_SESSION:-}}} ${AGENT_PANE:-${REX_BLOCK:-${LC_REX_BLOCK:-}}}"}
+REPORT="${AGENT_SESSION:-${REX_SESSION:-${LC_REX_SESSION:-}}} ${AGENT_PANE:-${REX_BLOCK:-${LC_REX_BLOCK:-}}}"
 read -r RS RB EXTRA <<<"$REPORT"
 [ -n "$RS" ] && [ -n "$RB" ] && [ -z "${EXTRA:-}" ] || { echo "agent-spawn: caller's own session and pane are required" >&2; exit 2; }
+if [ "$NON_AGENT" = false ]; then
+  [ $# -eq 1 ] || { echo "agent-spawn: agents take one profile (claude, codex or pi), not command arguments" >&2; exit 2; }
+  case "$1" in claude|codex|pi) ;; *) echo "agent-spawn: unknown agent profile '$1'; use --non-agent for a non-agent command" >&2; exit 2 ;; esac
+  [ -n "$BRIEF" ] && [ -f "$BRIEF" ] || { echo "agent-spawn: agents require --brief-file pointing to a brief file" >&2; exit 2; }
+fi
 # shellcheck source=primitives/tools/agent-messaging/teerex-target
 . "$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0")")/teerex-target"
 # shellcheck disable=SC2153 # SID is assigned by the sourced resolver.
 resolve "$RS"; RSID=$SID; REPORT_HOST=$WHERE
-resolve "$S"
-[ "$WHERE" = "$REPORT_HOST" ] || { echo "agent-spawn: cross-server report target unsupported (jcbbge/teerex#14)" >&2; exit 1; }
-CWD=$(printf '%s' "$HOST_INFO" | jq -er '.host.home')
-if [ "$(printf '%s' "$HOST_INFO" | jq -r '.host.transport')" = local ]; then CWD=$PWD; fi
-OUT=$(tx spawn --session "$SID" --name "$N" --cwd "$CWD" --report-to-session "$RSID" --report-to-block "$RB" -- "$@") || {
-  echo "agent-spawn: creation not confirmed; inspect before retrying: $OUT" >&2; exit 1; }
-B=$(printf '%s' "$OUT" | jq -er '.created.block_id')
-printf '%s\n' "$B"
-# blocked: jcbbge/teerex#16 (named-host nested board operations).
-tx boards fleet report --store "$STORE" --session "$SID" --block "$B" \
-  --owner "$OWNER" --purpose "$PURPOSE" --state unknown >/dev/null || {
-  echo "agent-spawn: created $B; fleet report unavailable (jcbbge/teerex#16). Do not retry this live spawn." >&2; }
-
-exit 0
+[ "$REPORT_HOST" = hive ] || { echo "agent-spawn: M5-server caller unsupported (jcbbge/teerex#14); use a pane on hive’s Rex server" >&2; exit 1; }
+if [ "$S" != "$RS" ]; then
+  resolve "$S"
+  [ "$WHERE" = "$REPORT_HOST" ] || { echo "agent-spawn: cross-server report target unsupported (jcbbge/teerex#14)" >&2; exit 1; }
+fi
+if [ "$NON_AGENT" = true ]; then
+  # Low-level spawn is exclusively for an explicitly marked non-agent command.
+  OUT=$(tx spawn --session "$SID" --name "$N" --cwd "$PWD" --report-to-session "$RSID" --report-to-block "$RB" -- "$@") || {
+    echo "agent-spawn: creation not confirmed; inspect before retrying: $OUT" >&2; exit 1; }
+  printf '%s\n' "$OUT" | jq -er '.created.block_id'
+  exit
+fi
+# Profiles own harness argv, standing flags, registry and fleet-board store.
+OUT=$(teerex agents launch --config "${TEEREX_PROFILES:-$HOME/.config/teerex/profiles.json}" \
+  --profile "$1" --ack-timeout-ms 60000 --socket "$SOCK" --session "$SID" --cwd "$PWD" \
+  --starter-session "$RSID" --starter-block "$RB" \
+  --report-to-session "$RSID" --report-to-block "$RB" \
+  --name "$N" --owner "$OWNER" --purpose "$PURPOSE" --brief-file "$BRIEF") || {
+  status=$?
+  printf '%s\n' "$OUT" >&2
+  echo "agent-spawn: managed launch not confirmed; inspect the tracked launch before retrying" >&2
+  exit "$status"
+}
+printf '%s\n' "$OUT" >&2
+printf '%s\n' "$OUT" | jq -er '.target.block_id'

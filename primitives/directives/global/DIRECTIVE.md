@@ -80,7 +80,8 @@ No agent waits to be noticed, and nobody asks the human to relay.
 
 - **Your address** is your session and pane: `AGENT_SESSION` and `AGENT_PANE` (over ssh,
   `LC_REX_SESSION` and `LC_REX_BLOCK`), or what your brief gives.
-- **Start an agent:** `agent-spawn <session> <name> -- <command...>` (a visible tab; prints its pane). Its brief
+- **Start an agent:** `agent-spawn --brief-file <brief.md> <session> <name> -- <claude|codex|pi>` (managed launch from
+  `~/.config/teerex/profiles.json`, on hive’s Rex server; caller is starter and report-to). Its brief
   gives your name and address and what to report.
 - **Send:** `agent-send <session> <pane> <your name> <message...>`: whole message, locked, `FROM <your name>:` added,
   Enter pressed. The only way to send.

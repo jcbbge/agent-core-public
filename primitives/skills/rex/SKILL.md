@@ -23,8 +23,7 @@ Everything below adds to that guide. Where they differ, this file wins.
   hand-build Rex plumbing beside it (wrapper scripts, split-and-resize code, log tailers, restart
   scripts, fallbacks). Where teerex cannot do a thing yet, file a jcbbge/teerex issue and say so in
   your report; do not build around it.
-- **Start agents visibly** through teerex (`agent-spawn` calls `teerex spawn`; `teerex agents launch`
-  once profiles exist), never with `&`, `nohup`, a background flag or a launchd job.
+- **Start agents visibly** through teerex (`agent-spawn` calls `teerex agents launch` from configured profiles), never with `&`, `nohup`, a background flag or a launchd job.
 - **Never restart the Rex server or kill Rex processes** without the operator's yes. A restart
   closes every pane. Before asking, run `teerex recovery update --socket "$sock" --snapshot` (the
   panes at risk, plus a private snapshot) and write what it cannot know: each agent's resume
@@ -66,15 +65,16 @@ teerex run --socket "$sock" --cwd "$PWD" --timeout-ms 600000 -- npm test   # Mac
 The protocol is [agent-messaging](../../rules/agent-messaging/RULE.md); the verbs live in
 `tools/agent-messaging`:
 
-- `agent-spawn <session> <name> -- <command...>` starts an agent in a new visible tab and prints
-  its pane. It passes `AGENT_REPORT_TO` (you) so the agent reports back to you.
+- `agent-spawn --brief-file brief.md [--owner owner] [--purpose purpose] <session> <name> -- <claude|codex|pi>`
+  uses managed launch from `~/.config/teerex/profiles.json`, passing your own pane as starter and report-to.
+  Profiles must exist; ACK precedes the brief and the job and fleet entry carry owner and purpose.
+  `--non-agent` is required for a non-agent command through low-level `teerex spawn`.
 - `agent-send <session> <pane> <your name> <message...>` is the only way to send.
 - `agent-read <session> <pane>` only to confirm delivery.
 - Questions for the human go to the **seat** with `agent-send`, typed straight into its pane.
 
-Hive agents are started from the M5's Rex as `ssh -t hive "cd <dir> && exec <agent> ..."`. Pass
-the pane address across: `LC_REX_SESSION` / `LC_REX_BLOCK` and `LC_AGENT_*` ride over ssh. On
-hive, `rex` talks to the M5's Rex server.
+All agents and the seat run on hive's Rex server; the M5 Rex app is the window. A caller on
+hive launches into hive. An M5-server caller is refused (jcbbge/teerex#14); never invent a cross-host route.
 
 ## 5. Long output is a document
 
@@ -111,9 +111,10 @@ Full flags: `teerex <command> --help`.
 | `fleet install` | Install or roll back teerex on a named machine: plan first, `--apply` to do it. | `teerex fleet install --config "$HOSTS" --host hive --version v0.1.0-alpha.5 --apply` |
 | `doctor`, `adapters`, `maneuver-check` | Check the server offers what teerex needs (Mac); generate five read-only Rex tools for an agent; check a saved read against an expected starting screen. | `teerex doctor --socket "$sock"` |
 
-In use: the teerex store on the m5 is `/Users/jrg/.local/state/teerex-boards`; its `hosts.json`
-names m5 (local) and hive (ssh) for `teerex --config ... --host` and the fleet board. The seat is
-not registered there: agents message it directly (Josh, 2026-11-13). `agent-spawn` and `agent-send` are names for `teerex spawn` and `teerex send`. Every
-remaining piece moves onto teerex (launches onto `agents` profiles,
-host routing onto `targets`). Gaps are jcbbge/teerex issues, listed in
-[TOOL.md](../../tools/teerex/TOOL.md); nothing is built around them.
+Hive profiles live at `~/.config/teerex/profiles.json`; validate with
+`teerex agents profiles --config ~/.config/teerex/profiles.json`. Named hosts live at
+`~/.config/teerex/hosts.json`. Managed launch records protocol ACK before attempting one brief,
+tracks the job, and gives the fleet board owner and purpose. A recorded ACK is not readiness;
+a finished turn is idle, not process death. Inspect an uncertain launch before retrying.
+`agent-send` uses `teerex send`; stop hooks report to the starter. Gaps belong in
+jcbbge/teerex, never in hand-built transport beside it.
