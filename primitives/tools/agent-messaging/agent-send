@@ -44,26 +44,15 @@ PYGUARD
 if [ "${1:-}" = --guard-test ]; then python3 -c "$GUARD_PY"; exit 0; fi
 [ $# -ge 4 ] || { echo "usage: agent-send <session> <pane> <from> <message...>" >&2; exit 2; }
 S=$1; P=$2; FROM=$3; shift 3; MSG="$*"
-# Inbox panes: a pane where a human types (the seat) is never typed into. If $INBOX/<pane id>.inbox exists, the
-# message is appended whole, newlines kept, as one JSON line to $INBOX/<pane id>.log; `agent-inbox` renders it in a
-# sidecar, and the seat's agent reads it when it works. Write structure freely: line breaks and lists survive.
-# Inboxes live where the agents run (hive). A marker here that names a host forwards the record to that host's log.
-INBOX="${AGENT_INBOX_DIR:-$HOME/.local/state/agent-inbox}"
-if [ -e "$INBOX/${P##*:}.inbox" ]; then
-  id=${P##*:}; host=$(tr -d '[:space:]' < "$INBOX/$id.inbox")
-  rec=$(jq -nc --arg at "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" --arg from "$FROM" --arg msg "$MSG" '{at:$at, from:$from, msg:$msg}')
-  if [ -n "$host" ]; then
-    printf '%s\n' "$rec" | ssh -o BatchMode=yes -o ConnectTimeout=8 "$host" "mkdir -p ~/.local/state/agent-inbox && cat >> ~/.local/state/agent-inbox/$id.log"
-  else
-    printf '%s\n' "$rec" >> "$INBOX/$id.log"
-  fi
-  exit 0
-fi
 # Delivery goes through teerex send (jcbbge/teerex): one paste of "FROM <from>: <message>", then Enter, under the
 # shared agent-send lock, on the server that holds the pane. teerex takes that lock itself, so this script never holds
 # it. The typing guard (wait while someone is typing, then restore their draft) stays here: teerex does not do it.
 . "$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0")")/teerex-target"
 resolve "$S"
+# A registered seat pane (teerex boards store on that server) is never typed into: teerex appends the message to the
+# seat's inbox, shown on the `teerex boards inbox` board beside it. Exit 3 means "not a seat": deliver by typing below.
+if printf '%s' "$MSG" | tx_route "$P" "$FROM"; then exit 0; else rc=$?; [ "$rc" -eq 3 ] || {
+  echo "agent-send: teerex could not route to the seat inbox (exit $rc). Nothing was typed." >&2; exit 1; }; fi
 draft() {
   rexat block call -s "$SID" -b "$P" format '{"format":"vt"}' 2>/dev/null | python3 -c "$GUARD_PY" || true # CHECK: C9
 }
