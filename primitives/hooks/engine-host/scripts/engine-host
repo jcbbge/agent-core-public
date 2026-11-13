@@ -17,6 +17,40 @@ Desktop, a terminal) is only the window. Quit and start it on hive: type its nam
 this Mac (it opens on hive), or run 'ssh -t $ENGINE_SSH <agent> [args]'. Reach this Mac from hive \
 with 'ssh m5 <cmd>'."
 
+# rex_capture_command: exit 0 when the shell command on stdin runs `rex [global options] capture` or
+# `rex [global options] block capture` as a command: at the start, or after ; && || | & ( newline $( or `.
+# Quoted text is one token, so a message that mentions those words never matches. A command the
+# tokenizer cannot read (an unclosed quote) does not match: the guard's own failure allows.
+rex_capture_command() {
+  # shellcheck disable=SC2016 # the Python program is single-quoted on purpose
+  python3 -c '
+import os, shlex, sys
+try:
+    lex = shlex.shlex(sys.stdin.read(), posix=True, punctuation_chars="();<>|&\n")
+    lex.whitespace = " \t\r"; lex.whitespace_split = True
+    toks = [t.lstrip("`") for t in lex]
+except ValueError:
+    sys.exit(1)
+SEP = {";", "&&", "||", "|", "&", "(", "\n", "$(", "{", "!", "then", "do", "else", "exec", "time", "sudo", "env"}
+VALUED = {"-S", "--server", "-C", "--client", "--timeout", "--color"}
+start = True
+for i, t in enumerate(toks):
+    if start and "=" in t and not t.startswith(("-", "=")):
+        continue                                    # VAR=value before the command
+    if start and t and os.path.basename(t) == "rex":
+        j = i + 1
+        while j < len(toks) and toks[j].startswith("-"):
+            j += 2 if (toks[j] in VALUED and "=" not in toks[j]) else 1
+        rest = toks[j:j + 2]
+        if rest[:1] == ["capture"] or rest == ["block", "capture"]:
+            sys.exit(0)
+    start = t in SEP or t.endswith(("$(",)) or t == "$"
+    if t == "$" and i + 1 < len(toks) and toks[i + 1] == "(":
+        start = True
+sys.exit(1)
+' 2>/dev/null
+}
+
 deny() { # $1 harness, $2 reason
   case "$1" in
     claude|codex) jq -n --arg r "$2" '{hookSpecificOutput:{hookEventName:"PreToolUse",
@@ -43,8 +77,7 @@ It reports back to you through agent-send." ;;
     esac
     cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // .command // empty' 2>/dev/null) || exit 0
     [ -n "$cmd" ] || exit 0
-    if printf '%s' "$cmd" | grep -Eq '(^|[;&|(` ])rex([[:space:]]+-[^[:space:]]+([[:space:]]+[^-[:space:]][^[:space:]]*)?)*[[:space:]]+capture([[:space:]]|$)' &&
-       command -v teerex >/dev/null 2>&1; then
+    if command -v teerex >/dev/null 2>&1 && printf '%s' "$cmd" | rex_capture_command; then
       deny "$harness" "engine-host: read terminals with teerex named hosts. \
 Run teerex --config ~/.config/teerex/hosts.json --host m5 observe --session <session> --block <block>. \
 Use --host hive for the rivet session; m5 for the operator's panes. \

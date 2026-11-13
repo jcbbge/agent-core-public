@@ -28,9 +28,13 @@ hive over ssh in the same terminal, starting in hive's home, instead of refusing
 - a shell command that reads a Rex terminal with `rex capture`, whenever the
   [teerex](../../tools/teerex/TOOL.md) tool is installed. The read runs on the machine whose Rex
   server holds the pane, by named host: `teerex --config ~/.config/teerex/hosts.json --host m5|hive
-  observe --session <session> --block <block>`.
+  observe --session <session> --block <block>`. Only `rex [options] capture` or
+  `rex [options] block capture` in command position counts (the start of a command, or after
+  `;` `&&` `||` `|` `&` `(` `$(` or a newline). Those words inside quoted text, such as a message or a
+  commit message, never do.
 
-**Does not refuse:** an agent on any machine, in or outside a Rex pane (Josh, 2026-11-12: "This is a suggested. It's not authoritative."). An agent an app such as T3 Code starts on hive
+**Does not refuse:** a message, commit message or any quoted text that mentions the capture
+command; an agent on any machine, in or outside a Rex pane (Josh, 2026-11-12: "This is a suggested. It's not authoritative."). An agent an app such as T3 Code starts on hive
 passes.
 
 **The refusal says:** the exact `agent-spawn` command, or the exact `teerex observe` /
