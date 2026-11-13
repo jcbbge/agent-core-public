@@ -9,7 +9,6 @@ REAL_REX="$HOME/opt/rex/bin/rex"                       # hive: the server binary
 MAC_REX="/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex"
 MAC_SOCK="/Users/jrg/Library/Application Support/rex/server.sock"
 SSH_M5=(ssh -o BatchMode=yes -o ConnectTimeout=8 m5)
-MAC_STORE="/Users/jrg/.local/state/teerex-boards"           # the seat inbox store (teerex boards) on the M5 server
 
 local_sock() {
   case "${REX_SERVER:-}" in
@@ -59,19 +58,4 @@ tx_why() { # <verb> <teerex output>: the fields that say why teerex did not conf
   { printf '%s %s via %s\n' "$(date -u +%FT%TZ)" "$1" "$WHERE"; printf '%s\n' "$2"; } >> "$d/teerex-unconfirmed.log"
   printf '%s' "$2" | jq -c '{outcome, failure_reason, error, attempt_evidence, creation_attempt_frame_seen}' 2>/dev/null \
     || printf '%s' "$2" | head -c 300
-}
-
-tx_route() { # <block> <from> <message on stdin>: teerex boards try-route to that server's seat store.
-  # 0 recorded in the seat's inbox; 3 not a registered seat (nothing consumed); anything else refuses.
-  # Only the M5 server has a seat store; a pane on hive's own server is never a seat.
-  local store args
-  if [ "$WHERE" = m5 ]; then
-    args=$(printf '%q ' --rex "$MAC_REX" boards try-route --store "$MAC_STORE" --host m5 --socket "$MAC_SOCK" --session "$SID" --block "$1" --from "$2" --message-file -)
-    "${SSH_M5[@]}" "\$HOME/.local/bin/teerex $args" >/dev/null
-  elif [ "$(uname)" = Darwin ] && store="$HOME/.local/state/teerex-boards" && [ -d "$store" ]; then
-    teerex --rex "$REAL_REX" boards try-route --store "$store" --host m5 --socket "$LSOCK" --session "$SID" \
-      --block "$1" --from "$2" --message-file - >/dev/null
-  else
-    cat >/dev/null; return 3
-  fi
 }

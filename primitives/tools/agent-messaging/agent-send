@@ -49,10 +49,6 @@ S=$1; P=$2; FROM=$3; shift 3; MSG="$*"
 # it. The typing guard (wait while someone is typing, then restore their draft) stays here: teerex does not do it.
 . "$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0")")/teerex-target"
 resolve "$S"
-# A registered seat pane (teerex boards store on that server) is never typed into: teerex appends the message to the
-# seat's inbox, shown on the `teerex boards inbox` board beside it. Exit 3 means "not a seat": deliver by typing below.
-if printf '%s' "$MSG" | tx_route "$P" "$FROM"; then exit 0; else rc=$?; [ "$rc" -eq 3 ] || {
-  echo "agent-send: teerex could not route to the seat inbox (exit $rc). Nothing was typed." >&2; exit 1; }; fi
 draft() {
   rexat block call -s "$SID" -b "$P" format '{"format":"vt"}' 2>/dev/null | python3 -c "$GUARD_PY" || true # CHECK: C9
 }
