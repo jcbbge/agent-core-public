@@ -5,7 +5,7 @@ cd "$(dirname "$0")/../.."
 SCRIPTS=(primitives/hooks/rex-context/scripts/rex-context primitives/hooks/engine-host/scripts/engine-host
   primitives/tools/agent-messaging/agent-{send,spawn,read} primitives/tools/agent-messaging/seat
   primitives/tools/agent-messaging/relay/agent-{send,spawn}-hive
-  primitives/tools/agent-messaging/relay/agent-relay rex/tests/run.sh)
+  rex/tests/run.sh)
 for f in "${SCRIPTS[@]}"; do bash -n "$f"; done
 printf 'PASS bash syntax\n'
 if command -v shellcheck >/dev/null; then
@@ -55,3 +55,30 @@ for args,message in [(['codex','extra'], 'agents take one profile'),
     assert result.returncode == 2 and message in result.stderr,(args,result)
 print('PASS spawn input refusal without server access')
 PYTEST
+
+# The wrapper forwards exact bytes through a fixed scoped destination and never falls through to Rex.
+python3 - <<'PYCHANNEL'
+import json, os, pathlib, subprocess, tempfile
+sender=str(pathlib.Path('primitives/tools/agent-messaging/agent-send').resolve())
+with tempfile.TemporaryDirectory() as d:
+    root=pathlib.Path(d)
+    tool=root/'teerex'
+    tool.write_text('#!/usr/bin/python3\nimport json,sys\nfrom pathlib import Path\nPath('+repr(str(root/'request'))+').write_text(json.dumps(dict(argv=sys.argv[1:],body=sys.stdin.read())))\n')
+    tool.chmod(0o700)
+    env=dict(os.environ,PATH=d+os.pathsep+os.environ['PATH'],AGENT_CHANNEL=d+'/handle.json',AGENT_REPORT_TO='session:fixed block:fixed')
+    body='ACK item-one β: quoted "text"\nlast line\n'
+    r=subprocess.run([sender,'session:fixed','block:fixed','worker',body],env=env,text=True,capture_output=True)
+    assert r.returncode==0,r.stderr
+    req=json.loads((root/'request').read_text())
+    assert req['body']==body
+    args=req['argv']
+    assert args[:2]==['agents','channel']
+    assert args[args.index('--handle')+1]==d+'/handle.json'
+    assert args[args.index('--to')+1]=='report-to'
+    token=args[args.index('--request-id')+1]
+    assert len(token)==32 and all(c in '0123456789abcdef' for c in token)
+    (root/'request').unlink()
+    r=subprocess.run([sender,'session:other','block:other','worker',body],env=env,text=True,capture_output=True)
+    assert r.returncode==2 and not (root/'request').exists()
+print('PASS scoped send bytes, fresh request id and destination refusal')
+PYCHANNEL

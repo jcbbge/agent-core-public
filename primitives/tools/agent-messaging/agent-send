@@ -4,13 +4,21 @@
 set -euo pipefail
 [ $# -ge 4 ] || { echo "usage: agent-send <session> <pane> <from> <message...>" >&2; exit 2; }
 S=$1; P=$2; FROM=$3; shift 3; MSG="$*"
-# Fenced Rivet workers hand delivery to the existing relay.
-if [ -n "${RV_RELAY_MAILBOX:-}" ] && [ -d "$RV_RELAY_MAILBOX" ] && [ -w "$RV_RELAY_MAILBOX" ]; then
-  f="$RV_RELAY_MAILBOX/$(date -u +%Y%m%dT%H%M%S)-$$-$RANDOM.json"
-  jq -n --arg s "$S" --arg b "$P" --arg n "$FROM" --arg m "$MSG" --arg i "${RV_ITEM:-}" \
-    '{session:$s,block:$b,name:$n,message:$m,item:$i,at:(now|todate)}' > "$f.tmp"
-  mv "$f.tmp" "$f"
-  exit 0
+# A fenced launch receives only its own delivery handle; never a Rex socket or shared mailbox.
+CHANNEL=${AGENT_CHANNEL:-${LC_AGENT_CHANNEL:-}}
+if [ -n "$CHANNEL" ]; then
+  if [ "$S $P" = "${AGENT_REPORT_TO:-${LC_AGENT_REPORT_TO:-}}" ]; then
+    DEST=report-to
+  elif [ "$S $P" = "${AGENT_STARTER:-${LC_AGENT_STARTER:-}}" ]; then
+    DEST=starter
+  else
+    echo "agent-send: destination is outside this launch's delivery channel" >&2
+    exit 2
+  fi
+  REQUEST=$(python3 -c 'import secrets; print(secrets.token_hex(16))')
+  printf '%s' "$MSG" | teerex agents channel --handle "$CHANNEL" --request-id "$REQUEST" \
+    --operation send --to "$DEST" --message-file -
+  exit $?
 fi
 TX=(teerex --config "${TEEREX_HOSTS:-$HOME/.config/teerex/hosts.json}" --host "${TEEREX_HOST:-hive}")
 TARGET=$("${TX[@]}" surfaces resolve --session "$S" --pane "$P")
