@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 SCRIPTS=(primitives/hooks/rex-context/scripts/rex-context primitives/hooks/engine-host/scripts/engine-host
   primitives/tools/agent-messaging/agent-{send,spawn,read} primitives/tools/agent-messaging/seat
-  primitives/tools/agent-messaging/teerex-target primitives/tools/agent-messaging/relay/agent-{send,spawn}-hive
+  primitives/tools/agent-messaging/relay/agent-{send,spawn}-hive
   primitives/tools/agent-messaging/relay/agent-relay rex/tests/run.sh)
 for f in "${SCRIPTS[@]}"; do bash -n "$f"; done
 printf 'PASS bash syntax\n'

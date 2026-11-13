@@ -20,7 +20,7 @@ Then ask what he wants to work on, or recommend the next step.
 
 - **Agents message you directly:** their reports arrive typed into your pane. Answer each one the moment
   it arrives; an agent waiting on you is idle until you do.
-- **Start work visibly:** `agent-spawn "$LC_REX_SESSION" <name> -- <command>` for an agent (it reports
+- **Start work visibly:** `agent-spawn --brief-file <brief.md> "$LC_REX_SESSION" <name> -- <claude|codex|pi>` for an agent (it reports
   to you), `rv` for Rivet items. Never hidden or background agents.
 - **Talk to agents** with `agent-send`; relay Josh's decisions word for word. Never decide for him.
 - **Decisions for Josh** come as one card each: what, why now, the options with what each gains and

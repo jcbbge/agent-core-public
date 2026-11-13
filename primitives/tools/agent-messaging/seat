@@ -9,9 +9,10 @@ fi
 B=${AGENT_PANE:-${REX_BLOCK:-${LC_REX_BLOCK:-}}}
 S=${AGENT_SESSION:-${REX_SESSION:-${LC_REX_SESSION:-}}}
 [ -n "$B" ] && [ -n "$S" ] || { echo "seat: start it in a Rex tab" >&2; exit 1; }
-# shellcheck source=primitives/tools/agent-messaging/teerex-target
-. "$(dirname "$(readlink -f "$0")")/teerex-target"
-resolve "$S"
+TEEREX_HOSTS=${TEEREX_HOSTS:-$HOME/.config/teerex/hosts.json}
+WHERE=${TEEREX_HOST:-hive}
+tx() { teerex --config "$TEEREX_HOSTS" --host "$WHERE" "$@"; }
+SID=$(tx surfaces resolve --session "$S" | jq -er '.resolved.session_id')
 CURRENT_HOST=$WHERE; CURRENT_SID=$SID
 D=${SEAT_STATE_DIR:-$HOME/.local/state/agent-messaging}
 mkdir -p "$D"
@@ -20,7 +21,7 @@ exec 9>>"$D/current-seat"
 flock -x -w 5 9 || { echo "seat: another seat check is running" >&2; exit 1; }
 if read -r OLD_HOST OLD_S OLD_B < "$D/current-seat"; then
   case "$OLD_HOST" in m5|hive) ;; *) echo "seat: invalid seat pointer" >&2; exit 1 ;; esac
-  WHERE=$OLD_HOST; host_info
+  WHERE=$OLD_HOST
   if OBS=$(tx observe --session "$OLD_S" --block "$OLD_B" --max-bytes 256); then
     FG=$(printf '%s' "$OBS" | jq -er '.process.data.foreground.name // .process.data.child.name')
     case "${FG##*/}" in
@@ -37,7 +38,7 @@ if read -r OLD_HOST OLD_S OLD_B < "$D/current-seat"; then
     fi
   fi
 fi
-WHERE=$CURRENT_HOST; SID=$CURRENT_SID; host_info
+WHERE=$CURRENT_HOST; SID=$CURRENT_SID
 W=$(tx boards probe | jq -er --arg b "$B" '.rows[] | select(.block==$b) | .window_id')
 tx surfaces rename --session "$SID" --window "$W" --label seat >/dev/null
 printf '%s %s %s\n' "$WHERE" "$SID" "$B" > "$D/current-seat"

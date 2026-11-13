@@ -14,8 +14,8 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
 - `agent-spawn --brief-file <brief.md> [--owner <owner>] [--purpose <purpose>] <session> <name> -- <claude|codex|pi>`:
   start through `teerex agents launch` using `~/.config/teerex/profiles.json`. The caller's own pane is
   starter and report-to. Profiles supply harness argv, standing flags, job registry and fleet-board store.
-  Only configured profiles work. Both caller and target must be on hive's Rex server; an M5-server
-  caller is refused (jcbbge/teerex#14), with no cross-host route. `--non-agent` retains low-level
+  Only configured profiles work. The selected named host defaults to hive; set `TEEREX_HOST=m5`
+  explicitly for M5-hosted panes. Caller and target addresses belong to the same selected server. `--non-agent` retains low-level
   `teerex spawn` only for an explicitly marked non-agent command.
 - `agent-send <session> <pane> <your name> <message...>`: one message, delivered whole. It locks the receiving
   pane, clears its input line, types `FROM <your name>: <message>` and presses Enter, so simultaneous senders
@@ -70,6 +70,10 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
 - Never approve for the human: relay the human's decision, not yours.
 
 ## Transport
+
+The wrapper commands use `~/.config/teerex/hosts.json` (`TEEREX_HOSTS` can select another file).
+`TEEREX_HOST` selects the command host, default `hive`; no cross-host search or fallback occurs.
+Native `surfaces resolve` resolves labels and suffixes before sends and reads.
 
 The verbs are Rex, through teerex (jcbbge/teerex): `agent-spawn` uses `teerex agents launch` from configured profiles, `agent-send` is `teerex send`,
 the fleet board is `teerex boards fleet`. Nothing is hand-built beside them; a gap is a teerex issue.

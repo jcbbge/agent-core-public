@@ -12,9 +12,10 @@ if [ -n "${RV_RELAY_MAILBOX:-}" ] && [ -d "$RV_RELAY_MAILBOX" ] && [ -w "$RV_REL
   mv "$f.tmp" "$f"
   exit 0
 fi
-# shellcheck source=primitives/tools/agent-messaging/teerex-target
-. "$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0")")/teerex-target"
-resolve "$S"
-OUT=$(printf '%s' "$MSG" | tx send --session "$SID" --block "$P" --from "$FROM" --message-file -) || {
+TX=(teerex --config "${TEEREX_HOSTS:-$HOME/.config/teerex/hosts.json}" --host "${TEEREX_HOST:-hive}")
+TARGET=$("${TX[@]}" surfaces resolve --session "$S" --pane "$P")
+SID=$(printf '%s' "$TARGET" | jq -er '.resolved.session_id')
+P=$(printf '%s' "$TARGET" | jq -er '.resolved.block_id')
+OUT=$(printf '%s' "$MSG" | "${TX[@]}" send --session "$SID" --block "$P" --from "$FROM" --message-file -) || {
   echo "agent-send: teerex send did not confirm delivery to $P: $OUT. Inspect the pane before resending." >&2
   exit 1; }

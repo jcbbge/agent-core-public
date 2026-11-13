@@ -47,8 +47,7 @@ teerex filter --sample a.json --sample b.json                   # offline, drops
 teerex run --socket "$sock" --cwd "$PWD" --timeout-ms 60000 -- npm test   # Mac: argv + real exit
 ```
 
-- Addresses are full lowercase `session:UUID` / `block:UUID`; short suffixes and labels are
-  refused (teerex#2). Get them from `rex block list -s "$S" --json`.
+- Use `teerex surfaces resolve --session TEXT [--pane TEXT]` for canonical IDs, unique ID suffixes or exact labels. Ambiguous selectors refuse. Other commands may still require canonical IDs; resolve first.
 - `--max-bytes` is 256–65536 (default 4096). `compare` refuses two different panes.
 - `watch` exits 0 on a change, 124 on deadline, 1 on error. A change or a `done` report is
   evidence, not success: check the program's exit (`teerex run` receipt, or
@@ -73,8 +72,9 @@ The protocol is [agent-messaging](../../rules/agent-messaging/RULE.md); the verb
 - `agent-read <session> <pane>` only to confirm delivery.
 - Questions for the human go to the **seat** with `agent-send`, typed straight into its pane.
 
-All agents and the seat run on hive's Rex server; the M5 Rex app is the window. A caller on
-hive launches into hive. An M5-server caller is refused (jcbbge/teerex#14); never invent a cross-host route.
+Agents and the seat normally run on hive's Rex server; the M5 Rex app is the window.
+Messaging wrappers select `TEEREX_HOST` (default `hive`) from `TEEREX_HOSTS`
+(default `~/.config/teerex/hosts.json`). Set the host explicitly for M5 panes; no host search or fallback.
 
 ## 5. Long output is a document
 
@@ -109,7 +109,7 @@ Full flags: `teerex <command> --help`.
 | `recovery` | Before a Rex restart: `update --snapshot` lists panes at risk; `snapshot` saves layout and launch metadata; `restore` previews, then applies on an empty server. | `teerex recovery update --socket "$sock" --snapshot` |
 | `targets` | A command should run on a named machine (`m5`, `hive`, `m1`) from one hosts config, not a socket path. | `teerex --config "$HOSTS" --host hive observe …` |
 | `fleet install` | Install or roll back teerex on a named machine: plan first, `--apply` to do it. | `teerex fleet install --config "$HOSTS" --host hive --version v0.1.0-alpha.5 --apply` |
-| `doctor`, `adapters`, `maneuver-check` | Check the server offers what teerex needs (Mac); generate five read-only Rex tools for an agent; check a saved read against an expected starting screen. | `teerex doctor --socket "$sock"` |
+| `doctor`, `adapters`, `maneuver-check` | Check the server offers what teerex needs (Linux or Mac); generate five read-only Rex tools for an agent; check a saved read against an expected starting screen. | `teerex doctor --socket "$sock"` |
 
 Hive profiles live at `~/.config/teerex/profiles.json`; validate with
 `teerex agents profiles --config ~/.config/teerex/profiles.json`. Named hosts live at
@@ -121,3 +121,8 @@ jcbbge/teerex, never in hand-built transport beside it.
 
 Rex and teerex configuration is owned by `~/rexconfig` on each machine. See its README
 and `./install --check`; agent-core-sync does not install or replace those files.
+
+Human launch functions come from `teerex agents shell --config ~/.config/teerex/profiles.json`.
+`agents human` applies standing flags and tracks the visible tab without a brief or starter.
+Rexconfig owns the profiles, including the Mac route to hive. `teerex agents prune --registry DIR`
+previews archival of dead launch records; `--apply` archives them. Concurrent managed launches queue.

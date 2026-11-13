@@ -27,25 +27,19 @@ if [ "$NON_AGENT" = false ]; then
   case "$1" in claude|codex|pi) ;; *) echo "agent-spawn: unknown agent profile '$1'; use --non-agent for a non-agent command" >&2; exit 2 ;; esac
   [ -n "$BRIEF" ] && [ -f "$BRIEF" ] || { echo "agent-spawn: agents require --brief-file pointing to a brief file" >&2; exit 2; }
 fi
-# shellcheck source=primitives/tools/agent-messaging/teerex-target
-. "$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0")")/teerex-target"
-# shellcheck disable=SC2153 # SID is assigned by the sourced resolver.
-resolve "$RS"; RSID=$SID; REPORT_HOST=$WHERE
-[ "$REPORT_HOST" = hive ] || { echo "agent-spawn: M5-server caller unsupported (jcbbge/teerex#14); use a pane on hive’s Rex server" >&2; exit 1; }
-if [ "$S" != "$RS" ]; then
-  resolve "$S"
-  [ "$WHERE" = "$REPORT_HOST" ] || { echo "agent-spawn: cross-server report target unsupported (jcbbge/teerex#14)" >&2; exit 1; }
-fi
+TX=(teerex --config "${TEEREX_HOSTS:-$HOME/.config/teerex/hosts.json}" --host "${TEEREX_HOST:-hive}")
+RSID=$("${TX[@]}" surfaces resolve --session "$RS" | jq -er '.resolved.session_id')
+SID=$("${TX[@]}" surfaces resolve --session "$S" | jq -er '.resolved.session_id')
 if [ "$NON_AGENT" = true ]; then
   # Low-level spawn is exclusively for an explicitly marked non-agent command.
-  OUT=$(tx spawn --session "$SID" --name "$N" --cwd "$PWD" --report-to-session "$RSID" --report-to-block "$RB" -- "$@") || {
+  OUT=$("${TX[@]}" spawn --session "$SID" --name "$N" --cwd "$PWD" --report-to-session "$RSID" --report-to-block "$RB" -- "$@") || {
     echo "agent-spawn: creation not confirmed; inspect before retrying: $OUT" >&2; exit 1; }
   printf '%s\n' "$OUT" | jq -er '.created.block_id'
   exit
 fi
 # Profiles own harness argv, standing flags, registry and fleet-board store.
-OUT=$(teerex agents launch --config "${TEEREX_PROFILES:-$HOME/.config/teerex/profiles.json}" \
-  --profile "$1" --ack-timeout-ms 60000 --socket "$SOCK" --session "$SID" --cwd "$PWD" \
+OUT=$("${TX[@]}" agents launch --config "${TEEREX_PROFILES:-$HOME/.config/teerex/profiles.json}" \
+  --profile "$1" --ack-timeout-ms 60000 --session "$SID" --cwd "$PWD" \
   --starter-session "$RSID" --starter-block "$RB" \
   --report-to-session "$RSID" --report-to-block "$RB" \
   --name "$N" --owner "$OWNER" --purpose "$PURPOSE" --brief-file "$BRIEF") || {

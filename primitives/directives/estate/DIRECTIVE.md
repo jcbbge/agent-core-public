@@ -67,8 +67,8 @@ From the ground up. Each layer only drives the one above it.
 5. **Agents.** Claude, Codex, pi and the rest, any model. **Agents should run on hive**, whatever
    app is their window (Rex, T3 Code, Claude Desktop, a terminal on any machine). This is a
    suggestion, not a block: nothing refuses an agent for the machine it is on. An agent is started
-   by typing its name (`claude`, `codex`, `pi`): on hive its standing flags are added for you, and
-   on a Mac it opens on hive over ssh (`command claude` runs it on the Mac). Agents talk with
+   by typing its name (`claude`, `codex`, `pi`): native `teerex agents human` applies profile
+   standing flags and opens a tracked visible tab; rexconfig owns the Mac route to hive. Agents talk with
    `agent-send` / `agent-spawn` / `agent-ask`.
 6. **The seat.** The one agent the operator types to, his concierge for the session. He starts it
    by typing `seat` in any Rex tab (Mac or hive); if a seat is already running, `seat` switches to

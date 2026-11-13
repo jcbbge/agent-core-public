@@ -32,8 +32,7 @@ Rollback: `teerex-install rollback --version <old tag>`. Read the release notes 
 named machine and `--apply` performs it (hosts config: `~/.config/teerex/hosts.json`, owned by `~/rexconfig`).
 
 **Compatibility (alpha.5):** Rex integer API 10–13; `jobs`, `boards`, `agents` and `recovery
-snapshot/restore` need API 13 (both machines run API 13). `run`, `doctor` and `offstage` are
-Mac-only. The operating-layer commands (`surfaces`, `boards`, `agents`, `recovery`, `targets`,
+snapshot/restore` need API 13 (both machines run API 13). `run` and `offstage` are Mac-only; `doctor` supports Linux and macOS. The operating-layer commands (`surfaces`, `boards`, `agents`, `recovery`, `targets`,
 fleet) need Python 3.9+.
 
 **Draft protection:** `teerex send` guards and restores operator drafts by default; agent-core
