@@ -25,9 +25,10 @@ hive over ssh in the same terminal, starting in hive's home, instead of refusing
 
 - an in-process subagent (Claude Code's `Agent`, `Task` and `Workflow` tools): every agent is
   visible as its own session, started with `agent-spawn`;
-- a shell command that reads a Rex terminal with `rex capture`, when the
-  [teerex](../../tools/teerex/TOOL.md) tool is installed and its read-only observation of this
-  pane succeeds. While teerex cannot reach the server, `rex capture` is allowed.
+- a shell command that reads a Rex terminal with `rex capture`, whenever the
+  [teerex](../../tools/teerex/TOOL.md) tool is installed. The read runs on the machine whose Rex
+  server holds the pane, by named host: `teerex --config ~/.config/teerex/hosts.json --host m5|hive
+  observe --session <session> --block <block>`.
 
 **Does not refuse:** an agent on any machine, in or outside a Rex pane (Josh, 2026-11-12: "This is a suggested. It's not authoritative."). An agent an app such as T3 Code starts on hive
 passes.

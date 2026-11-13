@@ -8,6 +8,7 @@ LC_ forms, which cross ssh). No starter set means a human started this session: 
 Reads the hook's JSON on stdin. Never blocks the agent: always exits 0.
 """
 import json, os, subprocess, sys
+from pathlib import Path
 
 def env(k): return os.environ.get(k) or os.environ.get("LC_" + k) or ""
 
@@ -34,11 +35,28 @@ def main():
     event = h.get("hook_event_name", "Stop")
     if event == "StopFailure":
         err = h.get("error") or h.get("error_details") or h.get("message") or "unknown error"
-        msg = f"STOPPED ON AN ERROR: {name} died and cannot continue.\nError: {str(err)[:600]}\nIt needs a restart (another model, or the same brief again)."
+        msg = f"STOPPED ON AN ERROR: {name} reported a harness error.\nError: {str(err)[:600]}"
     else:
         last = (h.get("last_assistant_message") or last_text(h.get("transcript_path", "")) or "").strip()
         msg = f"STOPPED: {name} finished its turn and is idle.\nIts last words:\n{last[:1500] or '(no text)'}"
     subprocess.run(["agent-send", to[0], to[1], f"{name} (auto)", msg], timeout=30, check=False,
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    own_s = env("AGENT_SESSION") or env("REX_SESSION")
+    own_b = env("AGENT_PANE") or env("REX_BLOCK")
+    if not own_s or not own_b: return
+    helper = str(Path(__file__).resolve().with_name("teerex-target"))
+    # blocked: jcbbge/teerex#16 until named-host nested board operations dispatch correctly.
+    script = r'''set -euo pipefail
+. "$1"; resolve "$2"
+state=$(tx boards state inspect --store "$STORE")
+record=$(printf '%s' "$state" | jq -ec --arg s "$SID" --arg b "$3" --arg h "$WHERE" --arg server "unix://$SOCK" '.fleet[] | select(.target.session_id==$s and .target.block_id==$b and .target.host==$h and .target.server==$server)')
+owner=$(printf '%s' "$record" | jq -er '.owner')
+purpose=$(printf '%s' "$record" | jq -er '.purpose')
+tx boards fleet report --store "$STORE" --session "$SID" --block "$3" --owner "$owner" --purpose "$purpose" --state "$4"
+'''
+    subprocess.run(["bash", "-c", script, "agent-stop-alert", helper, own_s, own_b,
+                    "unknown" if event == "StopFailure" else "idle"], timeout=30, check=False,
                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 if __name__ == "__main__":

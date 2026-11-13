@@ -12,14 +12,12 @@
 
   agent-ask <session> <pane> <from> --resolve ID --answer "what the human said"
 
-The seat's inbox viewer (agent-inbox) pins every open decision at the top as a card and clears it when resolved.
+Decision cards are plain text, typed into the seat pane by agent-send.
 It refuses a decision missing the ask, the context, two options each with a gain and a loss, or a recommendation:
 the human must be able to decide from the card alone, without hunting through a thread.
-Transport is agent-send, so fenced workers (through the relay) and other machines work the same way.
+Transport is agent-send, including the existing fenced-worker relay.
 """
-import argparse, json, os, secrets, subprocess, sys
-
-MARK, RESOLVED = "DECISION-JSON:", "DECISION-RESOLVED-JSON:"
+import argparse, secrets, subprocess, sys
 
 def die(msg):
     sys.stderr.write("agent-ask: " + msg + "\n"); sys.exit(2)
@@ -34,7 +32,7 @@ a = p.parse_args()
 
 if a.resolve:
     if not a.answer: die("--resolve needs --answer: what the human decided, in their words")
-    body = RESOLVED + json.dumps({"id": a.resolve, "answer": a.answer})
+    body = f"DECISION RESOLVED [{a.resolve}]\nAnswer: {a.answer}"
 else:
     missing = [f for f in ("title", "ask", "context", "recommend") if not (getattr(a, f) or "").strip()]
     if missing: die("missing " + ", ".join("--" + m for m in missing) + ". The human decides from the card alone.")
@@ -46,8 +44,14 @@ else:
         opts.append({"label": parts[0], "gain": parts[1], "lose": parts[2]})
     if len(opts) < 2: die("give at least two --option entries: a choice with one option is not a decision")
     did = a.id or secrets.token_hex(3)
-    body = MARK + json.dumps({"id": did, "title": a.title, "ask": a.ask, "context": a.context, "options": opts,
-                              "recommend": a.recommend, "answer": a.answer or ""})
-    print(did)
+    lines = [f"DECISION [{did}]: {a.title}", f"Ask: {a.ask}", f"Context: {a.context}"]
+    for index, option in enumerate(opts, 1):
+        lines.extend([f"{index}. {option['label']}", f"   Gain: {option['gain']}", f"   Lose: {option['lose']}"])
+    lines.append(f"Recommendation: {a.recommend}")
+    if a.answer:
+        lines.append(f"Reply: {a.answer}")
+    body = "\n".join(lines)
 r = subprocess.run(["agent-send", a.session, a.pane, a.sender, body])
+if r.returncode == 0 and not a.resolve:
+    print(did)
 sys.exit(r.returncode)

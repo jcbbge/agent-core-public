@@ -1,61 +1,64 @@
-# shellcheck shell=bash disable=SC2034  # SID/WHERE are read by the scripts that source this
-# teerex-target: sourced by agent-spawn and agent-send. Every Rex action goes through teerex
-# (jcbbge/teerex), on the server that holds the session: this host's own, or the Mac's over ssh.
-#   resolve <session>  -> sets SID (full id) and WHERE (local | m5)
-#   tx <verb> args...  -> runs `teerex <verb> --socket <that server's socket> args...` where WHERE says
+# shellcheck shell=bash disable=SC2034
+# Shared named-host selection. No private socket forwarding or transport fallback.
+TEEREX_HOSTS=${TEEREX_HOSTS:-$HOME/.config/teerex/hosts.json}
+if [ ! -f "$TEEREX_HOSTS" ] && [ "$(uname)" = Darwin ]; then
+  TEEREX_HOSTS=$HOME/.local/state/teerex-boards/hosts.json
+fi
 
-REAL_REX="$HOME/opt/rex/bin/rex"                       # hive: the server binary (agent-core's rex wrapper may forward to the Mac)
-[ -x "$REAL_REX" ] || REAL_REX=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")
-MAC_REX="/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex"
-MAC_SOCK="/Users/jrg/Library/Application Support/rex/server.sock"
-SSH_M5=(ssh -o BatchMode=yes -o ConnectTimeout=8 m5)
+tx() { teerex --config "$TEEREX_HOSTS" --host "$WHERE" "$@"; }
 
-local_sock() {
-  case "${REX_SERVER:-}" in
-    unix://*) local u="${REX_SERVER#unix://}"; printf '%b' "${u//%/\\x}"; return ;;
-  esac
-  if [ "$(uname)" = Darwin ]; then printf '%s' "$HOME/Library/Application Support/rex/server.sock"
-  else printf '%s' "/run/user/$(id -u)/rex/server.sock"; fi
+host_info() {
+  HOST_INFO=$(teerex targets resolve --config "$TEEREX_HOSTS" --host "$WHERE") || return
+  STORE=$(printf '%s' "$HOST_INFO" | jq -er '.host.store') || return
+  SOCK=$(printf '%s' "$HOST_INFO" | jq -er '.host.socket') || return
 }
-LSOCK=$(local_sock)
 
-resolve() { # <session label, suffix or id>
-  local out
-  if out=$("$REAL_REX" --autostart=false --server "unix://$LSOCK" session inspect "$1" --json 2>/dev/null); then
-    WHERE=local
-  elif [ "$(uname)" != Darwin ] && out=$("${SSH_M5[@]}" "$(printf '%q' "$MAC_REX") --autostart=false session inspect $(printf '%q' "$1") --json" 2>/dev/null); then
-    WHERE=m5
-  else
-    echo "teerex-target: no Rex session '$1' on this host's server or the Mac's" >&2; return 1
+resolve() {
+  local host out matches found='' found_host=''
+  for host in hive m5; do
+    WHERE=$host
+    if ! out=$(tx boards probe); then
+      echo "teerex-target: $host probe unavailable; checking the other host" >&2
+      continue
+    fi
+    matches=$(printf '%s' "$out" | jq -r --arg s "$1" '[.rows[].session | select(.==$s or endswith(":"+$s))] | unique | .[]') || return
+    if [ -n "$matches" ]; then
+      [ -z "$found" ] && [ "$(printf '%s\n' "$matches" | wc -l)" -eq 1 ] || {
+        echo "teerex-target: ambiguous session '$1'" >&2; return 1; }
+      found=$matches; found_host=$host
+    fi
+  done
+  if [ -z "$found" ]; then
+    # no teerex verb: jcbbge/teerex#2 (session label/suffix lookup, including empty sessions).
+    for host in hive m5; do
+      WHERE=$host; host_info || continue
+      if out=$(rexat session inspect "$1" --json 2>/dev/null); then
+        [ -z "$found" ] || { echo "teerex-target: ambiguous session '$1'" >&2; return 1; }
+        found=$(printf '%s' "$out" | jq -er '.session_id') || return
+        found_host=$host
+      fi
+    done
   fi
-  SID=$(printf '%s' "$out" | jq -er .session_id)
+  [ -n "$found" ] || { echo "teerex-target: no session '$1'" >&2; return 1; }
+  SID=$found; WHERE=$found_host
+  host_info
 }
 
-tx() { # <verb> args...: teerex on the session's server. stdin passes through.
-  local verb=$1; shift
-  if [ "$WHERE" = local ]; then teerex --rex "$REAL_REX" "$verb" --socket "$LSOCK" "$@"
-  else "${SSH_M5[@]}" "\$HOME/.local/bin/teerex $(printf '%q ' --rex "$MAC_REX" "$verb" --socket "$MAC_SOCK" "$@")"; fi # --rex pins the Rex binary: rex is not on a non-interactive ssh PATH
-}
-
-rexat() { # rex args... on the session's server (for reads teerex does not offer, e.g. the vt format the typing guard needs)
-  if [ "$WHERE" = local ]; then "$REAL_REX" --autostart=false --server "unix://$LSOCK" "$@"
-  else "${SSH_M5[@]}" "$(printf '%q ' "$MAC_REX" --autostart=false "$@")"; fi
-}
-
-tx_send() { # <block> <from> <message on stdin>: teerex send, with the message as a private file on that server
-  if [ "$WHERE" = local ]; then
-    local f; f=$(mktemp); chmod 600 "$f"; cat > "$f"
-    teerex --rex "$REAL_REX" send --socket "$LSOCK" --session "$SID" --block "$1" --from "$2" --message-file "$f"; local rc=$?
-    rm -f "$f"; return $rc
+# no teerex verb: jcbbge/teerex#4 (VT draft detection/restoration).
+# Only callers retaining that unsupported boundary use Rex directly, pinned by the named-host record.
+rexat() {
+  local binary transport address port identity known command
+  binary=$(printf '%s' "$HOST_INFO" | jq -er '.host.rex')
+  transport=$(printf '%s' "$HOST_INFO" | jq -er '.host.transport')
+  if [ "$transport" = local ]; then
+    "$binary" --autostart=false --server "unix://$SOCK" "$@"
   else
-    "${SSH_M5[@]}" "f=\$(mktemp); chmod 600 \"\$f\"; cat > \"\$f\"; \$HOME/.local/bin/teerex $(printf '%q ' --rex "$MAC_REX" send --socket "$MAC_SOCK" --session "$SID" --block "$1" --from "$2") --message-file \"\$f\"; rc=\$?; rm -f \"\$f\"; exit \$rc"
+    address=$(printf '%s' "$HOST_INFO" | jq -er '.host.address')
+    port=$(printf '%s' "$HOST_INFO" | jq -er '.host.port')
+    identity=$(printf '%s' "$HOST_INFO" | jq -er '.host.identity_file')
+    known=$(printf '%s' "$HOST_INFO" | jq -er '.host.known_hosts')
+    printf -v command '%q ' "$binary" --autostart=false --server "unix://$SOCK" "$@"
+    ssh -F /dev/null -o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes \
+      -o ForwardAgent=no -o ConnectTimeout=8 -o "UserKnownHostsFile=$known" -i "$identity" -p "$port" "$address" "$command"
   fi
-}
-
-tx_why() { # <verb> <teerex output>: the fields that say why teerex did not confirm, and the whole result kept on
-  # this host (~/.local/state/agent-messaging/teerex-unconfirmed.log), so the next failure can be diagnosed.
-  local d="$HOME/.local/state/agent-messaging"; mkdir -p "$d"
-  { printf '%s %s via %s\n' "$(date -u +%FT%TZ)" "$1" "$WHERE"; printf '%s\n' "$2"; } >> "$d/teerex-unconfirmed.log"
-  printf '%s' "$2" | jq -c '{outcome, failure_reason, error, attempt_evidence, creation_attempt_frame_seen}' 2>/dev/null \
-    || printf '%s' "$2" | head -c 300
 }

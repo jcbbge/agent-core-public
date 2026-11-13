@@ -17,25 +17,6 @@ Desktop, a terminal) is only the window. Quit and start it on hive: type its nam
 this Mac (it opens on hive), or run 'ssh -t $ENGINE_SSH <agent> [args]'. Reach this Mac from hive \
 with 'ssh m5 <cmd>'."
 
-# Local Rex socket path from REX_SERVER (unix:// URL, percent-encoded).
-rex_socket() {
-  local url="${REX_SERVER:-}"
-  case "$url" in
-    unix://*) url="${url#unix://}"; printf '%b' "${url//%/\\x}" ;;
-    "") [ -S "$HOME/Library/Application Support/rex/server.sock" ] &&
-          printf '%s' "$HOME/Library/Application Support/rex/server.sock" ;;
-  esac
-}
-
-# teerex is usable when its read-only observation of this pane succeeds.
-teerex_usable() {
-  command -v teerex >/dev/null 2>&1 || return 1
-  [ -n "${REX_SESSION:-}" ] && [ -n "${REX_BLOCK:-}" ] || return 1
-  local sock; sock=$(rex_socket); [ -S "$sock" ] || return 1
-  teerex observe --socket "$sock" --session "$REX_SESSION" --block "$REX_BLOCK" \
-    --max-bytes 256 --timeout-ms 1500 >/dev/null 2>&1
-}
-
 deny() { # $1 harness, $2 reason
   case "$1" in
     claude|codex) jq -n --arg r "$2" '{hookSpecificOutput:{hookEventName:"PreToolUse",
@@ -63,12 +44,11 @@ It reports back to you through agent-send." ;;
     cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // .command // empty' 2>/dev/null) || exit 0
     [ -n "$cmd" ] || exit 0
     if printf '%s' "$cmd" | grep -Eq '(^|[;&|(` ])rex([[:space:]]+-[^[:space:]]+([[:space:]]+[^-[:space:]][^[:space:]]*)?)*[[:space:]]+capture([[:space:]]|$)' &&
-       teerex_usable; then
-      sock=$(rex_socket)
-      deny "$harness" "engine-host: read Rex terminals with teerex, not 'rex capture'. \
-One read: teerex observe --socket '$sock' --session <session> --block <block> [--max-bytes N]. \
-Wait for a change: save that observation as a baseline, then teerex watch ... --baseline FILE \
---timeout-ms N [--status-state done]. This pane is --session $REX_SESSION --block $REX_BLOCK."
+       command -v teerex >/dev/null 2>&1; then
+      deny "$harness" "engine-host: read terminals with teerex named hosts. \
+Run teerex --config ~/.config/teerex/hosts.json --host m5 observe --session <session> --block <block>. \
+Use --host hive for the rivet session; m5 for the operator's panes. \
+For a change, save the observation then use teerex watch --baseline FILE --timeout-ms N."
     fi
     exit 0 ;;
   *)

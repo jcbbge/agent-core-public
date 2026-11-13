@@ -1,53 +1,48 @@
 #!/usr/bin/env bash
-# seat — start the session's one concierge agent, or go to it if it is already open.
-# Type `seat` in any Rex tab, on a Mac or on hive (Josh, 2026-11-13: "I want to start every session
-# with a single concierge ... terminal agent").
-#   - A seat already running: focus its tab, start nothing.
-#   - Otherwise this tab becomes the seat: labelled "seat", marked an inbox with its viewer beside it
-#     (agent-seat), and Claude starts on hive with the seat brief (SEAT.md).
-# One inbox log for every seat: ~/.local/state/agent-inbox/seat-inbox.log. Each seat pane's
-# <id>.log links to it, so agents started under an earlier seat still reach the current one.
+# One pointer, held locked while checking/focusing or claiming the seat on hive.
 set -euo pipefail
-
-if [ "$(uname -n)" != "${ENGINE_HOST:-optimistic-wiles.hivelocitydns.com}" ]; then
-  [ -n "${REX_BLOCK:-}" ] && [ -n "${REX_SESSION:-}" ] || { echo "seat: run it in a Rex tab" >&2; exit 1; }
-  export LC_REX_BLOCK="$REX_BLOCK" LC_REX_SESSION="$REX_SESSION"
-  # shellcheck disable=SC2088  # ~ expands on hive, by design
+if [ "$(uname)" = Darwin ]; then
+  export LC_REX_BLOCK=${REX_BLOCK:-} LC_REX_SESSION=${REX_SESSION:-}
+  # shellcheck disable=SC2088 # Remote shell expands the home directory.
   exec ssh -t "${ENGINE_SSH:-hive}" '~/.local/bin/seat'
 fi
-
-B=${REX_BLOCK:-${LC_REX_BLOCK:-}}; S=${REX_SESSION:-${LC_REX_SESSION:-}}
-[ -n "$B" ] && [ -n "$S" ] || { echo "seat: no Rex pane address; start it from a Rex tab" >&2; exit 1; }
-D=${AGENT_INBOX_DIR:-$HOME/.local/state/agent-inbox}; mkdir -p "$D"
-CUR=$D/current-seat LOG=seat-inbox.log
-
-# A seat is running when its pane exists and its program is not a bare shell.
-seat_running() {
-  local fg
-  rex block list -s "$S" --json 2>/dev/null | grep -q "\"$1\"" || return 1
-  fg=$(rex block call -s "$S" -b "$1" process 2>/dev/null | jq -r '.foreground.name // empty')
-  case "$fg" in ""|zsh|bash|sh|-zsh|login) return 1 ;; esac
-}
-
-if [ -s "$CUR" ]; then
-  old=$(cat "$CUR")
-  if [ "$old" != "$B" ] && seat_running "$old"; then
-    rex block focus -s "$S" "$old" >/dev/null 2>&1 || true
-    echo "The seat is already open in the tab named \"seat\". Switched to it."
-    exit 0
+B=${AGENT_PANE:-${REX_BLOCK:-${LC_REX_BLOCK:-}}}
+S=${AGENT_SESSION:-${REX_SESSION:-${LC_REX_SESSION:-}}}
+[ -n "$B" ] && [ -n "$S" ] || { echo "seat: start it in a Rex tab" >&2; exit 1; }
+# shellcheck source=primitives/tools/agent-messaging/teerex-target
+. "$(dirname "$(readlink -f "$0")")/teerex-target"
+resolve "$S"
+CURRENT_HOST=$WHERE; CURRENT_SID=$SID
+D=${SEAT_STATE_DIR:-$HOME/.local/state/agent-messaging}
+mkdir -p "$D"
+umask 077
+exec 9>>"$D/current-seat"
+flock -x -w 5 9 || { echo "seat: another seat check is running" >&2; exit 1; }
+if read -r OLD_HOST OLD_S OLD_B < "$D/current-seat"; then
+  case "$OLD_HOST" in m5|hive) ;; *) echo "seat: invalid seat pointer" >&2; exit 1 ;; esac
+  WHERE=$OLD_HOST; host_info
+  if OBS=$(tx observe --session "$OLD_S" --block "$OLD_B" --max-bytes 256); then
+    FG=$(printf '%s' "$OBS" | jq -er '.process.data.foreground.name // .process.data.child.name')
+    case "${FG##*/}" in
+      zsh|bash|sh|-zsh|-bash|login) ;;
+      *) tx surfaces focus --session "$OLD_S" --pane "$OLD_B" >/dev/null
+         echo 'The seat is already open. Switched to it.'
+         exit 0 ;;
+    esac
+  else
+    # Unknown reads do not authorize another seat. Confirm absence separately.
+    PROBE=$(tx boards probe)
+    if printf '%s' "$PROBE" | jq -e --arg s "$OLD_S" --arg b "$OLD_B" '.rows[] | select(.session==$s and .block==$b)' >/dev/null; then
+      echo "seat: current seat exists but cannot be observed; no new seat started" >&2; exit 1
+    fi
   fi
 fi
-
-id=${B##*:}
-touch "$D/$LOG" "$D/$id.inbox"
-[ -L "$D/$id.log" ] || { [ -s "$D/$id.log" ] && cat "$D/$id.log" >> "$D/$LOG"; rm -f "$D/$id.log"; }
-ln -sfn "$LOG" "$D/$id.log"
-printf '%s\n' "$B" > "$CUR"
-
-W=$(rex block list -s "$S" --json | jq -r --arg b "$B" '.blocks[] | select(.block_id==$b) | .window_id')
-[ -n "$W" ] && rex window rename -s "$S" "$W" seat >/dev/null 2>&1 || true
-env -u AGENT_PANE -u LC_AGENT_NAME "$(dirname "$(readlink -f "$0")")/agent-seat" || true
-
+WHERE=$CURRENT_HOST; SID=$CURRENT_SID; host_info
+W=$(tx boards probe | jq -er --arg b "$B" '.rows[] | select(.block==$b) | .window_id')
+rexat window rename -s "$SID" "$W" seat >/dev/null # no teerex verb: jcbbge/teerex#17
+printf '%s %s %s\n' "$WHERE" "$SID" "$B" > "$D/current-seat"
+flock -u 9
+exec 9>&-
 cd "$HOME"
 exec "$HOME/.local/bin/claude" --dangerously-skip-permissions \
-  "You are the seat. Read $(dirname "$(readlink -f "$0")")/SEAT.md and follow it. Your pane is $B in session $S."
+  "You are the seat. Read $(dirname "$(readlink -f "$0")")/SEAT.md and follow it. Your pane is $B in session $SID."

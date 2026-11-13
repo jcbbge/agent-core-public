@@ -44,24 +44,31 @@ PYGUARD
 if [ "${1:-}" = --guard-test ]; then python3 -c "$GUARD_PY"; exit 0; fi
 [ $# -ge 4 ] || { echo "usage: agent-send <session> <pane> <from> <message...>" >&2; exit 2; }
 S=$1; P=$2; FROM=$3; shift 3; MSG="$*"
-# Delivery goes through teerex send (jcbbge/teerex): one paste of "FROM <from>: <message>", then Enter, under the
-# shared agent-send lock, on the server that holds the pane. teerex takes that lock itself, so this script never holds
-# it. The typing guard (wait while someone is typing, then restore their draft) stays here: teerex does not do it.
+# Fenced Rivet workers hand delivery to the existing relay.
+if [ -n "${RV_RELAY_MAILBOX:-}" ] && [ -d "$RV_RELAY_MAILBOX" ] && [ -w "$RV_RELAY_MAILBOX" ]; then
+  f="$RV_RELAY_MAILBOX/$(date -u +%Y%m%dT%H%M%S)-$$-$RANDOM.json"
+  jq -n --arg s "$S" --arg b "$P" --arg n "$FROM" --arg m "$MSG" --arg i "${RV_ITEM:-}" \
+    '{session:$s,block:$b,name:$n,message:$m,item:$i,at:(now|todate)}' > "$f.tmp"
+  mv "$f.tmp" "$f"
+  exit 0
+fi
+# shellcheck source=primitives/tools/agent-messaging/teerex-target
 . "$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0")")/teerex-target"
 resolve "$S"
+# no teerex verb: jcbbge/teerex#4 (draft guard).
 draft() {
-  rexat block call -s "$SID" -b "$P" format '{"format":"vt"}' 2>/dev/null | python3 -c "$GUARD_PY" || true # CHECK: C9
+  rexat block call -s "$SID" -b "$P" format '{"format":"vt"}' 2>/dev/null | python3 -c "$GUARD_PY" || true # no teerex verb: jcbbge/teerex#4
 }
 d=""
 for _ in $(seq 1 30); do d=$(draft); [ -z "$d" ] && break; sleep 1; done
-[ -n "$d" ] && { rexat send-key -s "$SID" -b "$P" ctrl+u >/dev/null 2>&1 || true; }
-OUT=$(printf '%s' "$MSG" | tx_send "$P" "$FROM") || {
-  echo "agent-send: teerex send did not confirm delivery to $P: $(tx_why send "$OUT"). Inspect the pane before resending." >&2
+[ -n "$d" ] && { rexat send-key -s "$SID" -b "$P" ctrl+u >/dev/null 2>&1 || true; } # no teerex verb: jcbbge/teerex#4
+OUT=$(printf '%s' "$MSG" | tx send --session "$SID" --block "$P" --from "$FROM" --message-file -) || {
+  echo "agent-send: teerex send did not confirm delivery to $P: $OUT. Inspect the pane before resending." >&2
   exit 1; }
 if [ -n "$d" ]; then
   sleep 0.4
   EV=$(jq -nc --arg s "$SID" --arg b "$P" --arg t "$d" '{session_id:$s,block_id:$b,event:{type:"paste",payload:{text:$t}}}')
-  rexat api call -s "$SID" block.event "$EV" >/dev/null || true
+  rexat api call -s "$SID" block.event "$EV" >/dev/null || true # no teerex verb: jcbbge/teerex#4
   mkdir -p "$HOME/.local/state/agent-send"
   printf '%s %s draft restored (%s chars)\n' "$(date -u +%FT%TZ)" "$P" "${#d}" >> "$HOME/.local/state/agent-send/guard.log"
 fi

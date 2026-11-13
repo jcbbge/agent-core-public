@@ -1,35 +1,39 @@
-#!/bin/bash
-# agent-spawn <session> <name> -- <command...>: start an agent in a new visible tab; prints the new pane's id.
-# The command's shell has AGENT_SESSION and AGENT_PANE set to its own address (pass them on over ssh).
-# LC_REX_SESSION/LC_REX_BLOCK carry its Rex pane over ssh. It also carries AGENT_NAME and AGENT_REPORT_TO="<session> <pane>" (the starter), plus their LC_ forms, which cross
-# ssh. agent-stop-alert reads them: when the agent finishes or dies, its starter is told automatically.
+#!/usr/bin/env bash
+# Visible argv spawn; managed cross-host protocol launch is blocked by jcbbge/teerex#14.
 set -euo pipefail
-DETACHED=false
-if [ "${1:-}" = --detached ]; then DETACHED=true; shift; fi
-[ $# -ge 4 ] && [ "$3" = "--" ] || { echo "usage: agent-spawn [--detached] <session> <name> -- <command...>" >&2; exit 2; }
+OWNER=${AGENT_NAME:-${LC_AGENT_NAME:-seat}}
+PURPOSE=
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --owner|--purpose)
+      [ $# -ge 2 ] || { echo "agent-spawn: $1 needs text" >&2; exit 2; }
+      case "$1" in --owner) OWNER=$2 ;; --purpose) PURPOSE=$2 ;; esac
+      shift 2 ;;
+    --detached) echo "agent-spawn: detached agents are retired; start a visible tab" >&2; exit 2 ;;
+    *) break ;;
+  esac
+done
+[ $# -ge 4 ] && [ "$3" = -- ] || { echo "usage: agent-spawn [--owner TEXT] [--purpose TEXT] <session> <name> -- <command...>" >&2; exit 2; }
 S=$1; N=$2; shift 3
-T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")
-# The starter is you: your own address. Over ssh only its LC_ form crosses, so that is the last fallback.
-REPORT=${AGENT_REPORT_TO:-"${AGENT_SESSION:-${REX_SESSION:-${LC_REX_SESSION:-}}} ${AGENT_PANE:-${REX_BLOCK:-${LC_REX_BLOCK:-}}}"}
-CMD=$(printf ' %q' "$@")
-ENVS="export AGENT_SESSION=\$REX_SESSION AGENT_PANE=\$REX_BLOCK LC_REX_SESSION=\$REX_SESSION LC_REX_BLOCK=\$REX_BLOCK AGENT_NAME=$(printf %q "$N") AGENT_REPORT_TO=$(printf %q "$REPORT") LC_AGENT_NAME=$(printf %q "$N") LC_AGENT_REPORT_TO=$(printf %q "$REPORT")"
-if "$DETACHED"; then
-SID=$("$T" api call -s "$S" session.view | python3 -c 'import json,sys;print(json.load(sys.stdin)["session_id"])')
-J=$(jq -nc --arg s "$SID" --arg n "$N" --arg c "$ENVS;$CMD" \
-  '{session_id:$s, flavor:"com.superlogical.terminal.shell", label:$n, options:{command:["sh","-c",$c]}}')   # CHECK: C1
-B=$("$T" api call -s "$S" session.new_block "$J" | python3 -c 'import json,sys;print(json.load(sys.stdin)["block_id"])')  # CHECK: C2
-A=${REPORT#* }                                       # the starter's pane: where this agent appears when it needs you
-mkdir -p "$HOME/.local/state/rex-fleet"; printf '%s\n' "$A" > "$HOME/.local/state/rex-fleet/${B##*:}.anchor"
-echo "$B"
-  exit 0
-fi
-# Every visible agent starts through teerex spawn (jcbbge/teerex), on the server that holds the session. teerex sets
-# AGENT_SESSION/PANE, LC_REX_SESSION/BLOCK, AGENT_NAME and AGENT_REPORT_TO (+LC_) itself; the command runs as given.
+PURPOSE=${PURPOSE:-$N}
+REPORT=${AGENT_SPAWN_REPORT_TO:-"${AGENT_SESSION:-${REX_SESSION:-${LC_REX_SESSION:-}}} ${AGENT_PANE:-${REX_BLOCK:-${LC_REX_BLOCK:-}}}"}
+read -r RS RB EXTRA <<<"$REPORT"
+[ -n "$RS" ] && [ -n "$RB" ] && [ -z "${EXTRA:-}" ] || { echo "agent-spawn: caller's own session and pane are required" >&2; exit 2; }
+# shellcheck source=primitives/tools/agent-messaging/teerex-target
 . "$(dirname "$(readlink -f "$0" 2>/dev/null || realpath "$0")")/teerex-target"
-read -r RS RB <<<"$REPORT"
-resolve "$RS"; RSID=$SID
+# shellcheck disable=SC2153 # SID is assigned by the sourced resolver.
+resolve "$RS"; RSID=$SID; REPORT_HOST=$WHERE
 resolve "$S"
-if [ "$WHERE" = local ]; then CWD=$PWD; [ -d "$CWD" ] || CWD=$HOME; else CWD=/Users/jrg; fi
+[ "$WHERE" = "$REPORT_HOST" ] || { echo "agent-spawn: cross-server report target unsupported (jcbbge/teerex#14)" >&2; exit 1; }
+CWD=$(printf '%s' "$HOST_INFO" | jq -er '.host.home')
+if [ "$(printf '%s' "$HOST_INFO" | jq -r '.host.transport')" = local ]; then CWD=$PWD; fi
 OUT=$(tx spawn --session "$SID" --name "$N" --cwd "$CWD" --report-to-session "$RSID" --report-to-block "$RB" -- "$@") || {
-  echo "agent-spawn: teerex spawn did not confirm the new tab: $(tx_why spawn "$OUT"). Inspect the session before retrying." >&2; exit 1; }
-printf '%s' "$OUT" | jq -er .created.block_id
+  echo "agent-spawn: creation not confirmed; inspect before retrying: $OUT" >&2; exit 1; }
+B=$(printf '%s' "$OUT" | jq -er '.created.block_id')
+printf '%s\n' "$B"
+# blocked: jcbbge/teerex#16 (named-host nested board operations).
+tx boards fleet report --store "$STORE" --session "$SID" --block "$B" \
+  --owner "$OWNER" --purpose "$PURPOSE" --state unknown >/dev/null || {
+  echo "agent-spawn: created $B; fleet report unavailable (jcbbge/teerex#16). Do not retry this live spawn." >&2; }
+
+exit 0
