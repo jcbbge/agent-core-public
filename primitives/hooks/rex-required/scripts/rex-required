@@ -1,5 +1,0 @@
-#!/bin/sh
-# Retired 2026-11-12: replaced by ../../engine-host. Agents started before that still hold this
-# path in their hook config, so it allows and does nothing. Delete once no agent started before
-# 2026-11-12 20:00 UTC is running.
-exit 0

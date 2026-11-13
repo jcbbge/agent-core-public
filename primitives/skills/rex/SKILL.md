@@ -15,9 +15,9 @@ Everything below adds to that guide. Where they differ, this file wins.
 
 ## 2. The law
 
-- **Every agent runs on hive**, whatever app is its window. Rex is one window; T3 Code, Claude
+- **Agents should run on hive**, whatever app is their window. Rex is one window; T3 Code, Claude
   Desktop and a plain terminal are others. The [engine-host](../../hooks/engine-host/HOOK.md) guard
-  refuses every tool call of an agent anywhere else. A Rex pane is not required.
+  suggests it (a Mac launch opens on hive) and refuses nothing for the machine. A Rex pane is not required.
 - **Start agents visibly:** with `agent-spawn` (below) or `rex run -- <agent> ...`, never with `&`,
   `nohup`, a background flag or a launchd job.
 - **Never restart the Rex server or kill Rex processes** without the operator's yes. A restart

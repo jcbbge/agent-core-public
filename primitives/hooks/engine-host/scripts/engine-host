@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# engine-host — every agent runs on the engine's host (hive), whatever app is its window.
+# engine-host — agents should run on hive (a suggestion, never a refusal), whatever app is its window.
 # Spec: ../HOOK.md
 #   engine-host check                      exit 0 on the engine's host, 1 elsewhere (reason on stderr)
 #   engine-host hook claude|codex|cursor   before-tool guard; harness JSON on stdin
@@ -53,7 +53,6 @@ case "${1:-}" in
     harness="${2:-claude}"
     command -v jq >/dev/null 2>&1 || exit 0
     input=$(cat) || exit 0
-    on_engine_host || deny "$harness" "$ELSEWHERE_MSG"
     tool=$(printf '%s' "$input" | jq -r '.tool_name // empty' 2>/dev/null)
     case "$tool" in
       Agent|Task|Workflow)
