@@ -18,6 +18,9 @@ try:
         dim=False; grey=False; out=[]
         for part in re.split(r'(\x1b\[[0-?]*[ -/]*[@-~])', line):
             if part.startswith('\x1b['):
+                if part.endswith('C'):  # cursor-forward: Claude Code draws runs of spaces this way
+                    if not dim and not grey: out.append(' '*int(part[2:-1] or 1))
+                    continue
                 if not part.endswith('m'): continue
                 codes=[int(c or 0) for c in part[2:-1].split(';')]
                 i=0
