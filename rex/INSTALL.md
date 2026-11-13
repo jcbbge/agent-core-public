@@ -2,8 +2,9 @@
 # Rex ideas: install (being retired)
 
 This layer was hand-built beside Rex. It is being retired onto Rex and teerex (Josh, 2026-11-13: "We are
-transitioning to Rex"). This file stays only as the undo record for what is still installed (rex-watch,
-rex-flight, rex-hive-sync, agent-launch, local.rex-hive-forward). Install nothing new from it. Its plan,
+transitioning to Rex"). On 2026-11-13 the seat stopped and disabled rex-watch (hive and M5), rex-flight@hive/@mac and
+local.rex-hive-forward (Rex now reaches hive over ssh://). This file is only the record of what
+was installed. Install nothing from it. Its plan,
 PLAN.md, is in git history (307a7cf).
 
 AC=~/work/agent-core-rex            # or ~/agent-core once merged

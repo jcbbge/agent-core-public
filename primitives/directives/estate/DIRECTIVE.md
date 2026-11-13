@@ -24,8 +24,11 @@ login), say which link failed and what it printed.
 - Each Mac holds one always-on tunnel to hive and lends hive its login: the M5 at hive's port
   2222, the M1 at 2223. So hive reaches every Mac, and every Mac reaches every other through hive,
   on any network. On the M5 that tunnel is `hive-tunnel` (launchd), which also carries the
-  forwards: Rivet engine at the M5's 127.0.0.1:6420, hive's Rex server at `~/.ssh/rex-hive.sock`,
-  the M5's Chrome to hive's 127.0.0.1:9222.
+  forwards: Rivet engine at the M5's 127.0.0.1:6420, the M5's Chrome to hive's 127.0.0.1:9222.
+- Rex reaches hive's Rex server natively: the M5's Rex host `hive` is
+  `ssh://jrg@hive/run/user/1000/rex/server.sock` (`rex -S hive ...`). teerex reaches both machines
+  through its named-host config on the M5, `~/.local/state/teerex-boards/hosts.json`
+  (`teerex --config <it> --host hive ...`). No hand-built socket forward.
 - Connections are shared (ControlMaster): a second `ssh <name> <cmd>` costs under 0.1 s. Call it
   as often as the work needs.
 - **Finder view, on the M5 (being set up):** `~/Machines/hive` (hive's home) and `~/Machines/m1`
