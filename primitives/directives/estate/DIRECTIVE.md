@@ -85,4 +85,4 @@ From the ground up. Each layer only drives the one above it.
   candidate tasks into tasks. **Ship stop**: where finished work waits for the operator's QA.
 - **Project**: a folder of inputs Rivet reads (`~/rivet/projects/<name>`).
 - **agent-core**: this repo, the source of every instruction every agent loads. Changed here,
-  pushed, then `agent-core-sync` on each machine.
+  pushed, then `git -C ~/agent-core pull` on each machine; a post-merge hook writes each harness's instructions.
