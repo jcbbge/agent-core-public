@@ -78,7 +78,8 @@ the work lives where the project keeps it.
 Every agent can reach every other agent, and every agent it starts reports back to it directly, one to one.
 No agent waits to be noticed, and nobody asks the human to relay.
 
-- **Your address** is your session and pane: `AGENT_SESSION` and `AGENT_PANE`, or what your brief gives.
+- **Your address** is your session and pane: `AGENT_SESSION` and `AGENT_PANE` (over ssh,
+  `LC_REX_SESSION` and `LC_REX_BLOCK`), or what your brief gives.
 - **Start an agent:** `agent-spawn <session> <name> -- <command...>` (a visible tab; prints its pane). Its brief
   gives your name and address and what to report.
 - **Send:** `agent-send <session> <pane> <your name> <message...>`: whole message, locked, `FROM <your name>:` added,

@@ -14,6 +14,9 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
 - `agent-spawn <session> <name> -- <command...>`: start an agent in a new visible tab. Prints the new pane.
   The command runs with `AGENT_SESSION`/`AGENT_PANE` set to the new pane's own address; to start an agent on
   another machine, pass them along (`ssh -t host "export AGENT_SESSION=$AGENT_SESSION AGENT_PANE=$AGENT_PANE; ..."`).
+  Without that export only the `LC_` forms cross ssh: then your address is `LC_REX_SESSION` / `LC_REX_BLOCK`, and
+  your name and starter are `LC_AGENT_NAME` / `LC_AGENT_REPORT_TO`. `agent-spawn` falls back to your `LC_` address
+  on its own.
 - `agent-send <session> <pane> <your name> <message...>`: one message, delivered whole. It locks the receiving
   pane, clears its input line, types `FROM <your name>: <message>` and presses Enter, so simultaneous senders
   never run together. The only way to send.

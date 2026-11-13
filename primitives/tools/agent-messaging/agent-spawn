@@ -9,7 +9,8 @@ if [ "${1:-}" = --detached ]; then DETACHED=true; shift; fi
 [ $# -ge 4 ] && [ "$3" = "--" ] || { echo "usage: agent-spawn [--detached] <session> <name> -- <command...>" >&2; exit 2; }
 S=$1; N=$2; shift 3
 T=$(command -v rex || echo "/Users/jrg/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex")
-REPORT=${AGENT_REPORT_TO:-"${AGENT_SESSION:-${REX_SESSION:-}} ${AGENT_PANE:-${REX_BLOCK:-}}"}
+# The starter is you: your own address. Over ssh only its LC_ form crosses, so that is the last fallback.
+REPORT=${AGENT_REPORT_TO:-"${AGENT_SESSION:-${REX_SESSION:-${LC_REX_SESSION:-}}} ${AGENT_PANE:-${REX_BLOCK:-${LC_REX_BLOCK:-}}}"}
 CMD=$(printf ' %q' "$@")
 ENVS="export AGENT_SESSION=\$REX_SESSION AGENT_PANE=\$REX_BLOCK LC_REX_SESSION=\$REX_SESSION LC_REX_BLOCK=\$REX_BLOCK AGENT_NAME=$(printf %q "$N") AGENT_REPORT_TO=$(printf %q "$REPORT") LC_AGENT_NAME=$(printf %q "$N") LC_AGENT_REPORT_TO=$(printf %q "$REPORT")"
 if "$DETACHED"; then
@@ -30,5 +31,5 @@ resolve "$RS"; RSID=$SID
 resolve "$S"
 if [ "$WHERE" = local ]; then CWD=$PWD; [ -d "$CWD" ] || CWD=$HOME; else CWD=/Users/jrg; fi
 OUT=$(tx spawn --session "$SID" --name "$N" --cwd "$CWD" --report-to-session "$RSID" --report-to-block "$RB" -- "$@") || {
-  echo "agent-spawn: teerex spawn did not confirm the new tab: $(printf '%s' "$OUT" | jq -c '{outcome, error}' 2>/dev/null || printf '%s' "$OUT" | head -c 300). Inspect the session before retrying." >&2; exit 1; }
+  echo "agent-spawn: teerex spawn did not confirm the new tab: $(tx_why spawn "$OUT"). Inspect the session before retrying." >&2; exit 1; }
 printf '%s' "$OUT" | jq -er .created.block_id

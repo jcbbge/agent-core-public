@@ -4,9 +4,9 @@
 # and is safe to run again.
 # It runs automatically from an interactive login shell on hive (~/.zshrc), when the operator's terminal passed its
 # pane over ssh (LC_REX_BLOCK, LC_REX_SESSION; sshd accepts LC_*). Agents started by agent-spawn carry AGENT_PANE
-# and are skipped: those panes belong to agents, and agents are typed into.
+# (LC_AGENT_NAME over ssh) and are skipped: those panes belong to agents, and agents are typed into.
 set -euo pipefail
-[ -n "${AGENT_PANE:-}" ] && exit 0
+[ -n "${AGENT_PANE:-}${LC_AGENT_NAME:-}" ] && exit 0 # an agent (its name crosses ssh as LC_AGENT_NAME), not the human
 B=${REX_BLOCK:-${LC_REX_BLOCK:-}}; S=${REX_SESSION:-${LC_REX_SESSION:-}}
 [ -n "$B" ] && [ -n "$S" ] || exit 0
 command -v rex >/dev/null || exit 0

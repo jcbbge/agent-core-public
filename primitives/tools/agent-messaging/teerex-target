@@ -51,3 +51,11 @@ tx_send() { # <block> <from> <message on stdin>: teerex send, with the message a
     "${SSH_M5[@]}" "f=\$(mktemp); chmod 600 \"\$f\"; cat > \"\$f\"; PATH=\$HOME/.local/bin:$(printf '%q' "$(dirname "$MAC_REX")"):\$PATH teerex send $(printf '%q ' --socket "$MAC_SOCK" --session "$SID" --block "$1" --from "$2") --message-file \"\$f\"; rc=\$?; rm -f \"\$f\"; exit \$rc"
   fi
 }
+
+tx_why() { # <verb> <teerex output>: the fields that say why teerex did not confirm, and the whole result kept on
+  # this host (~/.local/state/agent-messaging/teerex-unconfirmed.log), so the next failure can be diagnosed.
+  local d="$HOME/.local/state/agent-messaging"; mkdir -p "$d"
+  { printf '%s %s via %s\n' "$(date -u +%FT%TZ)" "$1" "$WHERE"; printf '%s\n' "$2"; } >> "$d/teerex-unconfirmed.log"
+  printf '%s' "$2" | jq -c '{outcome, failure_reason, error, attempt_evidence, creation_attempt_frame_seen}' 2>/dev/null \
+    || printf '%s' "$2" | head -c 300
+}

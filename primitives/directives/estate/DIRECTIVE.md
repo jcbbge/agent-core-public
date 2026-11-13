@@ -51,8 +51,8 @@ From the ground up. Each layer only drives the one above it.
 3. **teerex.** Bounded reads of a Rex pane (observe, watch, run), plus read-only adapters with
    receipts. Use it instead of `rex capture` and sleep loops. Installed: v0.1.0-alpha.4 on m5 and
    hive (`~/.local/opt/teerex-managed`; alpha.3 kept in `~/.local/opt/teerex`). Where it works today:
-   on the m5 against the m5's Rex server, everything except `jobs` (the m5 server is Rex API10;
-   jobs needs API13). On hive, `observe` / `watch` / `jobs` cannot read the agent panes (they are
+   on the m5 against the m5's Rex server, everything, `jobs` included (the m5 server is
+   0.1.0-preview.16, API 13). On hive, `observe` / `watch` / `jobs` cannot read the agent panes (they are
    hosted on the m5): jcbbge/teerex#10. From hive, read a pane with `rex block capture` until it is
    fixed.
 4. **Rivet.** The engine on hive (127.0.0.1:6420, `rivet-node.service`, CLI `rv`). It drives work

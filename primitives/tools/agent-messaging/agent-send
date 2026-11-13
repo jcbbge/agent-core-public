@@ -71,7 +71,7 @@ d=""
 for _ in $(seq 1 30); do d=$(draft); [ -z "$d" ] && break; sleep 1; done
 [ -n "$d" ] && { rexat send-key -s "$SID" -b "$P" ctrl+u >/dev/null 2>&1 || true; }
 OUT=$(printf '%s' "$MSG" | tx_send "$P" "$FROM") || {
-  echo "agent-send: teerex send did not confirm delivery to $P: $(printf '%s' "$OUT" | jq -c '{outcome, error}' 2>/dev/null || printf '%s' "$OUT" | head -c 300). Inspect the pane before resending." >&2
+  echo "agent-send: teerex send did not confirm delivery to $P: $(tx_why send "$OUT"). Inspect the pane before resending." >&2
   exit 1; }
 if [ -n "$d" ]; then
   sleep 0.4
