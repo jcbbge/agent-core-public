@@ -44,7 +44,7 @@ teerex watch --socket "$sock" --session "$S" --block "$B" --baseline before.json
   --timeout-ms 60000 [--status-state done|blocked|error [--status-id ID]]
 teerex compare --before before.json --after after.json          # offline, same pane only
 teerex filter --sample a.json --sample b.json                   # offline, drops repeats
-teerex run --socket "$sock" --cwd "$PWD" --timeout-ms 600000 -- npm test   # Mac: argv + real exit
+teerex run --socket "$sock" --cwd "$PWD" --timeout-ms 60000 -- npm test   # Mac: argv + real exit
 ```
 
 - Addresses are full lowercase `session:UUID` / `block:UUID`; short suffixes and labels are
@@ -92,7 +92,7 @@ teerex surfaces open --socket "$sock" --session "$S" --layout tiled --anchor "$B
   dev server) open beside the agent they serve with `teerex surfaces open --layout tiled --anchor`.
 - Dev servers and watchers: `teerex surfaces open --layout tab --label <name> -- <cmd>`. Record the
   block id and close it with `teerex surfaces close` when your work lands.
-- Tests and builds: `teerex run`.
+- Tests and builds on hive: `teerex run-visible` (read its `--help` for explicit environment and stdin files). On the Mac, `teerex run` also provides bounded argv execution.
 
 ## 7. The teerex operating layer (alpha.5)
 

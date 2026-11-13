@@ -72,7 +72,7 @@ case "${1:-}" in
     case "$tool" in
       Agent|Task|Workflow)
         deny "$harness" "engine-host: every agent is visible as its own session; in-process subagents ($tool) are refused. \
-Start it visibly: agent-spawn \"\$REX_SESSION\" <name> -- <agent command...> (e.g. -- claude --dangerously-skip-permissions '<brief>'). \
+Start it visibly: agent-spawn --brief-file <brief.md> \"\$REX_SESSION\" <name> -- <claude|codex|pi>. \
 It reports back to you through agent-send." ;;
     esac
     cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // .command // empty' 2>/dev/null) || exit 0

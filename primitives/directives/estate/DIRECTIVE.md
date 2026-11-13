@@ -58,8 +58,9 @@ From the ground up. Each layer only drives the one above it.
    messages, and the operating layer (panes, fleet board, restart snapshot/restore, named
    hosts). Every agent uses it for everything it does, and nothing is hand-built beside it; how is
    in the `rex` skill. Installed: v0.1.0-alpha.5 on m5 and hive (`~/.local/opt/teerex-managed`,
-   alpha.4 retained). Both Rex servers are API 13. From hive, teerex cannot read panes hosted on
-   the m5 (jcbbge/teerex#10): run teerex on the m5 for those (`ssh m5 teerex observe ...`).
+   alpha.4 retained). Both Rex servers are API 13. Named-host commands reach M5 panes from hive:
+   `teerex --config ~/.config/teerex/hosts.json --host m5 observe ...`.
+   Configuration and installation belong to `~/rexconfig`; see its README and `./install --check`.
 4. **Rivet.** The engine on hive (127.0.0.1:6420, `rivet-node.service`, CLI `rv`). It drives work
    items through discovery, planning, implementation, tests, audit and the ship stop. Projects
    are inputs from `~/rivet/projects/<name>/`; the engine names no project.

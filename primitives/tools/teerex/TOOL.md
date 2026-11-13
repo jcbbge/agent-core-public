@@ -1,6 +1,6 @@
 ---
 name: teerex
-description: Rex extensions CLI (jcbbge/teerex) - bounded pane reads and waits (observe, watch, compare, filter), supervised runs (run, offstage), visible agents and messages (spawn, send, agents, jobs), and the alpha.5 operating layer (surfaces, boards with the seat inbox and decision cards, recovery snapshot/restore and update impact, named hosts and fleet install). Use instead of `rex capture`, sleep-poll loops and hand-written restart scripts.
+description: Rex extensions CLI (jcbbge/teerex) - bounded pane reads and waits (observe, watch, compare, filter), supervised runs (run, offstage), visible agents and messages (spawn, send, agents, jobs), and the alpha.5 operating layer (surfaces, fleet boards, direct messages, recovery snapshot/restore and update impact, named hosts and fleet install). Use instead of `rex capture`, sleep-poll loops and hand-written restart scripts.
 ---
 
 # teerex
@@ -29,16 +29,20 @@ previous version, and changes no PATH, shell profile, Rex configuration or runni
 Rollback: `teerex-install rollback --version <old tag>`. Read the release notes before upgrading:
 `gh release view <tag> -R jcbbge/teerex`. Once a hosts config exists,
 `teerex fleet install --config <hosts.json> --host <name> --version <tag>` plans the install on a
-named machine and `--apply` performs it (no hosts config is set up yet).
+named machine and `--apply` performs it (hosts config: `~/.config/teerex/hosts.json`, owned by `~/rexconfig`).
 
 **Compatibility (alpha.5):** Rex integer API 10–13; `jobs`, `boards`, `agents` and `recovery
 snapshot/restore` need API 13 (both machines run API 13). `run`, `doctor` and `offstage` are
 Mac-only. The operating-layer commands (`surfaces`, `boards`, `agents`, `recovery`, `targets`,
 fleet) need Python 3.9+.
 
-**Open gaps (jcbbge/teerex issues):** hive cannot read panes hosted on the m5 (#10); no draft
-recovery, harness resume-ID discovery or Rex server updater; `agents` hooks are untested against
-the real paid harnesses. Gaps are filed as issues for the builder, never worked around.
+**Draft protection:** `teerex send` guards and restores operator drafts by default; agent-core
+does not maintain a second parser or restore loop. Read `teerex send --help` for its heuristic
+and race limits.
+
+**Open gaps:** restart-time draft recovery, harness resume-ID discovery and a Rex server updater
+are distinct from send-time draft protection. Check the installed command help and the teerex
+issue tracker before assuming a feature exists. Gaps are filed for the builder, never worked around.
 
 The [engine-host](../../hooks/engine-host/HOOK.md) guard sends `rex capture` here once teerex
 is present.
