@@ -34,11 +34,10 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
   dialogs, no waiting on input in its own pane. A pane nobody watches is a dead end.
 - The seat relays the human's answer word for word to whoever asked, with `agent-send`.
 - If you do not know who the seat is, ask your starter. A brief always names the seat and its address.
-- **The seat's pane is never typed into (Josh, 2026-11-11: "i cant type without the agents message overwriting my
-  words").** The seat is registered with teerex (`teerex boards seat register`). `agent-send` to it is kept in its
-  inbox instead of being typed; `teerex boards inbox` shows the inbox to the human beside the seat, and the seat
-  reads it when it works. One inbox: the old `~/.local/state/agent-inbox/seat-inbox.log` is moving into teerex's
-  (2026-11-13), never kept beside it. Senders change nothing: same verb, same address.
+- **Agents message the seat directly (Josh, 2026-11-13: "Disable the feature let agents communicate directly to
+  you").** `agent-send` types into the seat's pane like any other pane, so every report reaches the seat as input
+  and gets an answer. There is no seat inbox, log or board to check. `agent-send`'s typing guard waits while the
+  human is typing in that pane and puts the draft back after the message.
 
 ## The protocol
 
@@ -53,7 +52,7 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
 6. **The launcher guarantees the alert.** An agent can die or go idle without reporting, so its launcher makes
    sure the starter hears: `agent-spawn` carries `AGENT_NAME` and `AGENT_REPORT_TO`, and the harness's stop and
    stop-failure hooks run `agent-stop-alert`, which sends the starter the agent's last words or its error. A
-   starter watches its own inbox; it never waits to be prompted.
+   starter gets that alert typed into its own pane; it never waits to be prompted.
 7. **Long output is a document, read in leaf (Josh, 2026-11-12).** Anything for the human longer than a few lines
    (a task list, a table, a QA brief, a report) is written as a `.md` file in the item's work folder, never printed
    into a pane. It is opened in `leaf` (a terminal document reader, installed on the Mac and on hive) in a pane
@@ -71,4 +70,4 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
 ## Transport
 
 The verbs are Rex, through teerex (jcbbge/teerex): `agent-spawn` is `teerex spawn`, `agent-send` is `teerex send`,
-the seat and its inbox are `teerex boards`. Nothing is hand-built beside them; a gap is a teerex issue.
+the fleet board is `teerex boards fleet`. Nothing is hand-built beside them; a gap is a teerex issue.

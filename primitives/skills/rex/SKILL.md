@@ -1,6 +1,6 @@
 ---
 name: rex
-description: Rex is the terminal control plane on the M5 and on hive - sessions, tabs, panes, running and reading terminals, controlling Rex apps - plus teerex (alpha.5), the Rex extensions CLI - bounded reads and waits, supervised runs, visible agents and messages, panes it opens/moves/closes, the seat inbox and decision-card boards, restart snapshot/restore, named hosts. Use for any Rex task, any time an agent starts, reads, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
+description: Rex is the terminal control plane on the M5 and on hive - sessions, tabs, panes, running and reading terminals, controlling Rex apps - plus teerex (alpha.5), the Rex extensions CLI - bounded reads and waits, supervised runs, visible agents and messages, panes it opens/moves/closes, the fleet board, restart snapshot/restore, named hosts. Use for any Rex task, any time an agent starts, reads, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
 ---
 
 # Rex
@@ -70,8 +70,7 @@ The protocol is [agent-messaging](../../rules/agent-messaging/RULE.md); the verb
   its pane. It passes `AGENT_REPORT_TO` (you) so the agent reports back to you.
 - `agent-send <session> <pane> <your name> <message...>` is the only way to send.
 - `agent-read <session> <pane>` only to confirm delivery.
-- Questions for the human go to the **seat** with `agent-send`; the seat's pane is an inbox and is
-  never typed into.
+- Questions for the human go to the **seat** with `agent-send`, typed straight into its pane.
 
 Hive agents are started from the M5's Rex as `ssh -t hive "cd <dir> && exec <agent> ..."`. Pass
 the pane address across: `LC_REX_SESSION` / `LC_REX_BLOCK` and `LC_AGENT_*` ride over ssh. On
@@ -105,16 +104,16 @@ Full flags: `teerex <command> --help`.
 |---|---|---|
 | `surfaces` | You need a tiled, floating or tab pane with its real geometry read back, or to move, focus or close one by address. | `teerex surfaces open --socket "$sock" --session "$S" --layout float --label logs -- tail -f app.log` |
 | `jobs` | You track who owns a pane, or bring a finished pane beside you. Never closes anything. | `teerex jobs present --registry "$REG" --socket "$sock" --session "$S" --block "$B" --owner seat --generation 1 --reason review --anchor "$ME" --focus no` |
-| `boards` | The operator wants a live read-only board (seat inbox, fleet), or you append a typed decision card for the seat. Appends to the seat's log; never types into its pane. | `teerex boards ask …` for a card; `teerex boards boards …` in a visible pane |
+| `boards fleet` | The operator wants the live read-only fleet board. Not for messages: the seat has no inbox; message it with `agent-send`. | `teerex boards fleet --store "$ST" --config "$ST/hosts.json" --hosts m5,hive` in a visible tab |
 | `agents` | Managed launch from a profile: the agent ACKs the protocol before one brief, its job is tracked, its stop is reported honestly. | `teerex agents launch --config "$PROFILES" --profile worker --brief-file brief.md …` |
 | `recovery` | Before a Rex restart: `update --snapshot` lists panes at risk; `snapshot` saves layout and launch metadata; `restore` previews, then applies on an empty server. | `teerex recovery update --socket "$sock" --snapshot` |
 | `targets` | A command should run on a named machine (`m5`, `hive`, `m1`) from one hosts config, not a socket path. | `teerex --config "$HOSTS" --host hive observe …` |
 | `fleet install` | Install or roll back teerex on a named machine: plan first, `--apply` to do it. | `teerex fleet install --config "$HOSTS" --host hive --version v0.1.0-alpha.5 --apply` |
 | `doctor`, `adapters`, `maneuver-check` | Check the server offers what teerex needs (Mac); generate five read-only Rex tools for an agent; check a saved read against an expected starting screen. | `teerex doctor --socket "$sock"` |
 
-In use: the seat is registered with `teerex boards seat register`, and the boards store is
-`/Users/jrg/.local/state/teerex-boards` on the m5 (it holds the seat and the fleet board's
-`targets.json`). `agent-spawn` and `agent-send` are names for `teerex spawn` and `teerex send`. Every
-remaining piece moves onto teerex (seat inbox onto `boards inbox`, launches onto `agents` profiles,
+In use: the teerex store on the m5 is `/Users/jrg/.local/state/teerex-boards`; its `hosts.json`
+names m5 (local) and hive (ssh) for `teerex --config ... --host` and the fleet board. The seat is
+not registered there: agents message it directly (Josh, 2026-11-13). `agent-spawn` and `agent-send` are names for `teerex spawn` and `teerex send`. Every
+remaining piece moves onto teerex (launches onto `agents` profiles,
 host routing onto `targets`). Gaps are jcbbge/teerex issues, listed in
 [TOOL.md](../../tools/teerex/TOOL.md); nothing is built around them.

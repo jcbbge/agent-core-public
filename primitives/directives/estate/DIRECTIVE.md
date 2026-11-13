@@ -37,7 +37,7 @@ login), say which link failed and what it printed.
 
 ## Where things live (one place each)
 
-- Code, checkouts, Rivet, work items, agent sessions, inboxes: **hive**.
+- Code, checkouts, Rivet, work items, agent sessions: **hive**.
 - Anything the operator looks at (Rex windows, Chrome, Finder): **m5**.
 - A file never gets copied between machines to work on it. Read and write it where it lives.
   Copy only to hand it to a tool that cannot reach it (then say so).
@@ -52,7 +52,7 @@ From the ground up. Each layer only drives the one above it.
    A pane's address is its session and block (`REX_SESSION`, `REX_BLOCK`; over ssh,
    `LC_REX_SESSION`, `LC_REX_BLOCK`).
 3. **teerex.** The Rex extensions CLI: bounded reads and waits, supervised runs, visible agents and
-   messages, and the operating layer (panes, seat/inbox boards, restart snapshot/restore, named
+   messages, and the operating layer (panes, fleet board, restart snapshot/restore, named
    hosts). Every agent uses it for everything it does, and nothing is hand-built beside it; how is
    in the `rex` skill. Installed: v0.1.0-alpha.5 on m5 and hive (`~/.local/opt/teerex-managed`,
    alpha.4 retained). Both Rex servers are API 13. From hive, teerex cannot read panes hosted on
@@ -68,15 +68,14 @@ From the ground up. Each layer only drives the one above it.
    `agent-send` / `agent-spawn` / `agent-ask`.
 6. **The seat.** The one agent the operator types to, his concierge for the session. He starts it
    by typing `seat` in any Rex tab (Mac or hive); if a seat is already running, `seat` switches to
-   it instead. Its Rex tab is named "seat" and its pane is an inbox: questions for the operator go
-   there as decision cards, into the one inbox every seat inherits: teerex's (`teerex boards`),
-   registered with `teerex boards seat register`. Its brief is `tools/agent-messaging/SEAT.md`.
+   it instead. Its Rex tab is named "seat". Agents message it directly with `agent-send`, typed into
+   its pane; questions for the operator go there as decision cards. Its brief is `tools/agent-messaging/SEAT.md`.
 
 ## Words
 
 - **Machine**: one of the names above. **Host** means the same.
 - **Pane / block**: one terminal in Rex. **Tab / window**: a Rex tab.
-- **Seat**: the agent the operator talks to. **Inbox**: the seat's message log on hive.
+- **Seat**: the agent the operator talks to; agents message it directly.
 - **Item**: a piece of Rivet work (a discovery or a task). **Promote**: turning a discovery's
   candidate tasks into tasks. **Ship stop**: where finished work waits for the operator's QA.
 - **Project**: a folder of inputs Rivet reads (`~/rivet/projects/<name>`).
