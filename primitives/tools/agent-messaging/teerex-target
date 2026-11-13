@@ -33,8 +33,8 @@ resolve() { # <session label, suffix or id>
 
 tx() { # <verb> args...: teerex on the session's server. stdin passes through.
   local verb=$1; shift
-  if [ "$WHERE" = local ]; then teerex "$verb" --socket "$LSOCK" "$@"
-  else "${SSH_M5[@]}" "PATH=\$HOME/.local/bin:$(printf '%q' "$(dirname "$MAC_REX")"):\$PATH teerex $(printf '%q ' "$verb" --socket "$MAC_SOCK" "$@")"; fi # teerex calls rex on PATH
+  if [ "$WHERE" = local ]; then teerex --rex "$REAL_REX" "$verb" --socket "$LSOCK" "$@"
+  else "${SSH_M5[@]}" "\$HOME/.local/bin/teerex $(printf '%q ' --rex "$MAC_REX" "$verb" --socket "$MAC_SOCK" "$@")"; fi # --rex pins the Rex binary: rex is not on a non-interactive ssh PATH
 }
 
 rexat() { # rex args... on the session's server (for reads teerex does not offer, e.g. the vt format the typing guard needs)
@@ -45,10 +45,10 @@ rexat() { # rex args... on the session's server (for reads teerex does not offer
 tx_send() { # <block> <from> <message on stdin>: teerex send, with the message as a private file on that server
   if [ "$WHERE" = local ]; then
     local f; f=$(mktemp); chmod 600 "$f"; cat > "$f"
-    teerex send --socket "$LSOCK" --session "$SID" --block "$1" --from "$2" --message-file "$f"; local rc=$?
+    teerex --rex "$REAL_REX" send --socket "$LSOCK" --session "$SID" --block "$1" --from "$2" --message-file "$f"; local rc=$?
     rm -f "$f"; return $rc
   else
-    "${SSH_M5[@]}" "f=\$(mktemp); chmod 600 \"\$f\"; cat > \"\$f\"; PATH=\$HOME/.local/bin:$(printf '%q' "$(dirname "$MAC_REX")"):\$PATH teerex send $(printf '%q ' --socket "$MAC_SOCK" --session "$SID" --block "$1" --from "$2") --message-file \"\$f\"; rc=\$?; rm -f \"\$f\"; exit \$rc"
+    "${SSH_M5[@]}" "f=\$(mktemp); chmod 600 \"\$f\"; cat > \"\$f\"; \$HOME/.local/bin/teerex $(printf '%q ' --rex "$MAC_REX" send --socket "$MAC_SOCK" --session "$SID" --block "$1" --from "$2") --message-file \"\$f\"; rc=\$?; rm -f \"\$f\"; exit \$rc"
   fi
 }
 
