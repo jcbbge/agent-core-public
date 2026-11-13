@@ -5,7 +5,7 @@ set -euo pipefail
 AC="${AGENT_CORE:-$HOME/agent-core}"
 CHECK=false; [ "${1:-}" = --check ] && CHECK=true
 
-if ! $CHECK; then
+if ! $CHECK && [ -z "${AGENT_CORE_FROM_HOOK:-}" ]; then
   git -C "$AC" pull -q --ff-only 2>&1 || echo "agent-core-sync: $AC not fast-forwarded (dirty or diverged); writing from what is checked out" >&2
 fi
 

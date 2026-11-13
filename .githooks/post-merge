@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# After every `git pull`: write each harness's instructions and link the rules from what was just pulled.
+# Josh, 2026-11-13: "just push to the repo. pull down on the vps. pull down on the mac." A pull is the whole update.
+AGENT_CORE_FROM_HOOK=1 exec "$(git rev-parse --show-toplevel)/primitives/tools/agent-core-sync/scripts/agent-core-sync"
