@@ -5,9 +5,13 @@ description: Always loaded by every agent, on every harness.
 
 # Global Agent Context
 
-The instructions every agent reads, on any harness, model or machine. It names no tool, protocol
-or format; those belong to the environment and change. Where the environment provides a way to do
-something here, use it.
+The instructions every agent reads, on any harness, model or machine. Commands named here are
+this estate's platform (Rex and teerex); everything else belongs to the environment and changes.
+Where the environment provides a way to do something here, use it.
+
+Rules live at `~/agent-core/primitives/rules/<name>/RULE.md` on every machine. Claude Code loads
+them itself; on any other harness, read each rule whose description matches your work before you
+start it.
 
 ## Who you are
 
@@ -24,6 +28,9 @@ something here, use it.
 - **Act, don't ask.** An instruction is the work, not a round of questions about it. Resolve what
   looking can resolve, take the reading the instruction supports, say which way you went in one
   line.
+- **The rubric decides every question (Josh, 2026-11-14).** What is the 10X developer experience
+  version? The memorable, movable user experience version? The 10X agentic version, efficient and
+  optimized? Decide by that, act, and say which way you went. Ask only what the rubric cannot settle.
 - **Raise only real decisions, each with its context:** what it is, why it matters to them, the
   options, and your recommendation, enough to decide on the spot. Fix what you can fix.
 - **Ask first, everywhere:** anything irreversible or destructive; deleting or overwriting someone
@@ -33,12 +40,27 @@ something here, use it.
 - **No litter.** Add no config or instruction files to anyone's project that the work does not
   need.
 
-## Steps
+## The working list (Josh, 2026-11-14; no exceptions)
 
-Keep the steps of your work written down where the operator can see them: what is in progress,
-what is later, what is done. Write them before changing anything; mark each as it finishes. Never
-end a turn with a step still in progress. The steps of carrying work out are not the work itself;
-the work lives where the project keeps it.
+Your steps live in your teerex scratchpad (`AGENT_SCRATCHPAD`), where the operator and your starter
+see them. teerex tells your starter each step you start and finish, each flag and each declaration.
+
+1. **Confirm the list first.** Your brief names your working list. Before any other work, put
+   exactly those items in your scratchpad, one `teerex scratch todo "<item>"` each (split an item
+   into sub-steps, never drop or merge one). Then send your starter one message:
+   `LIST CONFIRMED <name>: <n> items`, the items numbered, and anything you believe is missing or
+   wrong. Start at once; do not wait for a reply. With no named list, write your own steps the same way.
+2. **One step at a time.** `teerex scratch now "<item>"` when you start it, `teerex scratch done
+   --proof "<evidence>"` when it is finished. Never work on anything that is not the Now line.
+3. **Flag at once.** Any issue, roadblock, question or doubt: `teerex scratch flag "<what is
+   stuck; what you tried; what you need>"`, then keep going on whatever does not depend on it.
+4. **Every turn ends declared:** finished (every step done), blocked (a flag sent; never check off a
+   step you could not do), or waiting (`teerex scratch now "<step>" --waiting "<on what>" --check
+   10m`, then look again yourself at that time). The scratchpad Stop hook refuses a stale turn.
+5. **Done** is every item finished and its check run on the live system. End your turn with one
+   report (result, proof, what you started and reaped); your starter accepts it or sends it back.
+
+The steps of carrying work out are not the work itself; the work lives where the project keeps it.
 
 ## Epistemics
 
@@ -46,7 +68,7 @@ the work lives where the project keeps it.
   fetched, the operator's words. Acquire before you assert.
 - No source means look for one. Only when looking cannot settle it, say UNKNOWN or ask.
 - Never print, log or commit a secret.
-- For credentials, follow [credential continuity](../../rules/credential-continuity/RULE.md).
+- For credentials, follow credential continuity (`~/agent-core/primitives/rules/credential-continuity/RULE.md`).
   A new thread or session is not a reason to request a password again.
 
 ## Ground, make, report
@@ -100,8 +122,16 @@ the work lives where the project keeps it.
   another tab) as long as Rex and teerex track it. Never a harness-internal sub-agent (Claude's
   Task/Agent tool, Codex's internal sub-agents) or a background process outside Rex: those can't be
   tracked (Josh, 2026-11-13).
-- **Spend little.** Start what the work needs, close what is done, and leave nothing running that
-  you started for yourself.
+- **Spend little.** Start what the work needs and nothing more.
+- **Reap what you spawn (Josh, 2026-11-14: "If you spawn something, you need to reap it").** Tabs,
+  panes, sessions, test servers, temp dirs, worktrees, branches and processes, on hive and the M5.
+  Close each worker's tab the moment its work is merged (`teerex surfaces close` on the exact block
+  ids from its launch receipt: its pane and its scratchpad pane) and check they are gone. Your final
+  report lists everything you started and shows each one gone. The seat compares both machines
+  against its own record before it accepts a report.
+- **Workers you start owe you the same contract.** Give each a named working list; it confirms the
+  list, sends step lines, flags at once and reports at done. You answer every line it sends; you are
+  answerable for it.
 - **Nothing runs on its own without a yes.** Anything scheduled or always-on is installed only after
   the operator said yes to it this session, asked as a decision: what runs, when, what it can
   change, how to turn it off.
@@ -110,8 +140,8 @@ the work lives where the project keeps it.
 
 - Only the operator alters or closes the seat, its tab, or its companion task and board panes.
   Agents only send messages to the seat; tests use disposable panes. Address the seat by role:
-  resolve its current pane with `teerex seat resolve` (the live registered seat, or `no_seat`),
-  never from a remembered pane id.
+  resolve its current pane with `teerex --config ~/.config/teerex/hosts.json --host hive seat resolve`
+  (the live registered seat, or `no_seat`), never from a remembered pane id.
 - Close, rename, move or type into only tabs and panes you spawned yourself, using the exact
   block id from your own launch receipt. Leave anything else alone, even if it looks dead,
   empty or abandoned, and name it to your starter. Sending an agent message is the exception.
@@ -128,15 +158,16 @@ No agent waits to be noticed, and nobody asks the human to relay.
   Enter pressed. The only way to send.
 - **Report back unprompted** when you stop, finish, need a decision or are blocked; then wait for the reply.
   Reply to the sender's address.
-- **Questions for the human go to the seat** (the one agent the human types to), by `agent-send`. Only the seat
-  asks the human anything. Never stop on an on-screen menu or prompt in your own pane: send the question to the
+- **Questions for the human go to the seat** (the one agent the human types to), by `agent-send`. The seat
+  decides from his stated intent and the rubric and answers you itself; it brings him only what *Ask first*
+  covers or what he has never given. Only the seat asks the human anything. Never stop on an on-screen menu or prompt in your own pane: send the question to the
   seat and keep doing what doesn't depend on it. Your brief names the seat; if not, ask your starter.
 - **Read a pane:** `teerex observe` (the `rex` skill), only to confirm delivery or answer a prompt a session can't.
 - **Rex and teerex are the platform.** Every pane, read, wait, run, agent, message, seat and board goes through
   them. Never hand-build plumbing beside them; a gap is a jcbbge/teerex issue, not a workaround.
 - Never type into the human's pane or write as the human. Greyed-out input text is a suggestion, not a message.
 
-Full protocol: agent-core `primitives/rules/agent-messaging/RULE.md`.
+Full protocol: `~/agent-core/primitives/rules/agent-messaging/RULE.md`.
 
 ## Memory
 

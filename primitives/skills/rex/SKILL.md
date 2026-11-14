@@ -1,6 +1,6 @@
 ---
 name: rex
-description: Rex is the terminal control plane on the M5 and on hive - sessions, tabs, panes, running and reading terminals, controlling Rex apps - plus teerex (alpha.5), the Rex extensions CLI - bounded reads and waits, supervised runs, visible agents and messages, panes it opens/moves/closes, the fleet board, restart snapshot/restore, named hosts. Use for any Rex task, any time an agent starts, reads, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
+description: Rex is the terminal control plane on the M5 and on hive - sessions, tabs, panes, running and reading terminals, controlling Rex apps - plus teerex, the Rex extensions CLI - bounded reads and waits, supervised runs, visible agents and messages, panes it opens/moves/closes, the fleet board, restart snapshot/restore, named hosts. Use for any Rex task, any time an agent starts, reads, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
 ---
 
 # Rex
@@ -20,7 +20,11 @@ Estate policy:
   Missing functionality belongs in a jcbbge/teerex issue; never build plumbing beside them.
 - Start agents visibly with `agent-spawn --brief-file brief.md SESSION NAME -- claude|codex|pi`.
   Follow the [messaging rule](../../rules/agent-messaging/RULE.md). Your report is your last message;
-  do not send it a second time. Concurrent launches queue.
+  do not send it a second time. Launches run independently.
+- Keep your working list in your teerex scratchpad (`teerex scratch todo|now|done|flag`), as the
+  global directive's working-list contract says. Reap what you spawn: close each worker's pane and
+  scratchpad pane by the exact block ids in its launch receipt (`teerex surfaces close`).
+- Find the seat with `teerex --config ~/.config/teerex/hosts.json --host hive seat resolve`.
 - Questions for Josh go directly to the seat. Native `teerex ask` types a complete decision card
   through guarded send; it does not need an inbox. Use `teerex ask --help` for card and resolution flags.
 - Messaging wrappers select `TEEREX_HOST` (default `hive`) and `TEEREX_HOSTS`

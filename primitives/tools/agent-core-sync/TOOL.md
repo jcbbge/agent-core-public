@@ -20,5 +20,8 @@ What it makes true on the machine it runs on:
   `~/.gemini/GEMINI.md`. A harness counts as installed when its folder exists.
 - `~/.claude/rules/<name>.md` links to every `primitives/rules/<name>/RULE.md`.
 
-Never edit a generated file. Change agent-core, push, run `agent-core-sync` on each machine
-(`ssh hive agent-core-sync`, `ssh m1 agent-core-sync`).
+Never edit a generated file. Change agent-core and push; then `git -C ~/agent-core pull` on each
+machine (hive and m5) runs it through the post-merge hook. `agent-core-sync` by hand does the same.
+
+Only Claude Code gets the rules linked; every other harness is told by the global directive to read
+`~/agent-core/primitives/rules/<name>/RULE.md` itself.

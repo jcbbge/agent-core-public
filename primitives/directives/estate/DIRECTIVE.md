@@ -19,7 +19,7 @@ login), say which link failed and what it printed.
 |---|---|---|---|---|
 | `hive` | Linux VPS (Hivelocity) | **All compute.** Code, Rivet, agents and their files live here. | `jrg` | `ssh hive <cmd>` |
 | `m5` | MacBook (M5), the operator's laptop | **The terminal.** Rex app, Chrome, the operator's eyes and hands. Mac-only tools. | `jrg` | `ssh m5 <cmd>` (from hive) |
-| `m1` | MacBook (M1) | **A second Mac.** Its files and Mac-only tools. | `jcbbge` | `ssh m1 <cmd>` (being set up: its tunnel to hive is not in place yet, so this fails until it is) |
+| `m1` | MacBook (M1) | **A second Mac.** Its files and Mac-only tools. | `jcbbge` | `ssh m1 <cmd>`: **not in place yet** (2026-11-14: hive cannot resolve `m1`; its tunnel is not set up) |
 
 - Each Mac holds one always-on tunnel to hive and lends hive its login: the M5 at hive's port
   2222, the M1 at 2223. So hive reaches every Mac, and every Mac reaches every other through hive,
@@ -27,12 +27,12 @@ login), say which link failed and what it printed.
   forwards: Rivet engine at the M5's 127.0.0.1:6420, the M5's Chrome to hive's 127.0.0.1:9222.
 - Rex reaches hive's Rex server natively: the M5's Rex host `hive` is
   `ssh://jrg@hive/run/user/1000/rex/server.sock` (`rex -S hive ...`). teerex reaches both machines
-  through its named-host config on the M5, `~/.config/teerex/hosts.json`
+  through its named-host config on each machine, `~/.config/teerex/hosts.json`
   (`teerex --config <it> --host hive ...`). No hand-built socket forward.
 - Connections are shared (ControlMaster): a second `ssh <name> <cmd>` costs under 0.1 s. Call it
   as often as the work needs.
-- **Finder view, on the M5 (being set up):** `~/Machines/hive` (hive's home) and `~/Machines/m1`
-  (the M1's home) are the other machines' files. They are a view for the operator, not a second copy: an agent
+- **Finder view, on the M5: not in place yet** (2026-11-14: `~/Machines` does not exist). When it
+  is, `~/Machines/hive` and `~/Machines/m1` are a view for the operator, not a second copy: an agent
   works on a file where it lives, over ssh.
 
 ## Where things live (one place each)
@@ -58,8 +58,10 @@ From the ground up. Each layer only drives the one above it.
 3. **teerex.** The Rex extensions CLI: bounded reads and waits, supervised runs, visible agents and
    messages, and the operating layer (panes, fleet board, restart snapshot/restore, named
    hosts). Every agent uses it for everything it does, and nothing is hand-built beside it; how is
-   in the `rex` skill. Installed: v0.1.0-alpha.6 on m5 and hive (`~/.local/opt/teerex-managed`;
-   4359c0e and alpha.5 retained). Both Rex servers are API 13. Named-host commands reach M5 panes from hive:
+   in the `rex` skill. Installed: the build `~/rexconfig` pins, on m5 and hive
+   (`~/.local/opt/teerex-managed/current`; `teerex --version` and `readlink` of `current` say which:
+   2026-11-14, v0.1.0-alpha.6 main 2961d7a). Earlier builds stay under `versions/` for rollback.
+   Both Rex servers are API 13. Named-host commands reach M5 panes from hive:
    `teerex --config ~/.config/teerex/hosts.json --host m5 observe ...`.
    Configuration and installation belong to `~/rexconfig`; see its README and `./install --check`.
 4. **Rivet.** The engine on hive (127.0.0.1:6420, `rivet-node.service`, CLI `rv`). It drives work
@@ -74,7 +76,7 @@ From the ground up. Each layer only drives the one above it.
 6. **The seat.** The one agent the operator types to, his concierge for the session. He starts it
    by typing `seat` in any Rex tab (Mac or hive); if a seat is already running, `seat` switches to
    it instead. Its Rex tab is named "seat". Agents message it directly with `agent-send`, typed into
-   its pane; questions for the operator go there as decision cards. Its brief is `tools/agent-messaging/SEAT.md`.
+   its pane; questions for the operator go there as decision cards. Its brief is `~/agent-core/primitives/tools/agent-messaging/SEAT.md`.
 
 ## Words
 

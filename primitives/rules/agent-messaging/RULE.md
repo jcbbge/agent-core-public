@@ -9,7 +9,7 @@ asking the human to relay.
 An agent's address is its **session** and **pane**. `AGENT_SESSION` and `AGENT_PANE` hold yours when your
 terminal sets them; otherwise your brief gives them. Whoever starts you passes theirs as your reply address.
 
-## The three verbs (agent-core `tools/agent-messaging`)
+## The three verbs (on PATH on every machine; installed by `~/rexconfig`)
 
 - `agent-spawn --brief-file <brief.md> [--owner <owner>] [--purpose <purpose>] <session> <name> -- <claude|codex|pi>`:
   start through `teerex agents launch` using `~/.config/teerex/profiles.json`. The caller's own pane is
@@ -60,6 +60,9 @@ Use the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md) for agen
 
 ## The protocol
 
+The working-list contract (confirm the list, one Now step, flag at once, end every turn declared)
+and reaping what you spawn are in the global directive; they bind every agent this protocol starts.
+
 1. Start agents with `agent-spawn`, never hidden. Their brief gives your name and address and what to report.
 2. **A report is the agent's last message of its turn (Josh, 2026-11-13: "why is it repeating the same thing?").**
    When an agent stops, finishes, needs a decision or is blocked, it ends its turn with one self-contained
@@ -93,8 +96,8 @@ Use the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md) for agen
 
 - Only the operator alters or closes the seat, its tab, or its companion task and board panes.
   Agents only send messages to the seat; tests use disposable panes. Address the seat by role:
-  resolve its current pane with `teerex seat resolve` (the live registered seat, or `no_seat`),
-  never from a remembered pane id.
+  resolve its current pane with `teerex --config ~/.config/teerex/hosts.json --host hive seat resolve`
+  (the live registered seat, or `no_seat`), never from a remembered pane id.
 - Close, rename, move or type into only tabs and panes you spawned yourself, using the exact
   block id from your own launch receipt. Leave anything else alone, even if it looks dead,
   empty or abandoned, and name it to your starter. Sending an agent message is the exception.
