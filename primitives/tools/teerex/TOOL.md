@@ -9,7 +9,7 @@ Source and releases: https://github.com/jcbbge/teerex. A utility CLI on top of R
 On PATH as `teerex`. How to use each command lives in the [`rex` skill](../../skills/rex/SKILL.md).
 
 **Installed:** the build `~/rexconfig` pins, on m5 (Apple silicon) and hive (Linux x86_64), managed root
-`~/.local/opt/teerex-managed` (`current` → `versions/<build>`; 2026-11-14: v0.1.0-alpha.6 main 2961d7a).
+`~/.local/opt/teerex-managed` (`current` → `versions/<build>`).
 `teerex --version` and `readlink` of `current` say which; earlier builds stay under `versions/` for rollback.
 
 **Present when:** `teerex --version` prints the expected tag **and** `teerex observe` of the
