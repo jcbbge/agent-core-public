@@ -14,8 +14,11 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
 - `agent-spawn --brief-file <brief.md> [--owner <owner>] [--purpose <purpose>] <session> <name> -- <claude|codex|pi>`:
   start through `teerex agents launch` using `~/.config/teerex/profiles.json`. The caller's own pane is
   starter and report-to. Profiles supply harness argv, standing flags, job registry and fleet-board store.
-  Only configured profiles work. The selected named host defaults to hive; set `TEEREX_HOST=m5`
-  explicitly for M5-hosted panes. Caller and target addresses belong to the same selected server. `--non-agent` retains low-level
+  Only configured profiles work. Agents always run on hive (seat decision seat-20261114t174849z-3839911):
+  typing `claude`, `codex` or `pi` on the Mac opens one on hive. `TEEREX_HOST` (default `hive`) selects
+  whose Rex server the wrappers address; `TEEREX_HOST=m5` reaches panes on the M5's own server for
+  `agent-send`, `agent-read` and opening panes, never for launching an agent. Caller and target
+  addresses belong to the same selected server. `--non-agent` retains low-level
   `teerex spawn` only for an explicitly marked non-agent command.
 - `agent-send <session> <pane> <your name> <message...>`: one message, delivered whole. It locks the receiving
   pane, clears its input line, types `FROM <your name>: <message>` and presses Enter, so simultaneous senders

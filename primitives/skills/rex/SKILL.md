@@ -29,7 +29,7 @@ Estate policy:
 - Questions for Josh go directly to the seat. Native `teerex ask` types a complete decision card
   through guarded send; it does not need an inbox. Use `teerex ask --help` for card and resolution flags.
 - Messaging wrappers select `TEEREX_HOST` (default `hive`) and `TEEREX_HOSTS`
-  (default `~/.config/teerex/hosts.json`). Choose `m5` explicitly for M5 panes; no host search or fallback.
+  (default `~/.config/teerex/hosts.json`). Choose `m5` explicitly for M5 panes (send, read, open); agents themselves always run on hive. No host search or fallback.
 - Rexconfig (`~/rexconfig`, its README and `./install --check`) owns Rex configuration, named hosts,
   profiles and `~/.config/teerex/shell.zsh`. Native human launch functions apply standing flags;
   the Mac profile route opens compute on hive. Agent-core-sync does not install that configuration.
