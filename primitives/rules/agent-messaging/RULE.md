@@ -91,6 +91,14 @@ Use the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md) for agen
 
 ## Never
 
+- Only the operator alters or closes the seat, its tab, or its companion task and board panes.
+  Agents only send messages to the seat; tests use disposable panes. Address the seat by role:
+  resolve its current pane from the registered seat in teerex boards (`teerex seat inspect`),
+  never from a remembered pane id.
+- Close, rename, move or type into only tabs and panes you spawned yourself, using the exact
+  block id from your own launch receipt. Leave anything else alone, even if it looks dead,
+  empty or abandoned, and name it to your starter. Sending an agent message is the exception.
+
 - Never type into the human's own pane, and never write as the human. Every message starts `FROM <name>:`.
 - Greyed-out text in an agent's input box is that harness's suggestion, not a message.
 - Never leave a started agent without a reply address; never end your work without telling your starter.
