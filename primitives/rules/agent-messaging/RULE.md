@@ -34,6 +34,14 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
 - The turn hook `agent-hook` runs inside Claude, Codex and pi on its own: it refuses a stale or undeclared
   turn end once, shows the agent's status in its pane, and sends the turn's last words to the starter.
 
+## Who reports to whom (Josh, 2026-11-14)
+
+Workers report to their lead, leads to their coordinator, a coordinator to the seat. A coordinator sends
+the seat only three things: its verified final report, a decision only Josh can make (one `agent-ask` card),
+and a blocker it could not clear. Everything else stops at the coordinator
+([COORDINATOR.md](../../tools/agent-messaging/COORDINATOR.md)). A question for the human goes up the same
+line; the coordinator settles what the rubric can and carries only the rest to the seat.
+
 ## The seat: where questions for the human go
 
 The human talks to exactly one agent: **the seat** (the agent whose pane the human types in). Everything

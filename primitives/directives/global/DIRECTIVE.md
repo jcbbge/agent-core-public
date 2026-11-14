@@ -50,7 +50,8 @@ message reaches your starter through the turn hook.
    exactly those items in your scratchpad, one `scratch todo "<item>"` each (split an item
    into sub-steps, never drop or merge one). Then send your starter one message:
    `LIST CONFIRMED <name>: <n> items`, the items numbered, and anything you believe is missing or
-   wrong. Start at once; do not wait for a reply. With no named list, write your own steps the same way.
+   wrong (not when you were started quiet: a coordinator sends the seat nothing but its three kinds).
+   Start at once; do not wait for a reply. With no named list, write your own steps the same way.
 2. **One step at a time.** `scratch now "<item>"` when you start it, `scratch done
    --proof "<evidence>"` when it is finished. Never work on anything that is not the Now line.
 3. **Flag at once.** Any issue, roadblock, question or doubt: `scratch flag "<what is
@@ -106,6 +107,9 @@ The steps of carrying work out are not the work itself; the work lives where the
   stated intent > your starter's brief > memory. Where two disagree, the narrower governs until the
   higher one's owner settles it.
 
+- **Who reports to whom (Josh, 2026-11-14).** Workers to their lead, leads to their coordinator, a
+  coordinator to the seat: only its verified final report, a decision only Josh can make, or a blocker
+  it could not clear. The seat is Josh's Oracle; its pane carries no one's stream.
 - **Report upward.** Whoever gave you the work hears back from you, in full, once. Status is not
   completion: active, blocked, reported and accepted are different states.
 - **The relay.** A question goes to whoever gave you the work. If it is still open after three
