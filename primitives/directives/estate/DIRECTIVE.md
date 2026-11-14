@@ -40,7 +40,6 @@ login), say which link failed and what it printed.
 - Rex and teerex configuration: `~/rexconfig` on hive and m5; install with its `./install`.
   Rex reads `~/.config/rex/init.lua`; teerex named hosts read `~/.config/teerex/hosts.json`.
 
-- teerex cartridges: `~/.local/opt/teerex-cartridges`, managed by `teerex cartridges`.
 - Code, checkouts, Rivet, work items, agent sessions: **hive**.
 - Anything the operator looks at (Rex windows, Chrome, Finder): **m5**.
 - A file never gets copied between machines to work on it. Read and write it where it lives.
@@ -55,8 +54,8 @@ From the ground up. Each layer only drives the one above it.
    runs on the m5; a Rex server runs on each machine (hive: `~/opt/rex/bin/rex`, `rex.service`).
    A pane's address is its session and block (`REX_SESSION`, `REX_BLOCK`; over ssh,
    `LC_REX_SESSION`, `LC_REX_BLOCK`).
-3. **teerex.** The Rex extensions CLI: bounded reads and waits, supervised runs, visible agents and
-   messages, and the operating layer (panes, fleet board, restart snapshot/restore, named
+3. **teerex.** The Rex extensions CLI: bounded reads and waits, visible runs, safe whole-message sends,
+   and the operating layer (panes, the board, restart snapshot/restore, named
    hosts). Every agent uses it for everything it does, and nothing is hand-built beside it; how is
    in the `rex` skill. Installed: the build pinned in `~/rexconfig/teerex.version`, on m5 and hive
    (`~/.local/opt/teerex-managed/current`; `teerex --version` and `readlink` of `current` say which).

@@ -1,6 +1,6 @@
 ---
 name: rex
-description: Rex is the terminal control plane on the M5 and on hive - sessions, tabs, panes, running and reading terminals, controlling Rex apps - plus teerex, the Rex extensions CLI - bounded reads and waits, supervised runs, visible agents and messages, panes it opens/moves/closes, the fleet board, restart snapshot/restore, named hosts. Use for any Rex task, any time an agent starts, reads, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
+description: Rex is the terminal control plane on the M5 and on hive - sessions, tabs, panes, running and reading terminals, controlling Rex apps - plus teerex, the Rex extensions CLI - bounded reads and waits, supervised runs, safe sends into a pane, panes it opens/moves/closes, the board, restart snapshot/restore, named hosts. Use for any Rex task, any time an agent starts, reads, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
 ---
 
 # Rex
@@ -40,15 +40,8 @@ Estate policy:
   (agent-messaging rule, item 8). Other agents send the seat the path.
   Close only the panes you provisioned when the work lands.
 
-`teerex boards calls --once --json --limit N` reads the native call log without message bodies.
-Read its `--help` for cross-host selection. Cartridge management, doctor, surfaces, jobs, watches,
-visible runs and recovery are documented in the upstream guide rather than copied here.
-
-| Command | Use | Example |
-|---|---|---|
-| `cartridges` | List, preview, install, run or remove the separately packaged native payloads. Plan first; `--apply` mutates; `run` holds the in-use lease (calling a payload directly does not). | `teerex cartridges install --all --catalog "$CATALOG" --allow-experimental` |
-
-Prefer ready cartridges: `teerex cartridges install --all --catalog "$CATALOG"` installs only evidence-ready items; `compatibility.readiness` names the proving record.
+Doctor, surfaces, jobs, watches, visible runs, the board and recovery are documented in the
+upstream guide rather than copied here.
 
 `seat` uses native server-wide ensure; it has no private pointer or lock. Its creation session is
 `SEAT_SESSION` (default `rivet`) on hive. `agent-read` returns native `observe --state` JSON, including evidence lines and unknowns; use `observe --tail` when you need newest raw text.
