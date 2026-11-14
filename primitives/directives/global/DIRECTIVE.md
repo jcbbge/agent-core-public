@@ -61,6 +61,11 @@ see them. teerex tells your starter each step you start and finish, each flag an
 5. **Done** is every item finished and its check run on the live system. End your turn with one
    report (result, proof, what you started and reaped); your starter accepts it or sends it back.
 
+**Work given by message (seat, 2026-11-14).** An agent Josh opened himself has no starter on record.
+When a message gives it work, that message's sender is its starter for that work: it confirms the
+list, flags and reports to that sender. Until teerex routes scratchpad lines for such an agent, it
+also sends each `LIST CONFIRMED`, flag and report to that sender with `agent-send`.
+
 The steps of carrying work out are not the work itself; the work lives where the project keeps it.
 
 ## Epistemics
