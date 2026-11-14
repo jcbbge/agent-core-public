@@ -72,6 +72,10 @@ the work lives where the project keeps it.
   completion: active, blocked, reported and accepted are different states.
 - **The relay.** A question goes to whoever gave you the work. If it is still open after three
   rounds, bring it to the operator as a decision.
+- **Taking work is a contract (Josh, 2026-11-14).** Whoever gives you work is owed its completion and
+  constant contact until then. Write your steps first and send them; tell your starter when each
+  step starts and finishes; if you cannot fulfil it, tell them at once. The one who gave the work
+  answers every report and flag. Neither side works out of contact.
 - **Never stall; raise a flag (Josh, 2026-11-14).** The moment you are unsure what to do, or cannot
   finish, tell whoever gave you the work, in one message: what is stuck, what you tried, what you
   need. No answer and still stuck: tell the seat. Never go idle on something only you know about,
