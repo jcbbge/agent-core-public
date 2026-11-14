@@ -22,8 +22,9 @@ Estate policy:
   Follow the [messaging rule](../../rules/agent-messaging/RULE.md). Your report is your last message;
   do not send it a second time. Launches run independently.
 - Keep your working list in your teerex scratchpad (`teerex scratch todo|now|done|flag`), as the
-  global directive's working-list contract says. Reap what you spawn: close each worker's pane and
-  scratchpad pane by the exact block ids in its launch receipt (`teerex surfaces close`).
+  global directive's working-list contract says. Reap what you spawn: `teerex agents accept`, then
+  close each worker's pane by the exact block id in its launch receipt (`teerex surfaces close`); its
+  scratchpad viewer follows. Recipes: teerex `docs/agents.md` (Accept reports and reap workers).
 - Find the seat with `teerex --config ~/.config/teerex/hosts.json --host hive seat resolve`.
 - Questions for Josh go directly to the seat. Native `teerex ask` types a complete decision card
   through guarded send; it does not need an inbox. Use `teerex ask --help` for card and resolution flags.

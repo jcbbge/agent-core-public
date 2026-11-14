@@ -56,7 +56,8 @@ see them. teerex tells your starter each step you start and finish, each flag an
    stuck; what you tried; what you need>"`, then keep going on whatever does not depend on it.
 4. **Every turn ends declared:** finished (every step done), blocked (a flag sent; never check off a
    step you could not do), or waiting (`teerex scratch now "<step>" --waiting "<on what>" --check
-   10m`, then look again yourself at that time). The scratchpad Stop hook refuses a stale turn.
+   10m`, then look again yourself at that time). On Claude Code the Stop hook refuses a stale
+   turn; Codex and pi are reminded after it. Recipes: teerex's `docs/agents.md`.
 5. **Done** is every item finished and its check run on the live system. End your turn with one
    report (result, proof, what you started and reaped); your starter accepts it or sends it back.
 
@@ -125,8 +126,9 @@ The steps of carrying work out are not the work itself; the work lives where the
 - **Spend little.** Start what the work needs and nothing more.
 - **Reap what you spawn (Josh, 2026-11-14: "If you spawn something, you need to reap it").** Tabs,
   panes, sessions, test servers, temp dirs, worktrees, branches and processes, on hive and the M5.
-  Close each worker's tab the moment its work is merged (`teerex surfaces close` on the exact block
-  ids from its launch receipt: its pane and its scratchpad pane) and check they are gone. Your final
+  When a worker's work has landed, accept its report (`teerex agents accept --launch-id <id>`) and
+  close its pane (`teerex surfaces close` on the exact block id from your launch receipt); its
+  scratchpad viewer closes itself when its owner is gone. Check both are absent. Your final
   report lists everything you started and shows each one gone. The seat compares both machines
   against its own record before it accepts a report.
 - **Workers you start owe you the same contract.** Give each a named working list; it confirms the
