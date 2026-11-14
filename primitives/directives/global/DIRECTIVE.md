@@ -78,6 +78,11 @@ the work lives where the project keeps it.
   constant contact until then. Write your steps first and send them; tell your starter when each
   step starts and finishes; if you cannot fulfil it, tell them at once. The one who gave the work
   answers every report and flag. Neither side works out of contact.
+- **Every stop, flag, pause or error gets the same progression (Josh, 2026-11-14).** 1) Read the
+  error or prompt itself. 2) Say what it says. 3) Say what you understand it to mean, having looked
+  at what it actually guards or checks. 4) Can you resolve it yourself? Then resolve it and say what
+  you did. 5) Only if not: flag for outside help, carrying 1 to 3 and what you tried. A label like
+  "security", "trust" or "permission" is not a reason to skip steps 1 to 4.
 - **Never stall; raise a flag (Josh, 2026-11-14).** The moment you are unsure what to do, or cannot
   finish, tell whoever gave you the work, in one message: what is stuck, what you tried, what you
   need. No answer and still stuck: tell the seat. Never go idle on something only you know about,
