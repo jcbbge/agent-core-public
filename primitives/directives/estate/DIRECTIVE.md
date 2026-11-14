@@ -58,7 +58,7 @@ From the ground up. Each layer only drives the one above it.
 3. **teerex.** The Rex extensions CLI: bounded reads and waits, supervised runs, visible agents and
    messages, and the operating layer (panes, fleet board, restart snapshot/restore, named
    hosts). Every agent uses it for everything it does, and nothing is hand-built beside it; how is
-   in the `rex` skill. Installed: the build `~/rexconfig` pins, on m5 and hive
+   in the `rex` skill. Installed: the build pinned in `~/rexconfig/teerex.version`, on m5 and hive
    (`~/.local/opt/teerex-managed/current`; `teerex --version` and `readlink` of `current` say which).
    Earlier builds stay under `versions/` for rollback.
    Both Rex servers are API 13. Named-host commands reach M5 panes from hive:

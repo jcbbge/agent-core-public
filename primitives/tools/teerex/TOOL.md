@@ -8,7 +8,7 @@ description: Rex extensions CLI (jcbbge/teerex) - bounded pane reads and waits (
 Source and releases: https://github.com/jcbbge/teerex. A utility CLI on top of Rex, never an agent.
 On PATH as `teerex`. How to use each command lives in the [`rex` skill](../../skills/rex/SKILL.md).
 
-**Installed:** the build `~/rexconfig` pins, on m5 (Apple silicon) and hive (Linux x86_64), managed root
+**Installed:** the build pinned in `~/rexconfig/teerex.version`, on m5 (Apple silicon) and hive (Linux x86_64), managed root
 `~/.local/opt/teerex-managed` (`current` → `versions/<build>`).
 `teerex --version` and `readlink` of `current` say which; earlier builds stay under `versions/` for rollback.
 
