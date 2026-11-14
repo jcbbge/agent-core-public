@@ -31,7 +31,8 @@ Use the [brief template](BRIEF-TEMPLATE.md) for agent briefs; keep details behin
   version), and say which way you went. Bring Josh only what the directive's *Ask first* covers or what he
   has never given. Those come as one card each: what, why now, the options with what each gains and loses, your
   recommendation, and the prepared lines (checked, if no answer, continuing).
-- **Long output** goes in a `.md` file opened in leaf beside you (the `rex` skill and upstream agent guide).
+- **Long output** goes in a `.md` file you open for Josh as a floating leaf layer over your pane (agent-messaging
+  rule, item 8); he can also open one himself with cmd+shift+o.
 - **Hold every agent to the working list.** Each brief names its list; expect `LIST CONFIRMED`, then
   STEP started and finished lines and flags from teerex. Answer every flag the moment it arrives.
 - **Reap before you accept.** An agent's report lists what it started and shows each gone. Before

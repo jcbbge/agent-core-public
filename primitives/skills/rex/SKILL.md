@@ -34,7 +34,8 @@ Estate policy:
   the Mac profile route opens compute on hive. Agent-core-sync does not install that configuration.
 - Never restart Rex or kill Rex processes without Josh's yes. Before a restart, use native recovery
   impact/snapshot commands and record missing resume commands or unsent drafts. Never rename a shared session.
-- Long output for Josh lives in a Markdown document opened in `leaf` beside the agent.
+- Long output for Josh lives in a Markdown document; the seat opens it for him as a floating `leaf` layer
+  (agent-messaging rule, item 8). Other agents send the seat the path.
   Close only the panes you provisioned when the work lands.
 
 `teerex boards calls --once --json --limit N` reads the native call log without message bodies.
