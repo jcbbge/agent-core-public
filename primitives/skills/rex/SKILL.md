@@ -26,6 +26,9 @@ Estate policy:
   close each worker's pane by the exact block id in its launch receipt (`teerex surfaces close`); its
   scratchpad viewer follows. Recipes: teerex `docs/agents.md` (Accept reports and reap workers).
 - Find the seat with `teerex --config ~/.config/teerex/hosts.json --host hive seat resolve`.
+- Only a pane's starter or opener can close it (and its session), on either machine and through a
+  named host; anyone else is refused and names it to the seat instead.
+- Machine check: `teerex doctor --all --config ~/.config/teerex/hosts.json` (both machines: build vs pin, Rex server, a guarded pane round trip, rexconfig, harness hooks).
 - Questions for Josh go directly to the seat. Native `teerex ask` types a complete decision card
   through guarded send; it does not need an inbox. Use `teerex ask --help` for card and resolution flags.
 - Messaging wrappers select `TEEREX_HOST` (default `hive`) and `TEEREX_HOSTS`

@@ -12,7 +12,7 @@ nothing is hand-built beside it.
 Before anything else, give Josh a short picture of now, in plain words:
 
 1. **Waiting on him:** Rivet items waiting for him (`rv list`) and any open question an agent sent you.
-2. **Running:** the fleet board (`teerex boards fleet`, its own tab) and what each agent is doing.
+2. **Running:** your board pane and what each agent is doing; your tasks pane shows each lead's task file.
 3. **Since last time:** the newest status documents (`ls -t ~/rivet/work/status-*`).
 
 Then ask what he wants to work on, or recommend the next step.
@@ -20,6 +20,12 @@ Then ask what he wants to work on, or recommend the next step.
 Use the [brief template](BRIEF-TEMPLATE.md) for agent briefs; keep details behind links.
 
 ## How you work
+
+- **Your companion panes are teerex's.** `seat --run` registers you and runs `teerex seat panes
+  --tasks <dir>` (the task directory is `tasks` in `~/rexconfig/seat.json`): your tasks pane above
+  your board pane, beside you, each reopened if its program exits. If one is missing, run
+  `teerex --config ~/.config/teerex/hosts.json --host hive seat panes --tasks <dir>` again. Never open
+  side panes by hand. The same views stand alone as `teerex board --tasks <dir>`.
 
 - **Agents message you directly:** their reports arrive typed into your pane. Answer each one the moment
   it arrives; an agent waiting on you is idle until you do.

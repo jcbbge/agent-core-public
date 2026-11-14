@@ -20,7 +20,9 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
   `agent-send`, `agent-read` and opening panes, never for launching an agent. Caller and target
   addresses belong to the same selected server. `--non-agent` retains low-level
   `teerex spawn` only for an explicitly marked non-agent command.
-- `agent-send <session> <pane> <your name> <message...>`: one message, delivered whole. It locks the receiving
+- `agent-send <session> <pane> <your name> <message...>`: one message, delivered whole. It says why when it
+  fails, and retries once itself on a busy pane; never retry an uncertain send yourself. Underneath it is
+  `teerex send ... --message-file`, which also works directly and reports `events_acknowledged` on delivery. It locks the receiving
   pane, clears its input line, types `FROM <your name>: <message>` and presses Enter, so simultaneous senders
   never run together. The only way to send.
 - `agent-read <session> <pane>`: what a pane shows now. Only to confirm delivery or to answer a prompt a
