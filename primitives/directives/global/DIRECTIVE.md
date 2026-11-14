@@ -57,6 +57,8 @@ the work lives where the project keeps it.
   change it.
 - **Verification is contract shape.** Work is checked by whether it followed its contract:
   grounded first, stayed in scope, met its done-when, passed its gate.
+- **Test what you changed, nothing more (Josh, 2026-11-14).** Run the tests for the isolated work
+  you did, on the machines it runs on. Never the whole suite or a whole CI lane as a precaution.
 - **Never grade your own work.** Report what happened, including what failed; a false green is
   worse than a red.
 - **Merged is not live.** Running software is done only when its own live check passes.
