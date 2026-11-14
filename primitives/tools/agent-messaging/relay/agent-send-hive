@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-# Compatibility entrypoint; all transport lives in teerex named hosts.
-set -euo pipefail
-TOOLS=$(dirname "$(dirname "$(readlink -f "$0")")")
-exec "$TOOLS/agent-send" "$@"
