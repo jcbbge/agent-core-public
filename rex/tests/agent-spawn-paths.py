@@ -19,7 +19,7 @@ import json, os, subprocess, sys
 from pathlib import Path
 a=sys.argv[1:]
 if a[:2]==['targets','resolve']:
- print(json.dumps({'host':{'transport':os.environ['TRANSPORT'],'home':os.environ['REMOTE']}}))
+ print(json.dumps({'host':{'transport':os.environ['TRANSPORT'],'home':os.environ['REMOTE'],'address':'fixture','port':22,'identity_file':'/fixture/key','known_hosts':'/fixture/known_hosts'}}))
 elif a[:2]==['targets','exec']:
  cmd=a[a.index('--')+1:]
  if cmd[:2]==['sh','-c'] and 'if [ -d' in cmd[2] and os.environ['CWD_EXISTS']=='0':
@@ -36,6 +36,9 @@ else:
  sys.exit(int(os.environ.get('LAUNCH_STATUS','0')))
 ''')
     tool.chmod(0o755)
+    ssh = root / 'ssh'
+    ssh.write_text("#!/usr/bin/env python3\nimport os, shlex, subprocess, sys\ncmd=shlex.split(sys.argv[-1])\nif cmd[:2]==['sh','-c'] and 'if [ -d' in cmd[2] and os.environ['CWD_EXISTS']=='0':\n print(os.environ['REMOTE'])\nelse: sys.exit(subprocess.call(cmd))\n")
+    ssh.chmod(0o755)
     for transport, exists, explicit, status in [('local', False, False, 0), ('ssh', False, False, 0), ('ssh', True, True, 0), ('ssh', False, False, 1)]:
         receipt = root / 'receipt'
         env = dict(os.environ, PATH=str(root)+os.pathsep+os.environ['PATH'], AGENT_SESSION='session:test', AGENT_PANE='block:test', TRANSPORT=transport, REMOTE=str(remote), RECEIPT=str(receipt), LAUNCH_STATUS=str(status), CWD_EXISTS=str(int(exists)))

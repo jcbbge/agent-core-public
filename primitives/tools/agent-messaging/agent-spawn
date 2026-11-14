@@ -52,17 +52,26 @@ REMOTE_BRIEF_DIR=
 HOST=$(teerex targets resolve --config "${TEEREX_HOSTS:-$HOME/.config/teerex/hosts.json}" --host "${TEEREX_HOST:-hive}")
 if [ "$(printf '%s\n' "$HOST" | jq -er '.host.transport')" != local ]; then
   HOST_HOME=$(printf '%s\n' "$HOST" | jq -er '.host.home')
-  EX=(teerex targets exec --config "${TEEREX_HOSTS:-$HOME/.config/teerex/hosts.json}" --host "${TEEREX_HOST:-hive}" --)
+  SSH=(ssh -o BatchMode=yes -o StrictHostKeyChecking=yes
+    -o "UserKnownHostsFile=$(printf '%s\n' "$HOST" | jq -er '.host.known_hosts')"
+    -i "$(printf '%s\n' "$HOST" | jq -er '.host.identity_file')"
+    -p "$(printf '%s\n' "$HOST" | jq -er '.host.port')"
+    "$(printf '%s\n' "$HOST" | jq -er '.host.address')")
+  remote_exec() {
+    local command
+    printf -v command '%q ' "$@"
+    "${SSH[@]}" "$command"
+  }
   PROFILES=${TEEREX_PROFILES:-$HOST_HOME/.config/teerex/profiles.json}
   # Expand positional parameters on the command host.
   # shellcheck disable=SC2016
-  LAUNCH_CWD=$("${EX[@]}" sh -c 'if [ -d "$1" ]; then printf "%s\n" "$1"; else printf "%s\n" "$2"; fi' sh "$PWD" "$HOST_HOME")
+  LAUNCH_CWD=$(remote_exec sh -c 'if [ -d "$1" ]; then printf "%s\n" "$1"; else printf "%s\n" "$2"; fi' sh "$PWD" "$HOST_HOME")
   if [ "$NON_AGENT" = false ]; then
-    REMOTE_BRIEF_DIR=$("${EX[@]}" mktemp -d "$HOST_HOME/.agent-spawn.XXXXXXXXXX")
-    cleanup_brief() { "${EX[@]}" rm -r -- "$REMOTE_BRIEF_DIR"; }
+    REMOTE_BRIEF_DIR=$(remote_exec mktemp -d "$HOST_HOME/.agent-spawn.XXXXXXXXXX")
+    cleanup_brief() { remote_exec rm -r -- "$REMOTE_BRIEF_DIR"; }
     trap cleanup_brief EXIT
     # shellcheck disable=SC2016
-    "${EX[@]}" sh -c 'umask 077; cat > "$1/brief.md"' sh "$REMOTE_BRIEF_DIR" < "$BRIEF"
+    remote_exec sh -c 'umask 077; cat > "$1/brief.md"' sh "$REMOTE_BRIEF_DIR" < "$BRIEF"
     BRIEF=$REMOTE_BRIEF_DIR/brief.md
   fi
 fi
