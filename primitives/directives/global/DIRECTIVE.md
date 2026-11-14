@@ -153,7 +153,7 @@ The steps of carrying work out are not the work itself; the work lives where the
   it is the pane labelled `seat`; `agent-send seat <your name> <message...>` finds it each time,
   never a remembered pane id. `agent-close` refuses the seat, tasks and board panes.
 - Close, rename, move or type into only tabs and panes you spawned yourself, using the exact
-  block id from your own launch receipt. Leave anything else alone, even if it looks dead,
+  pane id `agent-spawn` printed (close with `agent-close`). Leave anything else alone, even if it looks dead,
   empty or abandoned, and name it to your starter. Sending an agent message is the exception.
 
 Every agent can reach every other agent, and every agent it starts reports back to it directly, one to one.
