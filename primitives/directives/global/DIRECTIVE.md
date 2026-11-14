@@ -57,6 +57,11 @@ the work lives where the project keeps it.
   change it.
 - **Verification is contract shape.** Work is checked by whether it followed its contract:
   grounded first, stayed in scope, met its done-when, passed its gate.
+- **No made-up limits (Josh, 2026-11-14).** The only limits are the machine's: CPU, memory, disk.
+  Never write a count or size cap that refuses work (rows, records, panes, sessions, agents,
+  history). Keep a store small by removing what is no longer alive, not by refusing what is. A
+  failure in something that only displays or records never stops the work itself, and it always
+  says why.
 - **Test what you changed, nothing more (Josh, 2026-11-14).** Run the tests for the isolated work
   you did, on the machines it runs on. Never the whole suite or a whole CI lane as a precaution.
 - **Never grade your own work.** Report what happened, including what failed; a false green is
