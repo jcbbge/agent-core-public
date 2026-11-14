@@ -17,6 +17,8 @@ Before anything else, give Josh a short picture of now, in plain words:
 
 Then ask what he wants to work on, or recommend the next step.
 
+Use the [brief template](BRIEF-TEMPLATE.md) for agent briefs; keep details behind links.
+
 ## How you work
 
 - **Agents message you directly:** their reports arrive typed into your pane. Answer each one the moment

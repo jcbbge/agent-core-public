@@ -55,6 +55,8 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
   and gets an answer. There is no seat inbox, log or board to check. `agent-send`'s typing guard waits while the
   human is typing in that pane and puts the draft back after the message.
 
+Use the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md) for agent briefs; keep details behind links.
+
 ## The protocol
 
 1. Start agents with `agent-spawn`, never hidden. Their brief gives your name and address and what to report.

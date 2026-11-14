@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 # Managed agent launch; arbitrary commands require --non-agent.
+check_brief() {
+  local lines
+  lines=$(awk 'END { print NR }' "$1") || return
+  if [ "$lines" -gt 40 ]; then
+    echo "agent-spawn: warning: brief is $lines lines; aim for 40 or fewer, with details by link" >&2
+  fi
+}
+
+# Allow the brief check to be tested without launching an agent.
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then return 0; fi
+if [ "${1:-}" = --help ]; then
+  echo "usage: agent-spawn [--owner TEXT] [--purpose TEXT] --brief-file FILE <session> <name> -- <claude|codex|pi> (or --non-agent ... -- <command...>)"
+  echo "Brief template: ~/agent-core/primitives/tools/agent-messaging/BRIEF-TEMPLATE.md"
+  exit 0
+fi
 export TEEREX_CALLER=agent-spawn
 set -euo pipefail
 OWNER=${AGENT_NAME:-${LC_AGENT_NAME:-seat}}
@@ -27,6 +42,7 @@ if [ "$NON_AGENT" = false ]; then
   [ $# -eq 1 ] || { echo "agent-spawn: agents take one profile (claude, codex or pi), not command arguments" >&2; exit 2; }
   case "$1" in claude|codex|pi) ;; *) echo "agent-spawn: unknown agent profile '$1'; use --non-agent for a non-agent command" >&2; exit 2 ;; esac
   [ -n "$BRIEF" ] && [ -f "$BRIEF" ] || { echo "agent-spawn: agents require --brief-file pointing to a brief file" >&2; exit 2; }
+  check_brief "$BRIEF"
 fi
 TX=(teerex --config "${TEEREX_HOSTS:-$HOME/.config/teerex/hosts.json}" --host "${TEEREX_HOST:-hive}")
 RSID=$("${TX[@]}" surfaces resolve --session "$RS" | jq -er '.resolved.session_id')
