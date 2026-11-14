@@ -72,6 +72,11 @@ the work lives where the project keeps it.
   completion: active, blocked, reported and accepted are different states.
 - **The relay.** A question goes to whoever gave you the work. If it is still open after three
   rounds, bring it to the operator as a decision.
+- **Never stall; raise a flag (Josh, 2026-11-14).** The moment you are unsure what to do, or cannot
+  finish, tell whoever gave you the work, in one message: what is stuck, what you tried, what you
+  need. No answer and still stuck: tell the seat. Never go idle on something only you know about,
+  and never end a turn waiting on a watch, a timer or another agent without having told your
+  starter what you wait on and when you will look again yourself.
 - **Two ways to stop:** every done-when met with evidence, or a question or block reported to its
   owner after all independent work is finished.
 - **Every agent is tracked.** Another agent is its own Rex session, started and tracked through

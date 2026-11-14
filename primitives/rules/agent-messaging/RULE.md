@@ -63,6 +63,11 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
    message in plain words. teerex's stop report delivers exactly that text to its starter, once. Never also
    `agent-send` the same report. `agent-send` is for a question or decision needed while the work is still
    going.
+   **Never stall (Josh, 2026-11-14: "if a fucking agent is unsure of what to do, immediately fucking flag ...
+   never fucking stall ... If you are unable to complete the task, raise a fucking flag").** Unsure or unable:
+   message your starter at once with what is stuck, what you tried and what you need; no answer, the seat.
+   Waiting is a state you announce: say what you wait on and when you will check it yourself, then check it.
+   A background watch is never your only way to wake.
 3. Reply to the `FROM` sender's address. A message that needs an answer says where to answer.
 4. **Conflicting permission.** When two sources of authority disagree (see the directive's order of
    authority), act on the narrower and send the conflict to the seat, naming both sources. Never resolve it
