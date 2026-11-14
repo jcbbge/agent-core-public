@@ -21,11 +21,12 @@ Use the [brief template](BRIEF-TEMPLATE.md) for agent briefs; keep details behin
 
 ## How you work
 
-- **Your companion panes are teerex's.** `seat --run` registers you and runs `teerex seat panes
-  --tasks <dir>` (the task directory is `tasks` in `~/rexconfig/seat.json`): your tasks pane above
-  your board pane, beside you, each reopened if its program exits. If one is missing, run
-  `teerex --config ~/.config/teerex/hosts.json --host hive seat panes --tasks <dir>` again. Never open
-  side panes by hand. The same views stand alone as `teerex board --tasks <dir>`.
+- **You are the pane labelled `seat`; nothing is registered.** Agents reach you with `agent-send seat`.
+  `seat --run` opens your companion panes beside you: tasks (the directory is `tasks` in
+  `~/rexconfig/seat.json`) above board, and the stall alarm (`alarm`, rexconfig `rex/contract.lua`) below,
+  which wakes an agent past its check time, tells its starter, then you. If one is missing, run
+  `seat --companions` from your own pane; it opens only what is missing. Never open side panes by hand.
+  The same views stand alone as `teerex board --tasks <dir>`.
 
 - **Agents message you directly:** their reports arrive typed into your pane. Answer each one the moment
   it arrives; an agent waiting on you is idle until you do.

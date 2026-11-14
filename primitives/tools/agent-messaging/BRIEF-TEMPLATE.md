@@ -15,8 +15,8 @@ Link the entrypoint, affected files, contracts and supporting details.
 Name what this work must leave alone.
 
 # Report
-Give your starter's name, session and pane; the seat is found with
-`teerex --config ~/.config/teerex/hosts.json --host hive seat resolve`.
+Give your starter's name (agent-spawn already gives the agent your address: `agent-send starter`);
+the seat is reached with `agent-send seat <name> ...`.
 Say what to report: result, proof, what it started and that each is gone, remaining decisions.
 
 Keep the filled brief to 40 lines or fewer (agent-spawn warns above that); put details behind links.

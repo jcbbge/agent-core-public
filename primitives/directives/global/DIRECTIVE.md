@@ -6,7 +6,7 @@ description: Always loaded by every agent, on every harness.
 # Global Agent Context
 
 The instructions every agent reads, on any harness, model or machine. Commands named here are
-this estate's platform (Rex and teerex); everything else belongs to the environment and changes.
+this estate's platform (Rex, teerex and rexconfig's agent commands); everything else belongs to the environment and changes.
 Where the environment provides a way to do something here, use it.
 
 Rules live at `~/agent-core/primitives/rules/<name>/RULE.md` on every machine. Claude Code loads
@@ -42,29 +42,32 @@ start it.
 
 ## The working list (Josh, 2026-11-14; no exceptions)
 
-Your steps live in your teerex scratchpad (`AGENT_SCRATCHPAD`), where the operator and your starter
-see them. teerex tells your starter each step you start and finish, each flag and each declaration.
+Your steps live in your scratchpad (`AGENT_SCRATCHPAD`), where the operator and your starter see
+them. `scratch` tells your starter each step you start and finish and each flag; your turn's last
+message reaches your starter through the turn hook.
 
 1. **Confirm the list first.** Your brief names your working list. Before any other work, put
-   exactly those items in your scratchpad, one `teerex scratch todo "<item>"` each (split an item
+   exactly those items in your scratchpad, one `scratch todo "<item>"` each (split an item
    into sub-steps, never drop or merge one). Then send your starter one message:
    `LIST CONFIRMED <name>: <n> items`, the items numbered, and anything you believe is missing or
    wrong. Start at once; do not wait for a reply. With no named list, write your own steps the same way.
-2. **One step at a time.** `teerex scratch now "<item>"` when you start it, `teerex scratch done
+2. **One step at a time.** `scratch now "<item>"` when you start it, `scratch done
    --proof "<evidence>"` when it is finished. Never work on anything that is not the Now line.
-3. **Flag at once.** Any issue, roadblock, question or doubt: `teerex scratch flag "<what is
+3. **Flag at once.** Any issue, roadblock, question or doubt: `scratch flag "<what is
    stuck; what you tried; what you need>"`, then keep going on whatever does not depend on it.
 4. **Every turn ends declared:** finished (every step done), blocked (a flag sent; never check off a
-   step you could not do), or waiting (`teerex scratch now "<step>" --waiting "<on what>" --check
-   10m`, then look again yourself at that time). On Claude Code the Stop hook refuses a stale
-   turn; Codex and pi are reminded after it. Recipes: teerex's `docs/agents.md`.
+   step you could not do), or waiting (`scratch now "<step>" --waiting "<on what>" --check
+   10m`, then look again yourself at that time). The turn hook (`agent-hook`, on Claude, Codex and
+   pi) refuses a stale or undeclared turn end once; past a check time the stall alarm wakes you and
+   tells your starter, then the seat. Commands: rexconfig's README (Agent commands).
 5. **Done** is every item finished and its check run on the live system. End your turn with one
    report (result, proof, what you started and reaped); your starter accepts it or sends it back.
 
 **Work given by message (seat, 2026-11-14).** An agent Josh opened himself starts with no starter.
-The first registered agent that gives it work by message becomes its starter and report-to, and
-teerex routes its steps, flags and reports there. A later message never changes that; another owner
-needs `teerex agents starter --registry <dir> --launch-id <own> --starter-launch-id <new>`.
+The first agent that gives it work by message becomes its starter: take the address from that
+message's `reply-to:` line and run `scratch init --name <you> --purpose "<work>" --intent "<done
+when>" --report-to "<that address>"`; your steps, flags and turn reports then go there. A later
+message never changes that; only another `scratch init --report-to` does.
 
 The steps of carrying work out are not the work itself; the work lives where the project keeps it.
 
@@ -123,17 +126,17 @@ The steps of carrying work out are not the work itself; the work lives where the
   starter what you wait on and when you will look again yourself.
 - **Two ways to stop:** every done-when met with evidence, or a question or block reported to its
   owner after all independent work is finished.
-- **Every agent is tracked.** Another agent is its own Rex session, started and tracked through
-  teerex, that the operator can find and return to. It may run out of sight (detached, minimized,
-  another tab) as long as Rex and teerex track it. Never a harness-internal sub-agent (Claude's
+- **Every agent is tracked.** Another agent is its own visible Rex pane, labelled with its name
+  and showing its status, started with `agent-spawn`, that the operator can find and return to. It
+  may sit in another tab or out of sight, as long as Rex shows it. Never a harness-internal sub-agent (Claude's
   Task/Agent tool, Codex's internal sub-agents) or a background process outside Rex: those can't be
   tracked (Josh, 2026-11-13).
 - **Spend little.** Start what the work needs and nothing more.
 - **Reap what you spawn (Josh, 2026-11-14: "If you spawn something, you need to reap it").** Tabs,
   panes, sessions, test servers, temp dirs, worktrees, branches and processes, on hive and the M5.
-  When a worker's work has landed, accept its report (`teerex agents accept --launch-id <id>`) and
-  close its pane (`teerex surfaces close` on the exact block id from your launch receipt); its
-  scratchpad viewer closes itself when its owner is gone. Check both are absent. Your final
+  When a worker's work has landed, answer its report and close its pane with `agent-close
+  <session> <pane>` (the pane id `agent-spawn` printed); its scratchpad viewer closes itself when
+  its owner is gone. Check both are absent. Your final
   report lists everything you started and shows each one gone. The seat compares both machines
   against its own record before it accepts a report.
 - **Workers you start owe you the same contract.** Give each a named working list; it confirms the
@@ -147,8 +150,8 @@ The steps of carrying work out are not the work itself; the work lives where the
 
 - Only the operator alters or closes the seat, its tab, or its companion task and board panes.
   Agents only send messages to the seat; tests use disposable panes. Address the seat by role:
-  resolve its current pane with `teerex --config ~/.config/teerex/hosts.json --host hive seat resolve`
-  (the live registered seat, or `no_seat`), never from a remembered pane id.
+  it is the pane labelled `seat`; `agent-send seat <your name> <message...>` finds it each time,
+  never a remembered pane id. `agent-close` refuses the seat, tasks and board panes.
 - Close, rename, move or type into only tabs and panes you spawned yourself, using the exact
   block id from your own launch receipt. Leave anything else alone, even if it looks dead,
   empty or abandoned, and name it to your starter. Sending an agent message is the exception.
@@ -158,20 +161,22 @@ No agent waits to be noticed, and nobody asks the human to relay.
 
 - **Your address** is your session and pane: `AGENT_SESSION` and `AGENT_PANE` (over ssh,
   `LC_REX_SESSION` and `LC_REX_BLOCK`), or what your brief gives.
-- **Start an agent:** `agent-spawn --brief-file <brief.md> <session> <name> -- <claude|codex|pi>` (managed launch from
-  `~/.config/teerex/profiles.json`, on hive’s Rex server; caller is starter and report-to). Its brief
-  gives your name and address and what to report.
-- **Send:** `agent-send <session> <pane> <your name> <message...>`: whole message, locked, `FROM <your name>:` added,
-  Enter pressed. The only way to send.
+- **Start an agent:** `agent-spawn --brief-file <brief.md> <session> <name> -- <claude|codex|pi>`: a visible
+  pane labelled `<name>` on hive, the rules and the brief as its first prompt (no acknowledgement step),
+  standing flags from rexconfig `agent/harness.json`; you are its starter and report-to. It prints the pane id.
+- **Send:** `agent-send <session> <pane> <your name> <message...>` (or `agent-send starter|seat <your name> ...`):
+  whole message, locked, `FROM <your name>:` and a `reply-to:` line with your address added, Enter pressed.
+  The only way to send. Decision cards: `agent-ask` (`agent-ask --help`).
 - **Report back unprompted** when you stop, finish, need a decision or are blocked; then wait for the reply.
-  Reply to the sender's address.
+  Reply to the message's `reply-to:` address.
 - **Questions for the human go to the seat** (the one agent the human types to), by `agent-send`. The seat
   decides from his stated intent and the rubric and answers you itself; it brings him only what *Ask first*
   covers or what he has never given. Only the seat asks the human anything. Never stop on an on-screen menu or prompt in your own pane: send the question to the
   seat and keep doing what doesn't depend on it. Your brief names the seat; if not, ask your starter.
 - **Read a pane:** `teerex observe` (the `rex` skill), only to confirm delivery or answer a prompt a session can't.
-- **Rex and teerex are the platform.** Every pane, read, wait, run, agent, message, seat and board goes through
-  them. Never hand-build plumbing beside them; a gap is a jcbbge/teerex issue, not a workaround.
+- **Rex and teerex are the platform; rexconfig holds the agent commands.** Every pane, read, wait, run, message
+  and board goes through Rex and teerex; starting agents, their lists, hooks and the seat go through rexconfig's
+  commands. Never hand-build plumbing beside them; a gap is a jcbbge/teerex or jcbbge/rexconfig issue.
 - Never type into the human's pane or write as the human. Greyed-out input text is a suggestion, not a message.
 
 Full protocol: `~/agent-core/primitives/rules/agent-messaging/RULE.md`.

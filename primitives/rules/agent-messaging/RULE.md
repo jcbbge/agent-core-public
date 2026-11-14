@@ -9,25 +9,30 @@ asking the human to relay.
 An agent's address is its **session** and **pane**. `AGENT_SESSION` and `AGENT_PANE` hold yours when your
 terminal sets them; otherwise your brief gives them. Whoever starts you passes theirs as your reply address.
 
-## The three verbs (on PATH on every machine; installed by `~/rexconfig`)
+## The agent commands (on PATH on every machine; installed by `~/rexconfig`; no teerex agent code)
 
-- `agent-spawn --brief-file <brief.md> [--owner <owner>] [--purpose <purpose>] <session> <name> -- <claude|codex|pi>`:
-  start through `teerex agents launch` using `~/.config/teerex/profiles.json`. The caller's own pane is
-  starter and report-to. Profiles supply harness argv, standing flags, job registry and fleet-board store.
-  Only configured profiles work. Agents always run on hive (seat decision seat-20261114t174849z-3839911):
-  typing `claude`, `codex` or `pi` on the Mac opens one on hive. `TEEREX_HOST` (default `hive`) selects
-  whose Rex server the wrappers address; `TEEREX_HOST=m5` reaches panes on the M5's own server for
-  `agent-send`, `agent-read` and opening panes, never for launching an agent. Caller and target
-  addresses belong to the same selected server. `--non-agent` retains low-level
-  `teerex spawn` only for an explicitly marked non-agent command.
-- `agent-send <session> <pane> <your name> <message...>`: one message, delivered whole. It says why when it
-  fails, and retries once itself on a busy pane; never retry an uncertain send yourself. Underneath it is
-  `teerex send ... --message-file`, which also works directly and reports `events_acknowledged` on delivery.
-  A registered agent sends under its own registered name; teerex refuses another agent's name. It locks the receiving
-  pane, clears its input line, types `FROM <your name>: <message>` and presses Enter, so simultaneous senders
-  never run together. The only way to send.
+- `agent-spawn --brief-file <brief.md> <session> <name> -- <claude|codex|pi>`: a visible pane labelled
+  `<name>` on hive (`rex run`), with `AGENT_NAME`, its own address, `AGENT_REPORT_TO` (your pane) and
+  `AGENT_SCRATCHPAD` set, a scratchpad viewer beside it, and the rules (rexconfig `agent/protocol.md`) plus
+  the brief as its first prompt. Standing flags: rexconfig `agent/harness.json`. Prints the pane id. Agents
+  always run on hive (seat decision seat-20261114t174849z-3839911); from the M5 it launches on hive and
+  reports come back to your M5 pane. `--non-agent <session> <name> -- <command...>` opens a labelled pane
+  for a command that is not an agent. Typing `claude`, `codex` or `pi` opens one on hive, in its own tab.
+- `agent-send <session> <pane> <your name> <message...>`, `agent-send starter <your name> ...` (your own
+  starter) or `agent-send seat <your name> ...` (the pane labelled `seat`): one message, delivered whole, with
+  a `reply-to: <session> <pane> <host>` line naming you. It says why when it fails and retries once itself on a
+  busy pane; never retry an uncertain send yourself. Underneath it is `teerex send`, which locks the
+  receiving pane, waits while the human types and puts his draft back, types `FROM <your name>: <message>`
+  and presses Enter, so simultaneous senders never run together. The only way to send.
+- `agent-ask [<session> <pane> | seat] <your name> --title .. --ask .. --context .. --option "A: gains / loses"
+  .. --recommend ..`: a complete decision card, sent with agent-send (`agent-ask --help`).
+- `scratch todo|now|done|flag|init|show`: your working list (the global directive's contract); STEP and
+  FLAG lines go to your starter.
+- `agent-close <session> <pane>`: close a pane you started; refuses panes labelled seat, tasks or board.
 - `agent-read <session> <pane>`: what a pane shows now. Only to confirm delivery or to answer a prompt a
   session cannot answer itself. Reading screens is a fallback, never the channel.
+- The turn hook `agent-hook` runs inside Claude, Codex and pi on its own: it refuses a stale or undeclared
+  turn end once, shows the agent's status in its pane, and sends the turn's last words to the starter.
 
 ## The seat: where questions for the human go
 
@@ -40,8 +45,7 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
   dialogs, no waiting on input in its own pane. A pane nobody watches is a dead end.
 - The seat records every answer it gives itself using [the decision record workflow](../../tools/agent-messaging/SEAT.md#record-answers-you-give-yourself), including the rule and how Josh can veto.
 - The seat relays the human's answer word for word to whoever asked, with `agent-send`.
-- Complete decision cards and their resolutions can use native `teerex ask`; it types into the
-  addressed pane through guarded send. Read `teerex ask --help`; no seat inbox is required.
+- Complete decision cards use `agent-ask`; it formats the card and sends it with agent-send.
 - If you do not know who the seat is, ask your starter. A brief always names the seat and its address.
 - **Prepared questions.** A question for the seat also states three things, so it can be answered from
   the message alone:
@@ -51,7 +55,8 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
     that is irreversible, destructive, security-relevant or outside your permission; those wait. A choice
     you would make on silence was yours to make: make it and report the reading instead of asking.
   - **Continuing:** the independent, authorized work that proceeds meanwhile, or "none" and why.
-  With `teerex ask --deliver paste` these are the card's `prepared` fields; mark irreversible options.
+  With `agent-ask` these are `--checked`, `--if-no-answer` and `--continuing`; mark irreversible options
+  with `--irreversible`.
 - **Evidence by reference.** Point to private material (captures, transcripts, notes, logs) by path or
   ID; never paste it into a question, and never reuse it as an example, fixture or template without
   Josh's consent.
@@ -72,7 +77,7 @@ and reaping what you spawn are in the global directive; they bind every agent th
 1. Start agents with `agent-spawn`, never hidden. Their brief gives your name and address and what to report.
 2. **A report is the agent's last message of its turn (Josh, 2026-11-13: "why is it repeating the same thing?").**
    When an agent stops, finishes, needs a decision or is blocked, it ends its turn with one self-contained
-   message in plain words. teerex's stop report delivers exactly that text to its starter, once. Never also
+   message in plain words. The turn hook (`agent-hook`) delivers exactly that text to its starter, once. Never also
    `agent-send` the same report. `agent-send` is for a question or decision needed while the work is still
    going.
    **Never stall (Josh, 2026-11-14: "if a fucking agent is unsure of what to do, immediately fucking flag ...
@@ -80,17 +85,17 @@ and reaping what you spawn are in the global directive; they bind every agent th
    message your starter at once with what is stuck, what you tried and what you need; no answer, the seat.
    Waiting is a state you announce: say what you wait on and when you will check it yourself, then check it.
    A background watch is never your only way to wake.
-3. Reply to the `FROM` sender's address. A message that needs an answer says where to answer.
+3. Reply to the address on the message's `reply-to:` line (agent-send adds it).
 4. **Conflicting permission.** When two sources of authority disagree (see the directive's order of
    authority), act on the narrower and send the conflict to the seat, naming both sources. Never resolve it
    by taking the broader reading. Work both permit proceeds.
-5. Agents on one machine may also use their harness's own session messaging; the three verbs work everywhere.
-6. **Acknowledge before the brief (Josh, 2026-11-11).** A started agent first gets only this protocol and its reply
-   address, and records the supplied `teerex agents ack` command. Managed launch attempts the brief once only
-   after that ACK. A deadline is reported honestly; inspect the tracked launch before retrying or closing.
-7. **The launcher guarantees the alert, once.** Managed launch (`teerex agents launch`, the profile's
-   `hook_events`) sends the starter the agent's last words when a turn ends, its error when the harness fails,
-   and the exit when the process ends. It is the only stop alert: nothing else hooks Stop.
+5. Agents on one machine may also use their harness's own session messaging; the agent commands work everywhere.
+6. **The rules and the brief arrive together (seat ruling, 2026-11-14).** A started agent's first prompt is
+   this protocol (rexconfig `agent/protocol.md`) followed by its brief; there is no acknowledgement step.
+7. **The hook guarantees the alert, once.** `agent-hook`, installed in Claude, Codex and pi, sends the starter
+   the agent's last words when a turn ends and its error when the harness fails. It is the only stop alert.
+   Past an agent's check time, the seat's stall alarm (rexconfig `rex/contract.lua`, the pane labelled
+   `alarm`) wakes it and tells its starter, then the seat.
 8. **Long output is a document, read in leaf (Josh, 2026-11-12/13).** Anything for the human longer than a few lines
    (a task list, a table, a QA brief, a report) is written as a `.md` file in the item's work folder, never printed
    into a pane. Never hand Josh a path to click: in the Mac Rex app a clicked path opens in the Mac's default app
@@ -102,10 +107,9 @@ and reaping what you spawn are in the global directive; they bind every agent th
 
 - Only the operator alters or closes the seat, its tab, or its companion task and board panes.
   Agents only send messages to the seat; tests use disposable panes. Address the seat by role:
-  resolve its current pane with `teerex --config ~/.config/teerex/hosts.json --host hive seat resolve`
-  (the live registered seat, or `no_seat`), never from a remembered pane id.
+  it is the pane labelled `seat`; `agent-send seat` finds it each time, never a remembered pane id.
 - Close, rename, move or type into only tabs and panes you spawned yourself, using the exact
-  block id from your own launch receipt. Leave anything else alone, even if it looks dead,
+  pane id `agent-spawn` printed; close with `agent-close`, which refuses the seat, tasks and board panes. Leave anything else alone, even if it looks dead,
   empty or abandoned, and name it to your starter. Sending an agent message is the exception.
 
 - Never type into the human's own pane, and never write as the human. Every message starts `FROM <name>:`.
@@ -119,5 +123,6 @@ The wrapper commands use `~/.config/teerex/hosts.json` (`TEEREX_HOSTS` can selec
 `TEEREX_HOST` selects the command host, default `hive`; no cross-host search or fallback occurs.
 Native `surfaces resolve` resolves labels and suffixes before sends and reads.
 
-The verbs are Rex, through teerex (jcbbge/teerex): `agent-spawn` uses `teerex agents launch` from configured profiles, `agent-send` is `teerex send`,
-the fleet board is `teerex boards fleet`. Nothing is hand-built beside them; a gap is a teerex issue.
+The agent commands live in rexconfig (jcbbge/rexconfig): `agent-spawn` is `rex run`, `agent-send` is
+`teerex send`, `agent-read` is `teerex observe`. Nothing is hand-built beside them; a gap is a rexconfig or
+teerex issue.

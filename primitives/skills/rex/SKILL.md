@@ -5,37 +5,35 @@ description: Rex is the terminal control plane on the M5 and on hive - sessions,
 
 # Rex
 
-Read the installed Rex guide with `rex __internal skill`, then read the
-[teerex agent guide](https://github.com/jcbbge/teerex/blob/main/docs/agents.md).
-The source on hive is `~/teerex/docs/agents.md`; from another machine read it with
-`ssh hive cat /home/jrg/teerex/docs/agents.md`. Do not duplicate its command recipes here.
-Also read the [teerex README](https://github.com/jcbbge/teerex/blob/main/README.md).
+Read the installed Rex guide with `rex __internal skill`, then the
+[teerex README](https://github.com/jcbbge/teerex/blob/main/README.md) for reads, waits, sends and panes.
+Agent commands (starting agents, lists, hooks, the seat) are rexconfig's: `~/rexconfig/README.md`
+(Agent commands) and the [messaging rule](../../rules/agent-messaging/RULE.md).
 Check `teerex COMMAND --help` for the installed interface.
 
 Estate policy:
 
 - Agents should run on hive. A Rex pane is not required; the [engine-host guard](../../hooks/engine-host/HOOK.md)
   refuses in-process subagents and directs terminal reads through teerex.
-- Every pane, read, wait, run, launch, message and board goes through Rex and teerex.
-  Missing functionality belongs in a jcbbge/teerex issue; never build plumbing beside them.
+- Every pane, read, wait, run, message and board goes through Rex and teerex; agent launch, lists,
+  hooks and the seat go through rexconfig's commands. Missing functionality belongs in a
+  jcbbge/teerex or jcbbge/rexconfig issue; never build plumbing beside them.
 - Start agents visibly with `agent-spawn --brief-file brief.md SESSION NAME -- claude|codex|pi`.
   Follow the [messaging rule](../../rules/agent-messaging/RULE.md). Your report is your last message;
   do not send it a second time. Launches run independently.
-- Keep your working list in your teerex scratchpad (`teerex scratch todo|now|done|flag`), as the
-  global directive's working-list contract says. Reap what you spawn: `teerex agents accept`, then
-  close each worker's pane by the exact block id in its launch receipt (`teerex surfaces close`); its
-  scratchpad viewer follows. Recipes: teerex `docs/agents.md` (Accept reports and reap workers).
-- Find the seat with `teerex --config ~/.config/teerex/hosts.json --host hive seat resolve`.
-- Only a pane's starter or opener can close it (and its session), on either machine and through a
-  named host; anyone else is refused and names it to the seat instead.
+- Keep your working list with `scratch todo|now|done|flag`, as the global directive's working-list
+  contract says. Reap what you spawn: answer the worker's report, then `agent-close <session> <pane>`
+  with the pane id `agent-spawn` printed; its scratchpad viewer follows.
+- The seat is the pane labelled `seat`: `agent-send seat <your name> ...`.
+- Close only panes you opened (a written rule); `agent-close` refuses the seat, tasks and board panes.
 - Machine check: `teerex doctor --all --config ~/.config/teerex/hosts.json` (both machines: build vs pin, Rex server, a guarded pane round trip, rexconfig, harness hooks).
-- Questions for Josh go directly to the seat. Native `teerex ask` types a complete decision card
-  through guarded send; it does not need an inbox. Use `teerex ask --help` for card and resolution flags.
+- Questions for Josh go directly to the seat. `agent-ask` sends a complete decision card through
+  agent-send; `agent-ask --help` lists its fields.
 - Messaging wrappers select `TEEREX_HOST` (default `hive`) and `TEEREX_HOSTS`
   (default `~/.config/teerex/hosts.json`). Choose `m5` explicitly for M5 panes (send, read, open); agents themselves always run on hive. No host search or fallback.
 - Rexconfig (`~/rexconfig`, its README and `./install --check`) owns Rex configuration, named hosts,
-  profiles and `~/.config/teerex/shell.zsh`. Native human launch functions apply standing flags;
-  the Mac profile route opens compute on hive. Agent-core-sync does not install that configuration.
+  the agent commands and `~/.config/teerex/shell.zsh`. Typing `claude`, `codex` or `pi` opens it on
+  hive with its standing flags, from either machine. Agent-core-sync does not install that configuration.
 - Never restart Rex or kill Rex processes without Josh's yes. Before a restart, use native recovery
   impact/snapshot commands and record missing resume commands or unsent drafts. Never rename a shared session.
 - Long output for Josh lives in a Markdown document; the seat opens it for him as a floating `leaf` layer
