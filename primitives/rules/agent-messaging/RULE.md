@@ -93,7 +93,7 @@ Use the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md) for agen
 
 - Only the operator alters or closes the seat, its tab, or its companion task and board panes.
   Agents only send messages to the seat; tests use disposable panes. Address the seat by role:
-  resolve its current pane from the registered seat in teerex boards (`teerex seat inspect`),
+  resolve its current pane with `teerex seat resolve` (the live registered seat, or `no_seat`),
   never from a remembered pane id.
 - Close, rename, move or type into only tabs and panes you spawned yourself, using the exact
   block id from your own launch receipt. Leave anything else alone, even if it looks dead,
