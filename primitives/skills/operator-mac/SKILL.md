@@ -6,22 +6,25 @@ description: From a remote server the operator reaches over SSH, drive a browser
 # operator-mac — the operator's browser and clipboard, from the server
 
 The operator sits at a Mac and works on this server over SSH. A long-lived SSH connection from
-the Mac carries ports both ways, so nothing here opens a tunnel.
+the Mac carries the Mac → server ports. The browser port is the exception: it is never forwarded at
+rest, and `scripts/mac-cdp` opens it for one task and closes it after.
 
 | Direction | What it carries | On the server |
 |---|---|---|
 | Mac → server | the Mac's `localhost:<port>` reaches the server's `127.0.0.1:<port>` | the operator opens `http://localhost:<port>/` in their own browser |
-| server → Mac | a dedicated Chrome on the Mac, remote-controlled over CDP | `http://127.0.0.1:9222` |
+| server → Mac | a dedicated Chrome on the Mac, remote-controlled over CDP | `http://127.0.0.1:9222`, only inside `mac-cdp <command>` |
 | server → Mac | the terminal clipboard (OSC 52) | `clip` |
 
 ## Check first
 
 ```sh
-curl -s -m 3 http://127.0.0.1:9222/json/version   # JSON = the Mac's browser is reachable
-command -v clip                                   # present = clipboard helper installed
+scripts/mac-cdp curl -s -m 3 http://127.0.0.1:9222/json/version   # JSON = the Mac's browser is reachable
+command -v clip                                                    # present = clipboard helper installed
 ```
 
-If no JSON comes back, the dedicated Chrome isn't running. Ask the operator to run `hive-chrome` on
+Outside `mac-cdp`, 127.0.0.1:9222 refusing is correct: the port is closed at rest. `mac-cdp` reaches
+the Mac over ssh (`OPERATOR_MAC_HOST`, default `m5`) and the Mac's Chrome debug port (`MAC_CDP_PORT`,
+default 9223). If it says the browser is not answering, the dedicated Chrome isn't running. Ask the operator to run `hive-chrome` on
 the Mac; it does nothing if Chrome is already up. Never point CDP at the operator's everyday
 Chrome: it holds their logins.
 
@@ -55,9 +58,10 @@ or automatic crash restart.
 
 `scripts/cdp.mjs` connects to the Mac's Chrome, opens a fresh tab, runs the JavaScript on stdin
 with `browser`, `context` and `page` in scope (full Playwright Page API), then closes the tab.
+Run it inside `mac-cdp`, which opens the port for the task and closes it when the script exits.
 
 ```sh
-node scripts/cdp.mjs <<'EOF'
+scripts/mac-cdp node scripts/cdp.mjs <<'EOF'
 await page.goto("http://localhost:4747/");
 console.log(await page.title());
 await page.screenshot({ path: "/tmp/shot.png" });   // the file lands on the server
@@ -71,7 +75,7 @@ EOF
 - Never close tabs you did not open.
 
 The `dev-browser` CLI's Linux binary may not run on older distributions (GLIBC). If it does run,
-`dev-browser --connect http://127.0.0.1:9222` is equivalent.
+`scripts/mac-cdp dev-browser --connect http://127.0.0.1:9222` is equivalent.
 
 ## Copy to the operator's clipboard
 
