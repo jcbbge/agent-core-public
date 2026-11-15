@@ -6,6 +6,14 @@ plugin from someone else. Measured on Rex API revision 13 (hive 0.0.1794460237, 
 `~/rivet/work/tasklist/r12/rex-eval.md` and `rex-eval-detail.md`. Rex's docs: `~/research/rex/docs`,
 `rex __internal skill`, `rex api list|describe --json`.
 
+## Where things are seen, and where they run
+
+Josh, 2026-11-15: "im only using rex on my macbook m5 ... we dont have to support linux. the m5 is
+the hands." Every visual, popup, float, palette action, key and notification targets the Rex app on
+the M5 only, and is designed and proven there. Programs in panes (applets, scripts, teerex) still run
+on hive's Linux, where compute and its Rex server live: that is running, not viewing. Where a choice
+trades Linux-client support for a better Mac experience, take the Mac.
+
 ## What Rex offers an extension
 
 | Point | Runs where | Can | Cannot |
@@ -49,7 +57,7 @@ a README "what it runs and writes"; OSC 7501 for status.
 |---|---|
 | The API revision itself | 7 on 2026-10-23 (rexuikit's snapshot) to 13 on 2026-11-12: six revisions in 20 days |
 | Builds | hive runs a 0.0.x development build, the M5 a preview; docs publish no deprecation policy |
-| Pixel geometry of layers | rexuikit had to measure chrome constants from the Mac app |
+| Pixel geometry of layers | rexuikit had to measure chrome constants from the Mac app (the only client that matters here; re-measure after app updates) |
 | Plugin hooks | none for pickers or per-pane actions; leaf rewrites config to fake one |
 
 ## This estate's architecture

@@ -1,6 +1,6 @@
 ---
 name: rex-applet
-description: Build a Rex applet the settled way - a plain Python standard-library script that draws a live view in one Rex pane, reads its data through plain interfaces, reports status with OSC 7501, and never writes Rex's config. Use when asked for a dashboard, view, monitor or small interactive tool that lives in a Rex pane or floating layer, on hive or the M5.
+description: Build a Rex applet the settled way - a plain Python standard-library script that draws a live view in one Rex pane, reads its data through plain interfaces, reports status with OSC 7501, and never writes Rex's config. Use when asked for a dashboard, view, monitor or small interactive tool that lives in a Rex pane or floating layer. Viewed in the Rex app on the M5; usually runs on hive.
 ---
 
 # rex-applet
@@ -10,8 +10,13 @@ Rex. Where it sits among Rex's other extension shapes: [the rex skill's ecosyste
 
 ## The settled shape (Josh's rulings)
 
-- **Python standard library only**, one executable, no package install. Runs on Python 3.9 (the M5)
-  and 3.10 (hive). Not Rust ("this is a dashboard app layer"), not a Go/Bubble Tea kit.
+- **Seen on the M5, run where the data is** (Josh, 2026-11-15: "the m5 is the hands. all
+  visuals/ui/popups are read and viewed here on the m5"). Every view, float, palette action, key and
+  notification is designed for and proven in the Rex app on the M5; no Linux client is supported.
+  The program itself runs where its data lives, usually hive (Linux, Python 3.10); where a choice
+  trades Linux-client looks for a better Mac experience, take the Mac.
+- **Python standard library only**, one executable, no package install. The template also runs on
+  the M5's Python 3.9. Not Rust ("this is a dashboard app layer"), not a Go/Bubble Tea kit.
 - **Started by a command**, in a pane he can see. **Never writes Rex's config** ("leave config alone"):
   a palette action or key for it is added by rexconfig, by its owner, never by the applet.
 - **Reads through plain interfaces**: a CLI with `--json`, a file, a local HTTP endpoint. It never
@@ -47,11 +52,13 @@ Worked example: `~/madewell-engine-view` (README, DESIGN.md, `tests/`). Read it 
    that set the status (`error` with the reason, `done` when clean). Keep the status record's id stable.
    Replace the test's `FIXTURE` and its unavailable-source case with your own state's shape.
 6. **Record a fixture**: `./<app> --record fixtures` (refuses to overwrite). Check it holds no secret.
-7. **Test without Rex**: `APPLET=<app> python3 -m unittest discover tests` on hive **and** the M5. The
+7. **Test without Rex**: `APPLET=<app> python3 -m unittest discover tests` on the machine it runs on
+   (hive, usually; the M5 too only if it runs there). The
    frame tests read `--replay`; the PTY test proves draw, resize, keys, status and terminal restore.
 8. **Start it** (no config change):
-   - on hive: `rex run --label <app> --shell=none -- ~/path/<app>/<app>`
-   - from the Mac, running on hive: `rex -S hive run --label <app> --shell=none -- ~/path/<app>/<app>`
+   - from the Mac (how Josh starts it; it runs on hive, he sees it in his app):
+     `rex -S hive run --label <app> --shell=none -- ~/path/<app>/<app>`
+   - from an agent on hive: `rex run --label <app> --shell=none -- ~/path/<app>/<app>`
    - floating over a pane: `teerex surfaces open --socket <socket> --session <session> --layout float --anchor <pane> --bounds '[0.1,0.1,0.8,0.8]' --label <app> -- ~/path/<app>/<app>`
      (hive's socket: `/run/user/1000/rex/server.sock`; `~/.config/teerex/hosts.json` names each machine's)
 9. **Prove it live** in a throwaway session: `rex api call session.create '{"label":"<app>-proof"}'`,
@@ -59,7 +66,10 @@ Worked example: `~/madewell-engine-view` (README, DESIGN.md, `tests/`). Read it 
    `teerex observe --socket <socket> --session <s> --block <b> --state` shows the `<app>/health`
    record. Clean up: `rex api call block.close '{"session_id":"<s>","block_id":"<b>"}'`, then
    `rex api call session.destroy '{"session_id":"<s>"}'`, then `rex api call session.list '{}'` shows it gone.
-10. **Want a palette entry or key?** Ask the rex-oracle (or your starter) to add it to rexconfig. The
+10. **Prove it where it is seen**: once, in the Rex app on the M5, with the size Josh uses. Ask the
+    seat for that look (it holds his screen); never open tabs in his app on your own. Mac keys use
+    `cmd`.
+11. **Want a palette entry or key?** Ask the rex-oracle (or your starter) to add it to rexconfig. The
     action only starts the command above.
 
 ## If the applet talks to Rex
