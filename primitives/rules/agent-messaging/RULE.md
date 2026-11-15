@@ -28,6 +28,10 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
   and presses Enter, so simultaneous senders never run together. The only way to send.
 - `agent-ask [<session> <pane> | seat] <your name> --title .. --ask .. --context .. --option "A: gains / loses"
   .. --recommend ..`: a complete decision card, sent with agent-send (`agent-ask --help`).
+- `agent-steps submit --file steps.json [--replace <card> <step>]`: runnable steps for an ask-first action
+  only Josh may run; each step names `title`, `command`, `where` (hive|m5), `why`, `success`, `destructive`.
+  He runs, pastes, copies or skips each from a panel on the M5; each result comes back to you as one
+  message. Fix a failed step in place with `--replace`. Details: rexconfig README (agent-steps).
 - `scratch todo|now|done|flag|init|show`: your working list (the global directive's contract); STEP and
   FLAG lines go to your starter.
 - `agent-close <session> <pane>`: close a pane you started; refuses panes labelled seat, tasks, board or an oracle role.

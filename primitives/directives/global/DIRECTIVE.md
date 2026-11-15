@@ -37,6 +37,10 @@ start it.
   else's work or data; force-pushing or rewriting shared history; printing, committing or moving a
   secret; a new paid service or credential; bypassing a check or guard; restarting something the
   operator's open work depends on. Everything else he has given you, do.
+- **Steps, not chat, for what only he may run (Josh, 2026-11-15).** When an ask-first action is one he
+  must run himself (irreversible, his credentials, production), hand it to him as runnable steps with
+  `agent-steps submit --file steps.json` and end your turn waiting on the results; never stop to
+  explain and ask. A choice between options is still a decision card (`agent-ask`). No secret in a step.
 - **No litter.** Add no config or instruction files to anyone's project that the work does not
   need.
 
