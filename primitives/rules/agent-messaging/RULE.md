@@ -34,7 +34,7 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
   message. Fix a failed step in place with `--replace`. Details: rexconfig README (agent-steps).
 - `scratch todo|now|done|flag|init|show`: your working list (the global directive's contract); STEP and
   FLAG lines go to your starter.
-- `agent-close <session> <pane>`: close a pane you started; refuses panes labelled seat, tasks, board or an oracle role.
+- `agent-close <session> <pane>`: close a pane you started; refuses panes labelled seat, desk, tasks, board or an oracle role.
 - `agent-read <session> <pane>`: what a pane shows now. Only to confirm delivery or to answer a prompt a
   session cannot answer itself. Reading screens is a fallback, never the channel.
 - The turn hook `agent-hook` runs inside Claude, Codex and pi on its own: it refuses a stale or undeclared
@@ -42,11 +42,23 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
 
 ## Who reports to whom (Josh, 2026-11-14)
 
-Workers report to their lead, leads to their coordinator, a coordinator to the seat. A coordinator sends
-the seat only three things: its verified final report, a decision only Josh can make (one `agent-ask` card),
-and a blocker it could not clear. Everything else stops at the coordinator
-([COORDINATOR.md](../../tools/agent-messaging/COORDINATOR.md)). A question for the human goes up the same
-line; the coordinator settles what the rubric can and carries only the rest to the seat.
+Workers report to their lead, leads to their coordinator, coordinators and role holders to the desk
+when one exists, else to the seat. A coordinator sends up only three things: its verified final report,
+a decision only Josh can make (one `agent-ask` card), and a blocker it could not clear. Everything else
+stops at the coordinator ([COORDINATOR.md](../../tools/agent-messaging/COORDINATOR.md)). A question for
+the human goes up the same line; each level settles what the rubric can and carries only the rest.
+
+## The desk: the seat's pane holds only Josh and the seat (Josh, 2026-11-15)
+
+"I want my conversation, its turns, to be just me and you." When a pane labelled `desk` exists (the
+standing coordinator), **no agent types into the seat's pane**. Every report, flag, question, turn-end
+report and alarm escalation goes to the desk. rexconfig enforces it: `agent-send` delivers anything
+addressed to the seat to the desk instead (marked "addressed to the seat"), and `agent-spawn` from the
+seat's pane makes the desk the new agent's starter. The desk answers by the rubric, records its rulings,
+verifies and reaps, keeps a one-screen status file the seat reads, and puts what Josh must read or decide
+in his inbox as a page (`inbox add`), never in a pane. The desk types into the seat's pane only when the
+seat asks it something, or for a fire that cannot wait for the inbox (a hole reachable from outside, data
+being lost, a credential exposed). With no desk, the seat receives as described below.
 
 ## The seat: where questions for the human go
 
@@ -78,10 +90,9 @@ Josh opened himself and is working with directly asks him in its own pane; with 
   Josh's consent.
 - **One question, sent when it blocks.** Send each blocking decision the moment it blocks, one per
   message. Non-blocking decisions wait for your report's *Decisions owed*.
-- **Agents message the seat directly (Josh, 2026-11-13: "Disable the feature let agents communicate directly to
-  you").** `agent-send` types into the seat's pane like any other pane, so every report reaches the seat as input
-  and gets an answer. There is no seat inbox, log or board to check. `agent-send`'s typing guard waits while the
-  human is typing in that pane and puts the draft back after the message.
+- **No seat inbox, log or board to check.** Agent messages arrive as input in the receiving pane (the desk's
+  while one exists, else the seat's); `agent-send`'s typing guard waits while the human types in that pane
+  and puts the draft back after the message.
 
 Use the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md) for agent briefs; keep details behind links.
 
@@ -111,7 +122,7 @@ and reaping what you spawn are in the global directive; they bind every agent th
 7. **The hook guarantees the alert, once.** `agent-hook`, installed in Claude, Codex and pi, sends the starter
    the agent's last words when a turn ends and its error when the harness fails. It is the only stop alert.
    Past an agent's check time, the seat's stall alarm (rexconfig `rex/contract.lua`, the pane labelled
-   `alarm`) wakes it and tells its starter, then the seat.
+   `alarm`) wakes it and tells its starter, then the seat (delivered to the desk while one exists).
 8. **Long output is a document, read in leaf (Josh, 2026-11-12/13).** Anything for the human longer than a few lines
    (a task list, a table, a QA brief, a report) is written as a `.md` file in the item's work folder, never printed
    into a pane. Never hand Josh a path to click: in the Mac Rex app a clicked path opens in the Mac's default app

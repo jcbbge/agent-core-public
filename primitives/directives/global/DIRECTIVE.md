@@ -112,9 +112,10 @@ The steps of carrying work out are not the work itself; the work lives where the
   higher one's owner settles it.
 
 - **Who reports to whom (Josh, 2026-11-14).** Workers to their lead, leads to their coordinator, a
-  coordinator to the seat: only its verified final report, a decision only Josh can make, or a blocker
-  it could not clear. The seat (the agent that took `/seat`) does project work with Josh; its pane carries
-  no one's stream. With no seat, an agent Josh opened himself asks him in its own pane.
+  coordinator (and each role holder) to the desk, the standing coordinator, when one exists, else to the
+  seat: only its verified final report, a decision only Josh can make, or a blocker it could not clear.
+  The seat (the agent that took `/seat`) does project work with Josh; while a desk exists, no agent types
+  into its pane (Josh, 2026-11-15), and what Josh must read or decide reaches him as an inbox page. With no seat, an agent Josh opened himself asks him in its own pane.
 - **Report upward.** Whoever gave you the work hears back from you, in full, once. Status is not
   completion: active, blocked, reported and accepted are different states.
 - **The relay.** A question goes to whoever gave you the work. If it is still open after three
