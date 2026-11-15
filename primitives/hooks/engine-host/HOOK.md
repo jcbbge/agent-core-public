@@ -17,8 +17,8 @@ agent's process is on hive. This replaces the earlier rule that every agent runs
 
 **Launching is `rex <agent>` (Josh, 2026-11-12: "I do not want to have to remember a shitload of flags";
 2026-11-15: "i want 'rex [agent]' to be the command").** `rex claude`, `rex codex`, `rex pi` run rexconfig's
-`agent-open`: the harness with its standing flags (rexconfig `agent/harness.json`) in a visible labelled
-tab on hive, from either machine, without a brief, starter or role. Rexconfig owns the `rex` wrapper.
+`agent-open`: the harness with its standing flags (rexconfig `agent/harness.json`) without a brief, starter or role: on
+hive in the terminal it was typed in, from another machine in a visible labelled tab on hive. Rexconfig owns the `rex` wrapper.
 Agent-core ships no launch wrapper.
 
 **Refuses:**

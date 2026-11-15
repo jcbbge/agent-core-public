@@ -18,7 +18,7 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
   always run on hive (seat decision seat-20261114t174849z-3839911); from the M5 it launches on hive and
   reports come back to your M5 pane. `--non-agent <session> <name> -- <command...>` opens a labelled pane
   for a command that is not an agent. Josh starts an agent with `rex claude|codex|pi`: a clean start on
-  hive, in its own tab, no role. `agent-role <seat|hive-oracle|rex-oracle|rivet-oracle>` is what a role
+  hive, no role: in the terminal he typed it in on hive, in its own labelled tab from the M5. `agent-role <seat|hive-oracle|rex-oracle|rivet-oracle>` is what a role
   command (`/seat`, `/hive-oracle`, ...) runs: it labels the pane with the role, one holder each.
 - `agent-send <session> <pane> <your name> <message...>`, `agent-send starter <your name> ...` (your own
   starter) or `agent-send seat <your name> ...` (the pane labelled `seat`): one message, delivered whole, with

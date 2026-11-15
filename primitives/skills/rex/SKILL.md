@@ -32,8 +32,8 @@ Estate policy:
 - Messaging wrappers select `TEEREX_HOST` (default `hive`) and `TEEREX_HOSTS`
   (default `~/.config/teerex/hosts.json`). Choose `m5` explicitly for M5 panes (send, read, open); agents themselves always run on hive. No host search or fallback.
 - Rexconfig (`~/rexconfig`, its README and `./install --check`) owns Rex configuration, named hosts,
-  the agent commands and the `rex` wrapper: `rex claude|codex|pi` opens that agent clean on hive with
-  its standing flags, from either machine; any other `rex ...` is the real Rex. Agent-core-sync does not install that configuration.
+  the agent commands and the `rex` wrapper: `rex claude|codex|pi` starts that agent clean with its
+  standing flags (on hive in the terminal it was typed in; from the M5 in a labelled tab on hive); any other `rex ...` is the real Rex. Agent-core-sync does not install that configuration.
 - Never restart Rex or kill Rex processes without Josh's yes. Before a restart, use native recovery
   impact/snapshot commands and record missing resume commands or unsent drafts. Never rename a shared session.
 - Long output for Josh lives in a Markdown document; the seat opens it for him as a floating `leaf` layer

@@ -70,9 +70,9 @@ From the ground up. Each layer only drives the one above it.
 5. **Agents.** Claude, Codex, pi and the rest, any model. **Agents should run on hive**, whatever
    app is their window (Rex, T3 Code, Claude Desktop, a terminal on any machine). This is a
    suggestion, not a block: nothing refuses an agent for the machine it is on. The operator starts
-   one with `rex <agent>` (`rex claude`, `rex codex`, `rex pi`; Josh, 2026-11-15): a clean start, its
-   standing flags in a visible labelled tab on hive, from either Mac or hive, with no role and no
-   brief. Every other `rex ...` reaches the real Rex. Bare `claude`, `codex`, `pi` are the plain
+   one with `rex <agent>` (`rex claude`, `rex codex`, `rex pi`; Josh, 2026-11-15): a clean start with its
+   standing flags, no role and no brief. On hive it starts in the terminal it was typed in; from a
+   Mac it opens a visible tab labelled with its name on hive. Every other `rex ...` reaches the real Rex. Bare `claude`, `codex`, `pi` are the plain
    programs, and `seat` is no longer a command. Agents start agents with
    `agent-spawn`, talk with `agent-send`, keep their list with `scratch`, and send decision cards with
    `agent-ask` (all rexconfig; teerex carries no agent code).
