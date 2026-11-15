@@ -17,7 +17,7 @@ everything: `run_id`, `step_id`, `assignment_id`, `tool_call_id`, `actor_id`, `t
 | Is everything up? capture queue/spool? | `mw inspect health` |
 | What happened in this run, in order? | `mw inspect run <run_id>` (timeline, steps, attempts, evidence, holds, acceptance, assignments, tool calls, errors, spans) |
 | One step / one agent assignment / one tool call | `mw inspect step <run> <step>` · `assignment <id>` · `tool <tool_call_id>` (`--payloads` shows redacted bodies) |
-| Why is this actor Pending / Crashed? | `mw inspect actor <actor_id or name/key>` (its `why` lines follow the vendor's statuses) |
+| Why is this actor Pending / Crashed? | `mw inspect actor <actor_id>` or `<name>/<key>` (e.g. `run/run_…`, `ok/drill-1`; key parts after the first `/`); its `why` lines follow the vendor's statuses |
 | Engine: pools, nodes, namespaces, actor counts | `mw inspect engine` (its `diagnosis` names any pool with no connected node) |
 | A process or container: state, restarts, logs | `mw inspect service node|engine|services|services-app|db` |
 | Logs from node, engine and agentOS workers, one query | `mw inspect logs --source S --level L --run R --since T --grep X` |
@@ -29,6 +29,8 @@ everything: `run_id`, `step_id`, `assignment_id`, `tool_call_id`, `actor_id`, `t
 
 Another engine (a throwaway for drills): set `MADEWELL_ENV_FILE` to an env file with `MADEWELL_ENGINE_ENDPOINT`,
 `MADEWELL_ENGINE_NAMESPACE`, `MADEWELL_ENGINE_ADMIN_TOKEN` (and the `MADEWELL_PG_*` passwords for the record).
+On a throwaway engine there is no Made Well node, so `inspect health` reports `capture: ok: false … node /health
+not reachable` and exits 1: expected there, not a second fault.
 Raw SQL when a view is missing: role `madewell_ro` (password in `~/madewell/.env`, read it in code, never argv).
 
 Nothing here changes state. Restarting the node or engine, sleeping or destroying an actor is outside this
@@ -52,6 +54,7 @@ The actor list API on engine 3.1.1 leaves every status timestamp null, so read s
    Fix: start the node; check `RIVET_ENDPOINT`, namespace.
 2. **Node in the wrong pool** (`node.poolName` missing or wrong: the old key silently means `default`) → same
    hang; the engine shows a node in another pool. `inspect engine`: the actor's pool has no node.
+   Fix: set the node's `node.poolName` to the actor's pool and restart the node (under the restart rule).
 3. **onCreate throws** → caller gets `actor_stopped_while_waiting` in ~0.4 s; node logs `actor start failed`
    with rising generation numbers. Fix the hook's input or code.
 4. **A workflow step throws until its retries are exhausted** → the actor still answers reads (looks healthy);
