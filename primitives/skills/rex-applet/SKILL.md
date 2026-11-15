@@ -1,0 +1,77 @@
+---
+name: rex-applet
+description: Build a Rex applet the settled way - a plain Python standard-library script that draws a live view in one Rex pane, reads its data through plain interfaces, reports status with OSC 7501, and never writes Rex's config. Use when asked for a dashboard, view, monitor or small interactive tool that lives in a Rex pane or floating layer, on hive or the M5.
+---
+
+# rex-applet
+
+An applet is one executable script in a pane. It reads, draws and reports; it never wires itself into
+Rex. Where it sits among Rex's other extension shapes: [the rex skill's ecosystem reference](../rex/references/ecosystem.md).
+
+## The settled shape (Josh's rulings)
+
+- **Python standard library only**, one executable, no package install. Runs on Python 3.9 (the M5)
+  and 3.10 (hive). Not Rust ("this is a dashboard app layer"), not a Go/Bubble Tea kit.
+- **Started by a command**, in a pane he can see. **Never writes Rex's config** ("leave config alone"):
+  a palette action or key for it is added by rexconfig, by its owner, never by the applet.
+- **Reads through plain interfaces**: a CLI with `--json`, a file, a local HTTP endpoint. It never
+  embeds or writes its backend. Agents are messaged only through `agent-send`, never typed into.
+- **The glyph-kit look**: ANSI colour slots only (the theme picks the shade), `NO_COLOR` honoured.
+  `●` ok (green, 2), `▲` attention (yellow, 3), `✗` problem (red, 1), `○` idle or none, `▸` selected
+  (cyan, 6), rules `─` (grey, 8 / 90), `░▒▓█` density, `▁▂▃▄▅▆▇█` sparklines.
+
+Worked example: `~/madewell-engine-view` (README, DESIGN.md, `tests/`). Read it for scale, not to copy.
+
+## Build one
+
+1. **Name it** one lowercase word, `<app>`. The same word is the command, the pane label, the status
+   id prefix (`<app>/<kind>`), the env prefix (`<APP>_*`) and the state folder (`~/.local/share/<app>/`).
+2. **Lay out a repo** (its own, or a folder in the project it serves):
+   ```
+   <app>/<app>            the executable (from assets/applet)
+   <app>/tests/test_<app>.py   from assets/test_applet.py
+   <app>/fixtures/        recorded state.json for replay
+   <app>/README.md        what it reads, its keys, how to start it, the Rex API revision it uses (if any)
+   ```
+3. **Copy the template** (paths relative to this skill's folder): `cp assets/applet <app>/<app>; chmod +x`,
+   `cp assets/test_applet.py <app>/tests/test_<app>.py`; set `APP = '<app>'` in the executable and the
+   default of `APPLET` in the test. The executable already has:
+   pure `render(state, width, height) -> lines`, cell-exact `fit`, background reads with timeouts,
+   alternate screen, synchronized output, changed-line redraw, SIGWINCH, OSC 7501 on `<app>/health`
+   cleared on exit, terminal restored in `finally`, and `--once`, `--json`, `--replay DIR`, `--record DIR`.
+4. **Replace `Sources.read`** with your sources. One `try` per source; a failure becomes the string
+   `unavailable: <why>` and the rest still draw. Subprocesses: argv list (never a shell), a timeout,
+   in the worker pool. Pass any log or prompt text through a redactor before it reaches the screen.
+   An applet that takes arguments (a path, a host) adds them in `main` and passes them to `Sources(...)`.
+5. **Replace `render` and `health`.** Views are pure functions of state; `health` returns the problems
+   that set the status (`error` with the reason, `done` when clean). Keep the status record's id stable.
+   Replace the test's `FIXTURE` and its unavailable-source case with your own state's shape.
+6. **Record a fixture**: `./<app> --record fixtures` (refuses to overwrite). Check it holds no secret.
+7. **Test without Rex**: `APPLET=<app> python3 -m unittest discover tests` on hive **and** the M5. The
+   frame tests read `--replay`; the PTY test proves draw, resize, keys, status and terminal restore.
+8. **Start it** (no config change):
+   - on hive: `rex run --label <app> --shell=none -- ~/path/<app>/<app>`
+   - from the Mac, running on hive: `rex -S hive run --label <app> --shell=none -- ~/path/<app>/<app>`
+   - floating over a pane: `teerex surfaces open --socket <socket> --session <session> --layout float --anchor <pane> --bounds '[0.1,0.1,0.8,0.8]' --label <app> -- ~/path/<app>/<app>`
+     (hive's socket: `/run/user/1000/rex/server.sock`; `~/.config/teerex/hosts.json` names each machine's)
+9. **Prove it live** in a throwaway session: `rex api call session.create '{"label":"<app>-proof"}'`,
+   `rex run -s <session> --label <app> --shell=none -- <path>`, then
+   `teerex observe --socket <socket> --session <s> --block <b> --state` shows the `<app>/health`
+   record. Clean up: `rex api call block.close '{"session_id":"<s>","block_id":"<b>"}'`, then
+   `rex api call session.destroy '{"session_id":"<s>"}'`, then `rex api call session.list '{}'` shows it gone.
+10. **Want a palette entry or key?** Ask the rex-oracle (or your starter) to add it to rexconfig. The
+    action only starts the command above.
+
+## If the applet talks to Rex
+
+Use `rex api call --json` or `rex do script.lua --json --args '{…}'` (a Lua script for several calls
+that must happen together); never the control socket directly. Read `rex api call server.version`
+once at start, and if `api_revision` is below the one named in the README, say so in one line and
+carry on read-only. Rex is beta: name in the README every Rex behaviour you rely on that its docs do
+not promise, and how to re-check it.
+
+## Never
+
+Write `~/.config/rex/*` or rexconfig; reload Rex's config; start a background watcher or daemon;
+install anything; paste into agent panes; draw colours by hex; keep state anywhere but
+`~/.local/share/<app>/`; block the draw loop on a read.

@@ -43,6 +43,10 @@ Estate policy:
 Doctor, surfaces, jobs, watches, visible runs, the board and recovery are documented in the
 upstream guide rather than copied here.
 
+**Extending Rex** (a key, action, view, watcher, harness extension or someone else's plugin): read
+[references/ecosystem.md](references/ecosystem.md) first; rexconfig is the only writer of Rex's config.
+A view or dashboard in a pane is an applet: the [rex-applet skill](../rex-applet/SKILL.md).
+
 The seat and the oracles are roles: `/seat` etc. run `agent-role <role>`, which labels the pane; there is
 no `seat` launcher, pointer or lock. `agent-read` returns native `observe --state` JSON, including evidence lines and unknowns; use `observe --tail` when you need newest raw text.
 

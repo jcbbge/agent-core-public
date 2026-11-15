@@ -1,0 +1,242 @@
+#!/usr/bin/env python3
+"""applet: a read-only Rex pane dashboard. Template from agent-core's rex-applet skill.
+
+Copy this file to <repo>/<app>, set APP, replace Sources.read and render. Standard library only.
+"""
+import argparse
+import base64
+import concurrent.futures
+import json
+import os
+import re
+import select
+import shutil
+import signal
+import subprocess
+import sys
+import termios
+import time
+import tty
+import unicodedata
+from pathlib import Path
+
+APP = 'applet'          # one lowercase word: the command, the pane label, the status id prefix
+REFRESH = 5.0           # seconds between background reads
+ANSI = re.compile(r'\x1b\[[0-?]*[ -/]*[@-~]|\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)')
+HELP = ['keys', '  r  read every source now', '  ?  this help', '  q  quit (Ctrl-C too)']
+
+
+def clean(text):
+    """Strip escapes and control characters: source text never drives the terminal."""
+    return ''.join(c for c in ANSI.sub('', str(text)) if c in '\t' or unicodedata.category(c)[0] != 'C')
+
+
+def cells(text):
+    return sum(0 if unicodedata.combining(c) else 2 if unicodedata.east_asian_width(c) in 'WF' else 1 for c in text)
+
+
+def fit(text, width):
+    """Fit one line to `width` display cells; wide glyphs count two, nothing wraps."""
+    text = clean(text).replace('\t', ' ')
+    if cells(text) <= width:
+        return text
+    out = ''
+    for c in text:
+        if cells(out + c) > max(0, width - 1):
+            break
+        out += c
+    return out + ('…' if width else '')
+
+
+def command(argv, timeout=5):
+    """Run one plain interface (a CLI, ideally with --json) with a timeout; never a shell."""
+    r = subprocess.run(argv, capture_output=True, text=True, timeout=timeout)
+    if r.returncode:
+        raise OSError((r.stderr or r.stdout).strip().splitlines()[0] if (r.stderr or r.stdout).strip() else f'exit {r.returncode}')
+    return r.stdout
+
+
+class Sources:
+    """Live reads. Each source fails on its own as 'unavailable: <why>'; the screen never waits on one."""
+
+    def __init__(self):
+        self.pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+        self.future = None
+        self.state = {}
+        self.last = 0.0
+
+    def read(self):
+        state = {'read_at': time.strftime('%H:%M:%S')}
+        try:
+            state['load'] = list(os.getloadavg())
+        except OSError as e:
+            state['load'] = f'unavailable: {e}'
+        try:
+            du = shutil.disk_usage(Path.home())
+            state['disk'] = {'used': du.used, 'total': du.total}
+        except OSError as e:
+            state['disk'] = f'unavailable: {e}'
+        try:
+            state['host'] = command(['uname', '-n']).strip()
+        except (OSError, subprocess.TimeoutExpired) as e:
+            state['host'] = f'unavailable: {e}'
+        return state
+
+    def poll(self, now=False):
+        if self.future and self.future.done():
+            try:
+                self.state = self.future.result()
+            except Exception as e:  # a reader bug is shown, not raised into the draw loop
+                self.state = {'error': f'unavailable: {e}'}
+            self.future = None
+        if self.future is None and (now or time.monotonic() - self.last >= REFRESH):
+            self.last = time.monotonic()
+            self.future = self.pool.submit(self.read)
+        return self.state
+
+    def close(self):
+        self.pool.shutdown(wait=False, cancel_futures=True)
+
+
+def health(state):
+    """(problems, ok_text). Drives the glyphs and the OSC 7501 status."""
+    problems = [f'{k}: {v}' for k, v in state.items() if isinstance(v, str) and v.startswith('unavailable:')]
+    load = state.get('load')
+    if isinstance(load, list) and load[0] > (os.cpu_count() or 1):
+        problems.append(f'load {load[0]:.2f} above {os.cpu_count()} cores')
+    return problems, 'all sources read'
+
+
+def render(state, width, height):
+    """Pure: state -> lines. Live, --once and tests all draw through here."""
+    if not state:
+        return [fit(f'{APP}  reading…', width)]
+    problems, ok = health(state)
+    lines = [fit(f'{APP}  {state.get("host", "?")}  read {state.get("read_at", "?")}', width), '─' * width]
+    lines.append(fit(('✗ ' + '; '.join(problems)) if problems else ('● ' + ok), width))
+    load = state.get('load')
+    lines.append(fit(load if isinstance(load, str) else '○ load  ' + '  '.join(f'{x:.2f}' for x in load), width))
+    disk = state.get('disk')
+    if isinstance(disk, dict):
+        pct = disk['used'] / disk['total'] if disk['total'] else 0
+        bar = max(0, min(30, width - 20))
+        lines.append(fit(f'{"▲" if pct > .9 else "○"} disk  {"█" * round(pct * bar)}{"░" * (bar - round(pct * bar))} {pct:.0%}', width))
+    else:
+        lines.append(fit(str(disk), width))
+    lines += ['', fit('r refresh · ? help · q quit', width)]
+    return lines[:height]
+
+
+def colour(line):
+    """ANSI slots only, so the user's theme picks the shade. NO_COLOR turns it off."""
+    if 'NO_COLOR' in os.environ:
+        return line
+    slot = 31 if '✗' in line or 'unavailable:' in line else 33 if '▲' in line else 32 if '●' in line else 90 if line.startswith('─') else 39
+    return f'\x1b[{slot}m{line}\x1b[0m'
+
+
+def status(state, msg=''):
+    """OSC 7501 program status on record <app>/health; Rex shows it on the tab and to Lua."""
+    b64 = lambda s: base64.b64encode(clean(s)[:180].encode()).decode()
+    if state == 'clear':
+        return f'\x1b]7501;state=clear:id={APP}/health\x07'
+    return f'\x1b]7501;state={state}:id={APP}/health:app={APP}:title={b64(APP)}:msg={b64(msg)}\x07'
+
+
+def interactive(source, state):
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    resized = [False]
+    prev_winch = signal.signal(signal.SIGWINCH, lambda *_: resized.__setitem__(0, True))
+    def stop(*_):
+        raise KeyboardInterrupt
+    prev_term = signal.signal(signal.SIGTERM, stop)
+    previous, last_status, show_help = [], None, False
+    try:
+        tty.setcbreak(fd)
+        sys.stdout.write('\x1b[?1049h\x1b[?25l')
+        while True:
+            if source:
+                state = source.poll()
+            width, height = shutil.get_terminal_size((72, 24))
+            lines = [fit(l, width) for l in HELP][:height] if show_help else render(state, width, height)
+            if resized[0]:
+                previous, resized[0] = [], False
+                sys.stdout.write('\x1b[2J')
+            out = '\x1b[?2026h'
+            if state:
+                problems, ok = health(state)
+                now = ('error', '; '.join(problems)) if problems else ('done', ok)
+                if now != last_status:
+                    out += status(*now)
+                    last_status = now
+            for i in range(max(len(lines), len(previous))):
+                line = lines[i] if i < len(lines) else ''
+                if i >= len(previous) or line != previous[i]:
+                    out += f'\x1b[{i + 1};1H' + colour(line) + '\x1b[K'
+            sys.stdout.write(out + '\x1b[?2026l')
+            sys.stdout.flush()
+            previous = lines
+            if select.select([fd], [], [], 0.2)[0]:
+                key = os.read(fd, 1).decode(errors='replace')
+                if key == '\x1b' and select.select([fd], [], [], 0.03)[0]:
+                    key += os.read(fd, 16).decode(errors='replace')
+                if key in ('q', '\x03'):
+                    break
+                if key == '?':
+                    show_help = not show_help
+                    previous = []
+                if key == 'r' and source:
+                    source.poll(now=True)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
+        signal.signal(signal.SIGWINCH, prev_winch)
+        signal.signal(signal.SIGTERM, prev_term)
+        sys.stdout.write(status('clear') + '\x1b[?2026l\x1b[?25h\x1b[?1049l')
+        sys.stdout.flush()
+
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    p.add_argument('--once', action='store_true', help='print one plain frame and exit')
+    p.add_argument('--json', action='store_true', help='print the state as JSON and exit')
+    p.add_argument('--replay', metavar='DIR', help='read DIR/state.json instead of live sources')
+    p.add_argument('--record', metavar='DIR', help='write one live read to DIR/state.json and exit')
+    p.add_argument('--width', type=int, default=72)
+    p.add_argument('--height', type=int, default=24)
+    a = p.parse_args()
+    if a.width < 1 or a.height < 1:
+        p.error('width and height must be positive')
+    source = None
+    try:
+        if a.replay:
+            state = json.loads((Path(a.replay) / 'state.json').read_text())
+        elif a.once or a.json or a.record:
+            state = Sources().read()
+        else:
+            source = Sources()
+            state = source.poll(now=True)
+        if a.record:
+            target = Path(a.record) / 'state.json'
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with open(target, 'x') as f:  # refuses to overwrite
+                json.dump(state, f, indent=1)
+        elif a.json:
+            print(json.dumps(state))
+        elif a.once:
+            print('\n'.join(render(state, a.width, a.height)))
+        else:
+            interactive(source, state)
+    except KeyboardInterrupt:
+        pass
+    except (OSError, ValueError) as e:
+        print(f'{APP}: {clean(e)}', file=sys.stderr)
+        return 1
+    finally:
+        if source:
+            source.close()
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
