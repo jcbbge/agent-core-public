@@ -26,6 +26,14 @@ Rex. Where it sits among Rex's other extension shapes: [the rex skill's ecosyste
   keys in plain words ("j/k move · u mark unread · q close · ? all keys"), longest form that fits, never
   dropping `q` and `?`. `?` shows the full list. Scroll marks and notes sit at the footer's right end,
   never over content. The template's `pad`/`footer` do this.
+- **No destructive single key** (Josh's dictation reached a panel and archived his whole inbox,
+  2026-11-15). Anything that removes, archives or sends needs the same key twice within a moment
+  ("press d again to archive"), says what it did, and has an undo key.
+- **A burst guard on any panel that takes focus**: printable keys arriving faster than a person types
+  (4 or more inside about 120 ms: dictation, a paste) are dropped, not run, with one line saying so.
+  Text boxes inside the panel are exempt.
+- **Position always shown**: where he is and how much is left ("fold 2 of 5", "lines 41 to 78 of 120"),
+  never a jump he cannot place. Moving through items never changes their state (e.g. read).
 - **The glyph-kit look**: ANSI colour slots only (the theme picks the shade), `NO_COLOR` honoured.
   `●` ok (green, 2), `▲` attention (yellow, 3), `✗` problem (red, 1), `○` idle or none, `▸` selected
   (cyan, 6), rules `─` (grey, 8 / 90), `░▒▓█` density, `▁▂▃▄▅▆▇█` sparklines.
