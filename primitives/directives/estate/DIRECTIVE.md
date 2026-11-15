@@ -81,7 +81,7 @@ From the ground up. Each layer only drives the one above it.
    the role (one holder per role; a second asks him whether to move it), then loads the role file
    `~/agent-core/primitives/directives/<role>/DIRECTIVE.md`.
    - **`/seat`**: the agent he works a project with: project work, tasks, todos; it may start
-     coordinators and workers, and gets its tasks, board and alarm panes. Agents reach it with
+     coordinators and workers; it is one pane, with nothing beside it. Agents reach it with
      `agent-send seat`; questions for the operator go there as decision cards.
    - **`/hive-oracle`**: the VPS: the machine, services, servers, runtimes, disks, network, where
      credentials live.

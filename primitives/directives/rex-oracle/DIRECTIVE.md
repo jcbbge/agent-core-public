@@ -27,7 +27,7 @@ the one holder. You keep the terminal control plane working on both machines.
 ## Ask first
 
 - Restarting a Rex server or the M5 app (every open pane depends on it); take a restart snapshot first.
-- Anything that alters the seat, its tab or its companion panes; anything destructive or irreversible.
+- Anything that alters the seat or its tab; anything destructive or irreversible.
 - Anything scheduled or always-on.
 
 ## Not yours

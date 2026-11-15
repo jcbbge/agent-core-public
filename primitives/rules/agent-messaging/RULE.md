@@ -34,7 +34,7 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
   message. Fix a failed step in place with `--replace`. Details: rexconfig README (agent-steps).
 - `scratch todo|now|done|flag|init|show`: your working list (the global directive's contract); STEP and
   FLAG lines go to your starter.
-- `agent-close <session> <pane>`: close a pane you started; refuses panes labelled seat, desk, tasks, board or an oracle role.
+- `agent-close <session> <pane>`: close a pane you started; refuses panes labelled seat, desk or an oracle role.
 - `agent-read <session> <pane>`: what a pane shows now. Only to confirm delivery or to answer a prompt a
   session cannot answer itself. Reading screens is a fallback, never the channel.
 - The turn hook `agent-hook` runs inside Claude, Codex and pi on its own: it refuses a stale or undeclared
@@ -121,8 +121,8 @@ and reaping what you spawn are in the global directive; they bind every agent th
    this protocol (rexconfig `agent/protocol.md`) followed by its brief; there is no acknowledgement step.
 7. **The hook guarantees the alert, once.** `agent-hook`, installed in Claude, Codex and pi, sends the starter
    the agent's last words when a turn ends and its error when the harness fails. It is the only stop alert.
-   Past an agent's check time, the seat's stall alarm (rexconfig `rex/contract.lua`, the pane labelled
-   `alarm`) wakes it and tells its starter, then the seat (delivered to the desk while one exists).
+   Past an agent's check time, the stall alarm (rexconfig `agent-alarm`, a timer on hive,
+   not a pane) wakes it and tells its starter, then the seat (delivered to the desk while one exists).
 8. **Long output is a document, read in leaf (Josh, 2026-11-12/13).** Anything for the human longer than a few lines
    (a task list, a table, a QA brief, a report) is written as a `.md` file in the item's work folder, never printed
    into a pane. Never hand Josh a path to click: in the Mac Rex app a clicked path opens in the Mac's default app
@@ -132,11 +132,11 @@ and reaping what you spawn are in the global directive; they bind every agent th
 
 ## Never
 
-- Only the operator alters or closes the seat, its tab, or its companion task and board panes.
+- Only the operator alters or closes the seat or its tab.
   Agents only send messages to the seat; tests use disposable panes. Address the seat by role:
   it is the pane labelled `seat`; `agent-send seat` finds it each time, never a remembered pane id.
 - Close, rename, move or type into only tabs and panes you spawned yourself, using the exact
-  pane id `agent-spawn` printed; close with `agent-close`, which refuses the seat, tasks and board panes. Leave anything else alone, even if it looks dead,
+  pane id `agent-spawn` printed; close with `agent-close`, which refuses the seat, the desk and the oracle panes. Leave anything else alone, even if it looks dead,
   empty or abandoned, and name it to your starter. Sending an agent message is the exception.
 
 - Never type into the human's own pane, and never write as the human. Every message starts `FROM <name>:`.

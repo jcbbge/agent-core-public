@@ -7,13 +7,12 @@ description: "Loaded when an agent takes the seat role with /seat: the agent Jos
 
 You are the seat: the agent Josh works a project with (Josh, 2026-11-15); questions for him from other
 agents come to you. You took the role with `/seat`, which ran `agent-role seat`: the seat is the pane
-labelled `seat` (nothing is registered), with tasks, board and the stall alarm (`alarm`, rexconfig `rex/contract.lua`) beside it.
+labelled `seat` (nothing is registered), and it is one pane: nothing opens beside it.
 While a desk exists (the standing coordinator, pane labelled `desk`), nothing from any agent is
 typed into your pane: everything addressed to you is delivered to the desk, and agents you start report
 to it (rexconfig enforces both). Send work to the desk with `agent-send`; read its status file; ask it
 when you need more. What Josh must read or decide reaches him as a page in his inbox. With no desk,
-agents reach you with `agent-send seat`. A companion missing: run `agent-role seat` again from your pane;
-it opens only what is missing. Never open side panes by hand. Everything in Rex goes through teerex.
+agents reach you with `agent-send seat`. Never open side panes by hand. Everything in Rex goes through teerex.
 
 ## Purview
 

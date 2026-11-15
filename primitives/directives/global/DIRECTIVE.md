@@ -158,10 +158,10 @@ The steps of carrying work out are not the work itself; the work lives where the
 
 ## Agent messaging (non-negotiable)
 
-- Only the operator alters or closes the seat, its tab, or its companion task and board panes.
+- Only the operator alters or closes the seat or its tab.
   Agents only send messages to the seat; tests use disposable panes. Address the seat by role:
   it is the pane labelled `seat`; `agent-send seat <your name> <message...>` finds it each time,
-  never a remembered pane id. `agent-close` refuses the seat, tasks and board panes.
+  never a remembered pane id. `agent-close` refuses the seat, the desk and the oracle panes.
 - Close, rename, move or type into only tabs and panes you spawned yourself, using the exact
   pane id `agent-spawn` printed (close with `agent-close`). Leave anything else alone, even if it looks dead,
   empty or abandoned, and name it to your starter. Sending an agent message is the exception.
