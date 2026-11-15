@@ -17,7 +17,9 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
   the brief as its first prompt. Standing flags: rexconfig `agent/harness.json`. Prints the pane id. Agents
   always run on hive (seat decision seat-20261114t174849z-3839911); from the M5 it launches on hive and
   reports come back to your M5 pane. `--non-agent <session> <name> -- <command...>` opens a labelled pane
-  for a command that is not an agent. Typing `claude`, `codex` or `pi` opens one on hive, in its own tab.
+  for a command that is not an agent. Josh starts an agent with `rex claude|codex|pi`: a clean start on
+  hive, in its own tab, no role. `agent-role <seat|hive-oracle|rex-oracle|rivet-oracle>` is what a role
+  command (`/seat`, `/hive-oracle`, ...) runs: it labels the pane with the role, one holder each.
 - `agent-send <session> <pane> <your name> <message...>`, `agent-send starter <your name> ...` (your own
   starter) or `agent-send seat <your name> ...` (the pane labelled `seat`): one message, delivered whole, with
   a `reply-to: <session> <pane> <host>` line naming you. It says why when it fails and retries once itself on a
@@ -28,7 +30,7 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
   .. --recommend ..`: a complete decision card, sent with agent-send (`agent-ask --help`).
 - `scratch todo|now|done|flag|init|show`: your working list (the global directive's contract); STEP and
   FLAG lines go to your starter.
-- `agent-close <session> <pane>`: close a pane you started; refuses panes labelled seat, tasks or board.
+- `agent-close <session> <pane>`: close a pane you started; refuses panes labelled seat, tasks, board or an oracle role.
 - `agent-read <session> <pane>`: what a pane shows now. Only to confirm delivery or to answer a prompt a
   session cannot answer itself. Reading screens is a fallback, never the channel.
 - The turn hook `agent-hook` runs inside Claude, Codex and pi on its own: it refuses a stale or undeclared
@@ -51,7 +53,7 @@ meant for the human goes to the seat with `agent-send`, and only the seat asks t
   (what, why it matters, the options, its recommendation), then keeps doing whatever does not depend on it.
 - **No agent outside the seat ever stops on an on-screen prompt**: no question menus, no "choose an option"
   dialogs, no waiting on input in its own pane. A pane nobody watches is a dead end.
-- The seat records every answer it gives itself using [the decision record workflow](../../tools/agent-messaging/SEAT.md#record-answers-you-give-yourself), including the rule and how Josh can veto.
+- The seat records every answer it gives itself using [the decision record workflow](../../directives/seat/DIRECTIVE.md#record-answers-you-give-yourself), including the rule and how Josh can veto.
 - The seat relays the human's answer word for word to whoever asked, with `agent-send`.
 - Complete decision cards use `agent-ask`; it formats the card and sends it with agent-send.
 - If you do not know who the seat is, ask your starter. A brief always names the seat and its address.

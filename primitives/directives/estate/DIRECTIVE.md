@@ -68,21 +68,32 @@ From the ground up. Each layer only drives the one above it.
    are inputs from `~/rivet/projects/<name>/`; the engine names no project.
 5. **Agents.** Claude, Codex, pi and the rest, any model. **Agents should run on hive**, whatever
    app is their window (Rex, T3 Code, Claude Desktop, a terminal on any machine). This is a
-   suggestion, not a block: nothing refuses an agent for the machine it is on. An agent is started
-   by typing its name (`claude`, `codex`, `pi`): rexconfig's `agent-open` opens it with its standing
-   flags in a visible labelled tab on hive, from either Mac or hive. Agents start agents with
+   suggestion, not a block: nothing refuses an agent for the machine it is on. The operator starts
+   one with `rex <agent>` (`rex claude`, `rex codex`, `rex pi`; Josh, 2026-11-15): a clean start, its
+   standing flags in a visible labelled tab on hive, from either Mac or hive, with no role and no
+   brief. Every other `rex ...` reaches the real Rex. Bare `claude`, `codex`, `pi` are the plain
+   programs, and `seat` is no longer a command. Agents start agents with
    `agent-spawn`, talk with `agent-send`, keep their list with `scratch`, and send decision cards with
    `agent-ask` (all rexconfig; teerex carries no agent code).
-6. **The seat.** The one agent the operator types to, his concierge for the session. He starts it
-   by typing `seat` in any Rex tab (Mac or hive); if a seat is already running, `seat` switches to
-   it instead. Its Rex tab is named "seat". Agents message it directly with `agent-send`, typed into
-   its pane; questions for the operator go there as decision cards. Its brief is `~/agent-core/primitives/tools/agent-messaging/SEAT.md`.
+6. **Roles.** An agent takes a role only when the operator types its command inside it; until then
+   it is a plain agent. Each command runs rexconfig's `agent-role <role>`, which labels the pane with
+   the role (one holder per role; a second asks him whether to move it), then loads the role file
+   `~/agent-core/primitives/directives/<role>/DIRECTIVE.md`.
+   - **`/seat`**: the agent he works a project with: project work, tasks, todos; it may start
+     coordinators and workers, and gets its tasks, board and alarm panes. Agents reach it with
+     `agent-send seat`; questions for the operator go there as decision cards.
+   - **`/hive-oracle`**: the VPS: the machine, services, servers, runtimes, disks, network, where
+     credentials live.
+   - **`/rex-oracle`**: Rex, teerex the utility, rexconfig, both machines' Rex setup.
+   - **`/rivet-oracle`**: Rivet's engine under the hood; never a project's items.
+   An oracle maintains its layer; project work belongs to a seat.
 
 ## Words
 
 - **Machine**: one of the names above. **Host** means the same.
 - **Pane / block**: one terminal in Rex. **Tab / window**: a Rex tab.
-- **Seat**: the agent the operator talks to; agents message it directly.
+- **Seat**: the agent that took `/seat`; agents message it directly. **Oracle**: an agent holding one of
+  the three layer roles.
 - **Item**: a piece of Rivet work (a discovery or a task). **Promote**: turning a discovery's
   candidate tasks into tasks. **Ship stop**: where finished work waits for the operator's QA.
 - **Project**: a folder of inputs Rivet reads (`~/rivet/projects/<name>`).

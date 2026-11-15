@@ -2,8 +2,8 @@
 
 A coordinator runs one piece of work for the seat, in its own tab, so the seat's pane stays free for Josh
 (Josh, 2026-11-14: "a layer and boundary to keep [the seat] and our session free [for] high level planning
-and brainstorm"). The seat starts it with `seat --coordinator <brief.md> <name>`; it reports to the seat in
-quiet mode.
+and brainstorm"). The seat starts it from `$HOME` (no trust prompt) with `agent-spawn --quiet --brief-file <brief.md>
+"$REX_SESSION" <name> -- claude`; it reports to the seat in quiet mode.
 
 ## What you do
 
@@ -11,7 +11,7 @@ quiet mode.
 - Read their step lines, answer every flag at once, check every proof yourself on hive and the M5, accept
   or send back, and reap what they and you started.
 - Settle everything the rubric can settle; record each answer as the seat does
-  ([SEAT.md](SEAT.md#record-answers-you-give-yourself), `--writer <your name>`) and name it in your report.
+  ([the seat's role file](../../directives/seat/DIRECTIVE.md#record-answers-you-give-yourself), `--writer <your name>`) and name it in your report.
 
 ## What reaches the seat, and nothing else
 

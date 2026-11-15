@@ -32,8 +32,8 @@ Estate policy:
 - Messaging wrappers select `TEEREX_HOST` (default `hive`) and `TEEREX_HOSTS`
   (default `~/.config/teerex/hosts.json`). Choose `m5` explicitly for M5 panes (send, read, open); agents themselves always run on hive. No host search or fallback.
 - Rexconfig (`~/rexconfig`, its README and `./install --check`) owns Rex configuration, named hosts,
-  the agent commands and `~/.config/agent/shell.zsh`. Typing `claude`, `codex` or `pi` opens it on
-  hive with its standing flags, from either machine. Agent-core-sync does not install that configuration.
+  the agent commands and the `rex` wrapper: `rex claude|codex|pi` opens that agent clean on hive with
+  its standing flags, from either machine; any other `rex ...` is the real Rex. Agent-core-sync does not install that configuration.
 - Never restart Rex or kill Rex processes without Josh's yes. Before a restart, use native recovery
   impact/snapshot commands and record missing resume commands or unsent drafts. Never rename a shared session.
 - Long output for Josh lives in a Markdown document; the seat opens it for him as a floating `leaf` layer
@@ -43,8 +43,8 @@ Estate policy:
 Doctor, surfaces, jobs, watches, visible runs, the board and recovery are documented in the
 upstream guide rather than copied here.
 
-`seat` uses native server-wide ensure; it has no private pointer or lock. Its creation session is
-`SEAT_SESSION` (default `rivet`) on hive. `agent-read` returns native `observe --state` JSON, including evidence lines and unknowns; use `observe --tail` when you need newest raw text.
+The seat and the oracles are roles: `/seat` etc. run `agent-role <role>`, which labels the pane; there is
+no `seat` launcher, pointer or lock. `agent-read` returns native `observe --state` JSON, including evidence lines and unknowns; use `observe --tail` when you need newest raw text.
 
 **Records.** When a check result, open question or handoff must outlive your turn, write it with `teerex records` in `~/.local/state/teerex-records` (once: `teerex records init --store ~/.local/state/teerex-records`). Put private text in a JSON `--fields-file -` rather than flags. **Before you stop on unfinished work, park:** `teerex records park --store … --host <host> --socket <socket> --session "$REX_SESSION" --block "$REX_BLOCK" --writer <your name> --fields-file -` with `question` and `next_action {actor, step, stop_when}`. Attach every teerex receipt that matters: `teerex records attach --id <id> --by <you> --evidence <packet.json> --check-command "<argv>" --assertion passed|failed|unknown --establishes "…" --does-not-establish "…"`. Never infer the assertion from exit 0. Record skipped checks with `records add omission` and leftovers with `records add cleanup`. In a decision card's `context`, add `records: teerex records resume --id <id>`. Run `records lint --id <id>` before reporting and name the id in your report. To pick work up, run `teerex records resume --id <id>` first; use `records navigate --focus yes` only if you need the pane.
 
