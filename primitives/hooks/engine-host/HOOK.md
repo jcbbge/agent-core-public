@@ -18,7 +18,7 @@ agent's process is on hive. This replaces the earlier rule that every agent runs
 **Launching is one word (Josh, 2026-11-12: "I do not want to have to remember a shitload of flags").**
 Typing an agent's name (`claude`, `codex`, `pi`) runs rexconfig's `agent-open`: the harness with
 its standing flags (rexconfig `agent/harness.json`) in a visible labelled tab on hive, from either
-machine, without a brief or starter. Rexconfig owns it and `~/.config/teerex/shell.zsh`, sourced by
+machine, without a brief or starter. Rexconfig owns it and `~/.config/agent/shell.zsh`, sourced by
 `~/.zshrc`. Agent-core ships no launch wrapper.
 
 **Refuses:**
