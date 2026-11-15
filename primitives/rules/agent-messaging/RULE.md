@@ -46,7 +46,8 @@ line; the coordinator settles what the rubric can and carries only the rest to t
 
 ## The seat: where questions for the human go
 
-The human talks to exactly one agent: **the seat** (the agent whose pane the human types in). Everything
+Agents talk to the human through one agent: **the seat** (the agent that took `/seat`; he may also type to
+plain agents and oracles he opened himself). Everything
 meant for the human goes to the seat with `agent-send`, and only the seat asks the human anything.
 
 - Every other agent sends a question or decision for the human to the seat, as one self-contained message

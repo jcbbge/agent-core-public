@@ -174,7 +174,7 @@ No agent waits to be noticed, and nobody asks the human to relay.
   The only way to send. Decision cards: `agent-ask` (`agent-ask --help`).
 - **Report back unprompted** when you stop, finish, need a decision or are blocked; then wait for the reply.
   Reply to the message's `reply-to:` address.
-- **Questions for the human go to the seat** (the one agent the human types to), by `agent-send`. The seat
+- **Questions for the human go to the seat** (the agent that took `/seat`), by `agent-send`. The seat
   decides from his stated intent and the rubric and answers you itself; it brings him only what *Ask first*
   covers or what he has never given. Only the seat asks the human anything. Never stop on an on-screen menu or prompt in your own pane: send the question to the
   seat and keep doing what doesn't depend on it. Your brief names the seat; if not, ask your starter.
