@@ -1,6 +1,6 @@
 ---
 name: seat
-description: "Take the seat role: Josh's Oracle for this session, holding project work, tasks and todos."
+description: "Take the seat role: the agent Josh works a project with, holding project work, tasks and todos."
 ---
 
 # seat
