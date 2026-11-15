@@ -53,9 +53,24 @@ drop() { # drop <link>: a link we made for a command that no longer applies
   rm -f "$1"; echo "removed $1"
   case "$1" in */SKILL.md) rmdir "$(dirname "$1")" 2>/dev/null || true;; esac
 }
-skill_named() { # skill_named <name> <dir>...: a skill of that name that is not one of our command links
+# Codex 0.169 skips a SKILL.md that is a symlink (even inside a linked folder), so its command is a
+# generated copy; the folder's .agent-core-command names the source and marks the folder as ours.
+MARK=.agent-core-command
+codex_ours() { case "$(cat "$1/$MARK" 2>/dev/null)" in "$CMDS"/*) return 0;; esac; ours "$1/SKILL.md"; }
+want_copy() { # want_copy <folder> <source>
+  if [ -f "$1/SKILL.md" ] && [ ! -L "$1/SKILL.md" ] && cmp -s "$1/SKILL.md" "$2" && [ "$(cat "$1/$MARK" 2>/dev/null)" = "$2" ]; then return 0; fi
+  if $CHECK; then echo "stale: $1/SKILL.md"; stale=1; return 0; fi
+  mkdir -p "$1"; rm -f "$1/SKILL.md"
+  cp "$2" "$1/SKILL.md.tmp.$$" && mv "$1/SKILL.md.tmp.$$" "$1/SKILL.md"; printf '%s\n' "$2" > "$1/$MARK"
+  echo "wrote $1/SKILL.md"
+}
+drop_copy() { # drop_copy <folder>
+  if $CHECK; then echo "stale: $1/SKILL.md"; stale=1; return 0; fi
+  rm -f "$1/SKILL.md" "$1/$MARK"; rmdir "$1" 2>/dev/null || true; echo "removed $1/SKILL.md"
+}
+skill_named() { # skill_named <name> <dir>...: a skill of that name that is not one of our commands
   local n=$1 d; shift
-  for d in "$@"; do [ -e "$d/$n" ] && ! ours "$d/$n/SKILL.md" && return 0; done; return 1
+  for d in "$@"; do [ -e "$d/$n" ] && ! codex_ours "$d/$n" && ! ours "$d/$n/SKILL.md" && return 0; done; return 1
 }
 for c in "$CMDS"/*/COMMAND.md; do
   [ -f "$c" ] || continue
@@ -67,15 +82,21 @@ for c in "$CMDS"/*/COMMAND.md; do
   fi
   # Codex (0.169 has no custom prompts): a skill, typed $<name>.
   if [ -d "$HOME/.codex" ]; then
-    l="$HOME/.codex/skills/$n/SKILL.md"
-    if skill_named "$n" "$HOME/.codex/skills" "$HOME/.agents/skills"; then if ours "$l"; then drop "$l"; fi; else want_link "$l" "$c"; fi
+    d="$HOME/.codex/skills/$n"
+    if skill_named "$n" "$HOME/.codex/skills" "$HOME/.agents/skills"; then if codex_ours "$d"; then drop_copy "$d"; fi
+    elif [ -e "$d" ] && ! codex_ours "$d"; then echo "agent-core-sync: $d is not ours; left alone" >&2
+    else want_copy "$d" "$c"; fi
   fi
   # pi: /<name>.
   if [ -d "$HOME/.pi/agent" ]; then want_link "$HOME/.pi/agent/prompts/$n.md" "$c"; fi
 done
 # Links we made for commands that no longer exist, and Codex prompt links (a retired mechanism).
-for l in "$HOME"/.claude/commands/*.md "$HOME"/.codex/skills/*/SKILL.md "$HOME"/.pi/agent/prompts/*.md; do
+for l in "$HOME"/.claude/commands/*.md "$HOME"/.pi/agent/prompts/*.md; do
   if ours "$l" && [ ! -f "$l" ]; then drop "$l"; fi
+done
+for d in "$HOME"/.codex/skills/*/; do
+  d=${d%/}; [ -L "$d" ] && continue
+  if codex_ours "$d" && [ ! -f "$CMDS/$(basename "$d")/COMMAND.md" ]; then drop_copy "$d"; fi
 done
 for l in "$HOME"/.codex/prompts/*.md; do if ours "$l"; then drop "$l"; fi; done
 $CHECK || rmdir "$HOME/.codex/prompts" 2>/dev/null || true

@@ -23,9 +23,11 @@ What it makes true on the machine it runs on:
   (the README's Commands row): Claude Code `~/.claude/commands/<name>.md` (`/<name>`), unless
   `~/.claude/skills/<name>` exists; Codex `~/.codex/skills/<name>/SKILL.md` (`$<name>`), unless a skill
   of that name is in `~/.codex/skills` or `~/.agents/skills`; pi `~/.pi/agent/prompts/<name>.md`
-  (`/<name>`). Links it made (any link pointing into `primitives/commands/`) are removed when their
-  command is gone or now skipped, and `~/.codex/prompts` links into agent-core (a retired mechanism)
-  are removed. A file it did not make is left alone and named.
+  (`/<name>`). Codex 0.169 skips a SKILL.md that is a symlink, so there it is a generated copy of the
+  COMMAND.md, its folder marked by `.agent-core-command` (the source path). What it made (a link into
+  `primitives/commands/`, or a marked Codex folder) is removed when its command is gone or now skipped,
+  and `~/.codex/prompts` links into agent-core (a retired mechanism) are removed. A file it did not make
+  is left alone and named.
 
 Never edit a generated file. Change agent-core and push; then `git -C ~/agent-core pull` on each
 machine (hive and m5) runs it through the post-merge hook. `agent-core-sync` by hand does the same.
