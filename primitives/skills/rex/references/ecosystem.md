@@ -64,7 +64,7 @@ a README "what it runs and writes"; OSC 7501 for status.
 
 | Piece | What lives there | Wired into Rex by | Installed | Tested without live Rex |
 |---|---|---|---|---|
-| rexconfig (`~/rexconfig`) | `init.lua` and its Lua, palettes, keys, actions that start things, agent commands, harness hooks | itself: the only writer of Rex config | `./install` on hive and the M5 (links) | `rex do tests/*.lua`; Lua policy as pure modules |
+| rexconfig (`~/rexconfig`) | `init.lua` and its Lua, palettes, keys, actions that start things, agent commands (incl. `agent-steps`), `rex-check`, the behaviours list, harness hooks | itself: the only writer of Rex config | `./install` on hive and the M5 (links) | `rex do tests/*.lua`; Lua policy as pure modules |
 | Applets | plain Python standard-library scripts in a pane ([rex-applet skill](../../rex-applet/SKILL.md)) | a rexconfig action, if one is wanted | the project's checkout; nothing on PATH | `--replay` frames, PTY test |
 | teerex | the utility over Rex: read, wait, send, surfaces, records, recovery | nothing | pinned build, `~/rexconfig/teerex.version` | its own suite (upstream) |
 | Event scripts | `rex do x.lua --all` reacting to events | a palette action starts each in a visible, labelled pane (`automation.lua`) | rexconfig | pure modules under `rex do` |
@@ -79,13 +79,22 @@ Rules that hold across all of them:
   scripts run in a visible labelled pane that closing stops.
 - **Names**: one lowercase word `<app>` → command, pane label, status id `<app>/<kind>`, action
   `<app>_<verb>` titled "`<App>`: Verb" in category `<App>`, env `<APP>_*`, state `~/.local/share/<app>/`.
-- **API revision**: each piece names the revision it needs; code that calls Rex reads `server.version`
-  once and says so on a mismatch. After a Rex update: `teerex doctor --all`, then each piece's live check.
-- **Behaviours the docs do not promise** are written down where they are relied on, with the check
-  that re-proves them (rexuikit's `docs/rex-behaviors.md` plus `make live` is the model).
+- **API revision**: each piece names the lowest revision it was tested on, in one constant, and checks
+  it once before its first Rex call with `rex-check api --need N --who <name>` (exit 3 and one line:
+  "<name> needs Rex API N; <host> runs M"). Lua checks at action time with rexconfig's helper, never at
+  load. Pieces that only call teerex rely on teerex's own refusal.
+- **Behaviours the docs do not promise** live in one list, rexconfig `docs/rex-behaviours.md`, each
+  with a probe. `rex-check` runs them all in one throwaway session (`rex-check --host m5` for the
+  Mac's Rex). Something new that relies on an unpromised behaviour adds its row and probe there.
+- **Rex updates** are noticed, not polled: the session-start hook runs `rex-check watch` (well under a
+  second when nothing changed). On a version change it runs the probes in a visible pane, diffs the API
+  field by field, and pages Josh's inbox once only if something we use broke, a listed want arrived,
+  or something we hand-rolled can be retired (the lists are in the behaviours doc). Otherwise it records.
+- **Ask-first actions Josh must run** go to him as runnable steps with `agent-steps submit`
+  (rexconfig README), not as chat.
 - **Final proof** runs in a throwaway session on the live server (`session.create`, then
   `session.destroy`), never in Josh's sessions.
 - **Docs**: a README per piece; this file for the shape; the rex-applet skill for applets.
 
-Known gap (2026-11-15): rexconfig's `./install` links Lua without running `rex config check` on the
-result first; rex-extensions and rexd both check, and restore on failure.
+rexconfig's `./install` checks the resulting Rex config in a temporary home before linking, and puts its
+changes back if the live config then fails to load (since 2026-11-15).

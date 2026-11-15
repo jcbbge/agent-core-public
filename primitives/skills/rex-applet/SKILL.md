@@ -80,10 +80,11 @@ Worked example: `~/madewell-engine-view` (README, DESIGN.md, `tests/`). Read it 
 ## If the applet talks to Rex
 
 Use `rex api call --json` or `rex do script.lua --json --args '{…}'` (a Lua script for several calls
-that must happen together); never the control socket directly. Read `rex api call server.version`
-once at start, and if `api_revision` is below the one named in the README, say so in one line and
-carry on read-only. Rex is beta: name in the README every Rex behaviour you rely on that its docs do
-not promise, and how to re-check it.
+that must happen together); never the control socket directly. Name the lowest API revision you
+tested on in one constant and, before the first Rex call, run
+`rex-check api --need <N> --who <app>`: on exit 3 show its one line and stay read-only. Every Rex
+behaviour you rely on that its docs do not promise gets a row and a probe in rexconfig's
+`docs/rex-behaviours.md`, so `rex-check` re-proves it after each Rex update (ask the rex-oracle).
 
 ## Never
 
