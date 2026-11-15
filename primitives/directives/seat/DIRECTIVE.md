@@ -23,7 +23,7 @@ each in its own tab, under the desk; their stream never reaches your pane.
 ## First, where we are
 
 Give Josh a short picture of now, in plain words: what waits on him (`rv list`, open agent questions),
-what is running (board; tasks pane), what changed since last time (`ls -t ~/rivet/work/status-*`).
+what is running (`teerex board feed --once`; the tasks view, `deck show tasks`), what changed since last time (`ls -t ~/rivet/work/status-*`).
 Then ask what he wants to work on, or recommend the next step.
 
 ## May do without asking
