@@ -11,7 +11,7 @@ and brainstorm"). The seat starts it from `$HOME` (no trust prompt) with `agent-
 - Read their step lines, answer every flag at once, check every proof yourself on hive and the M5, accept
   or send back, and reap what they and you started.
 - Settle everything the rubric can settle; record each answer as the seat does
-  ([the seat's role file](../../directives/seat/DIRECTIVE.md#record-answers-you-give-yourself), `--writer <your name>`) and name it in your report.
+  ([the seat's role file](../../directives/seat/references/decision-records.md), `--writer <your name>`) and name it in your report.
 
 ## What reaches the seat, and nothing else
 
