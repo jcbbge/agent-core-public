@@ -21,6 +21,11 @@ Rex. Where it sits among Rex's other extension shapes: [the rex skill's ecosyste
   a palette action or key for it is added by rexconfig, by its owner, never by the applet.
 - **Reads through plain interfaces**: a CLI with `--json`, a file, a local HTTP endpoint. It never
   embeds or writes its backend. Agents are messaged only through `agent-send`, never typed into.
+- **Keys on screen, always** (Josh, 2026-11-15: "im not going to remember the open, close, mark unread,
+  quit straightaway"). The last row of every screen, the help screen included, is a footer naming the
+  keys in plain words ("j/k move · u mark unread · q close · ? all keys"), longest form that fits, never
+  dropping `q` and `?`. `?` shows the full list. Scroll marks and notes sit at the footer's right end,
+  never over content. The template's `pad`/`footer` do this.
 - **The glyph-kit look**: ANSI colour slots only (the theme picks the shade), `NO_COLOR` honoured.
   `●` ok (green, 2), `▲` attention (yellow, 3), `✗` problem (red, 1), `○` idle or none, `▸` selected
   (cyan, 6), rules `─` (grey, 8 / 90), `░▒▓█` density, `▁▂▃▄▅▆▇█` sparklines.
@@ -42,7 +47,7 @@ Worked example: `~/madewell-engine-view` (README, DESIGN.md, `tests/`). Read it 
    `cp assets/test_applet.py <app>/tests/test_<app>.py`; set `APP = '<app>'` in the executable and the
    default of `APPLET` in the test. The executable already has:
    pure `render(state, width, height) -> lines`, cell-exact `fit`, background reads with timeouts,
-   alternate screen, synchronized output, changed-line redraw, SIGWINCH, OSC 7501 on `<app>/health`
+   a keys footer on every screen, alternate screen, synchronized output, changed-line redraw, SIGWINCH, OSC 7501 on `<app>/health`
    cleared on exit, terminal restored in `finally`, and `--once`, `--json`, `--replay DIR`, `--record DIR`.
 4. **Replace `Sources.read`** with your sources. One `try` per source; a failure becomes the string
    `unavailable: <why>` and the rest still draw. Subprocesses: argv list (never a shell), a timeout,

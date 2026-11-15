@@ -41,6 +41,12 @@ class Frames(unittest.TestCase):
                 self.assertLessEqual(len(line), width, line)
                 self.assertNotIn('\x1b', line)
 
+    def test_keys_footer_on_last_row(self):
+        for width in (20, 60, 120):
+            lines = self.frame(width)
+            self.assertEqual(len(lines), 20)
+            self.assertIn('q close', lines[-1], width)
+
     def test_unavailable_source_is_named(self):
         lines = self.frame(72, {**FIXTURE, 'load': 'unavailable: no loadavg'})
         self.assertTrue(any(l.startswith('✗') and 'load' in l for l in lines))

@@ -24,6 +24,8 @@ APP = 'applet'          # one lowercase word: the command, the pane label, the s
 REFRESH = 5.0           # seconds between background reads
 ANSI = re.compile(r'\x1b\[[0-?]*[ -/]*[@-~]|\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)')
 HELP = ['keys', '  r  read every source now', '  ?  this help', '  q  quit (Ctrl-C too)']
+# The keys in plain words, always on the last row: longest form first, the shortest must keep q and ?.
+FOOTERS = ['r refresh · ? all keys · q close', 'r · ? keys · q close', 'q close · ?']
 
 
 def clean(text):
@@ -110,7 +112,7 @@ def health(state):
 def render(state, width, height):
     """Pure: state -> lines. Live, --once and tests all draw through here."""
     if not state:
-        return [fit(f'{APP}  reading…', width)]
+        return pad([fit(f'{APP}  reading…', width)], width, height)
     problems, ok = health(state)
     lines = [fit(f'{APP}  {state.get("host", "?")}  read {state.get("read_at", "?")}', width), '─' * width]
     lines.append(fit(('✗ ' + '; '.join(problems)) if problems else ('● ' + ok), width))
@@ -123,8 +125,20 @@ def render(state, width, height):
         lines.append(fit(f'{"▲" if pct > .9 else "○"} disk  {"█" * round(pct * bar)}{"░" * (bar - round(pct * bar))} {pct:.0%}', width))
     else:
         lines.append(fit(str(disk), width))
-    lines += ['', fit('r refresh · ? help · q quit', width)]
-    return lines[:height]
+    return pad(lines, width, height)
+
+
+def footer(width, right=''):
+    """The keys in plain words for the last row; `right` (a scroll mark, a note) sits at its end."""
+    room = width - cells(right) - 1
+    text = next((f for f in FOOTERS if cells(f) <= room), FOOTERS[-1])
+    return fit(' ' + text + ' ' * max(0, room - cells(text)) + right, width)
+
+
+def pad(lines, width, height, right=''):
+    """Body lines cut to height-1, blank-filled, then the footer: every screen shows its keys."""
+    body = lines[:max(0, height - 1)]
+    return body + [''] * (height - 1 - len(body)) + [footer(width, right)] if height else []
 
 
 def colour(line):
@@ -159,7 +173,7 @@ def interactive(source, state):
             if source:
                 state = source.poll()
             width, height = shutil.get_terminal_size((72, 24))
-            lines = [fit(l, width) for l in HELP][:height] if show_help else render(state, width, height)
+            lines = pad([fit(l, width) for l in HELP], width, height, '? back ') if show_help else render(state, width, height)
             if resized[0]:
                 previous, resized[0] = [], False
                 sys.stdout.write('\x1b[2J')
