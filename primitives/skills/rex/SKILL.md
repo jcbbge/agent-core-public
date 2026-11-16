@@ -25,7 +25,7 @@ Estate policy:
   contract says. Reap what you spawn: answer the worker's report, then `agent-close <session> <pane>`
   with the pane id `agent-spawn` printed; its scratchpad viewer follows.
 - The seat is the pane labelled `seat`: `agent-send seat <your name> ...`.
-- Close only panes you opened (a written rule); `agent-close` refuses the seat, the desk and the oracle panes; teerex's guard protects only the seat pane and its tab.
+- Close only panes you opened (a written rule); `agent-close` refuses the seat pane; teerex's guard protects only the seat pane and its tab.
 - Machine check: `teerex doctor --all --config ~/.config/teerex/hosts.json` (both machines: build vs pin, Rex server, a guarded pane round trip, rexconfig, harness hooks).
 - Questions for Josh go directly to the seat. `agent-ask` sends a complete decision card through
   agent-send; `agent-ask --help` lists its fields.

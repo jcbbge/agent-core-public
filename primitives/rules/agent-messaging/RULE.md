@@ -34,7 +34,7 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
   message. Fix a failed step in place with `--replace`. Details: rexconfig README (agent-steps).
 - `scratch todo|now|done|flag|init|show`: your working list (the global directive's contract); STEP and
   FLAG lines go to your starter.
-- `agent-close <session> <pane>`: close a pane you started; refuses panes labelled seat, desk or an oracle role.
+- `agent-close <session> <pane>`: close a pane you started; refuses panes labelled seat.
 - `agent-read <session> <pane>`: what a pane shows now. Only to confirm delivery or to answer a prompt a
   session cannot answer itself. Reading screens is a fallback, never the channel.
 - The turn hook `agent-hook` runs inside Claude, Codex and pi on its own: it refuses a stale or undeclared
@@ -136,7 +136,7 @@ and reaping what you spawn are in the global directive; they bind every agent th
   Agents only send messages to the seat; tests use disposable panes. Address the seat by role:
   it is the pane labelled `seat`; `agent-send seat` finds it each time, never a remembered pane id.
 - Close, rename, move or type into only tabs and panes you spawned yourself, using the exact
-  pane id `agent-spawn` printed; close with `agent-close`, which refuses the seat, the desk and the oracle panes. Leave anything else alone, even if it looks dead,
+  pane id `agent-spawn` printed; close with `agent-close`, which refuses the seat pane. Leave anything else alone, even if it looks dead,
   empty or abandoned, and name it to your starter. Sending an agent message is the exception.
 
 - Never type into the human's own pane, and never write as the human. Every message starts `FROM <name>:`.
