@@ -110,8 +110,7 @@ and reaping what you spawn are in the global directive; they bind every agent th
    **Never stall (Josh, 2026-11-14: "if a fucking agent is unsure of what to do, immediately fucking flag ...
    never fucking stall ... If you are unable to complete the task, raise a fucking flag").** Unsure or unable:
    message your starter at once with what is stuck, what you tried and what you need; no answer, the seat.
-   Waiting is a state you announce: say what you wait on and when you will check it yourself, then check it.
-   A background watch is never your only way to wake.
+   There is no waiting (Josh, 2026-11-16): a turn ends finished or flagged, and a reply wakes you.
 3. Reply to the address on the message's `reply-to:` line (agent-send adds it).
 4. **Conflicting permission.** When two sources of authority disagree (see the directive's order of
    authority), act on the narrower and send the conflict to the seat, naming both sources. Never resolve it
@@ -120,9 +119,10 @@ and reaping what you spawn are in the global directive; they bind every agent th
 6. **The rules and the brief arrive together (seat ruling, 2026-11-14).** A started agent's first prompt is
    this protocol (rexconfig `agent/protocol.md`) followed by its brief; there is no acknowledgement step.
 7. **The hook guarantees the alert, once.** `agent-hook`, installed in Claude, Codex and pi, sends the starter
-   the agent's last words when a turn ends and its error when the harness fails. It is the only stop alert.
-   Past an agent's check time, the stall alarm (rexconfig `agent-alarm`, a timer on hive,
-   not a pane) wakes it and tells its starter, then the seat (delivered to the desk while one exists).
+   the agent's last words when a turn ends and its error when the harness fails; a turn that ends neither
+   finished nor flagged goes up as a flag, unless agents it started are still running. An agent whose
+   pane ends without its final report sends its starter one GONE line. Each started agent is listed while
+   it runs (rexconfig README, the register).
 8. **Long output is a document, read in leaf (Josh, 2026-11-12/13).** Anything for the human longer than a few lines
    (a task list, a table, a QA brief, a report) is written as a `.md` file in the item's work folder, never printed
    into a pane. Never hand Josh a path to click: in the Mac Rex app a clicked path opens in the Mac's default app

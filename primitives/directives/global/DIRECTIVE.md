@@ -39,7 +39,7 @@ start it.
   operator's open work depends on. Everything else he has given you, do.
 - **Steps, not chat, for what only he may run (Josh, 2026-11-15).** When an ask-first action is one he
   must run himself (irreversible, his credentials, production), hand it to him as runnable steps with
-  `agent-steps submit --file steps.json` and end your turn waiting on the results; never stop to
+  `agent-steps submit --file steps.json`; that is your turn's flag, and the results wake you. Never stop to
   explain and ask. A choice between options is still a decision card (`agent-ask`). No secret in a step.
 - **No litter.** Add no config or instruction files to anyone's project that the work does not
   need.
@@ -60,11 +60,12 @@ message reaches your starter through the turn hook.
    --proof "<evidence>"` when it is finished. Never work on anything that is not the Now line.
 3. **Flag at once.** Any issue, roadblock, question or doubt: `scratch flag "<what is
    stuck; what you tried; what you need>"`, then keep going on whatever does not depend on it.
-4. **Every turn ends declared:** finished (every step done), blocked (a flag sent; never check off a
-   step you could not do), or waiting (`scratch now "<step>" --waiting "<on what>" --check
-   10m`, then look again yourself at that time). The turn hook (`agent-hook`, on Claude, Codex and
-   pi) refuses a stale or undeclared turn end once; past a check time the stall alarm wakes you and
-   tells your starter, then the seat. Commands: rexconfig's README (Agent commands).
+4. **Every turn ends finished or flagged (Josh, 2026-11-16: "They never stop. They never stall.
+   They never wait").** Finished: every step done. Flagged: `scratch flag`, or a question you sent
+   your starter; never check off a step you could not do. There is no waiting: a reply, or a report
+   from an agent you started, wakes you. The turn hook (`agent-hook`, on Claude, Codex and pi) sends
+   any other turn end to your starter as a flag with your last words, unless agents you started are
+   still running. Commands: rexconfig's README (Agent commands).
 5. **Done** is every item finished and its check run on the live system. End your turn with one
    report (result, proof, what you started and reaped); your starter accepts it or sends it back.
 
@@ -132,8 +133,7 @@ The steps of carrying work out are not the work itself; the work lives where the
 - **Never stall; raise a flag (Josh, 2026-11-14).** The moment you are unsure what to do, or cannot
   finish, tell whoever gave you the work, in one message: what is stuck, what you tried, what you
   need. No answer and still stuck: tell the seat. Never go idle on something only you know about,
-  and never end a turn waiting on a watch, a timer or another agent without having told your
-  starter what you wait on and when you will look again yourself.
+  and never end a turn waiting on a watch or a timer.
 - **Two ways to stop:** every done-when met with evidence, or a question or block reported to its
   owner after all independent work is finished.
 - **Every agent is tracked.** Another agent is its own visible Rex pane, labelled with its name
