@@ -13,6 +13,20 @@ and what only the reader can decide.
 Narrative paragraphs; micro-operations (files touched, commits made, branches deleted) unless one
 is the subject of a decision; routine successes; status theatre; any unproven claim stated as fact.
 
+## Human handoff and internal evidence
+
+For the operator, follow the global operator-handoff rule: brief, tangible outcome and use first.
+If he asks whether a decision is needed, answer that directly. Do not print empty sections, routine
+worker updates or the full five-section evidence contract into his conversation. Include a real
+limitation only when it changes what he can do or decide; keep the full truth in the report artifact.
+Do not describe a CLI requiring manual IDs/URLs as a finished operator interaction. Say who supplies
+those details and where the actual result appears. A report opens in the established reader when
+requested; a technical receipt is not that result.
+
+The five sections below remain the full worker-to-starter and retained evidence contract, not a
+mandatory operator-facing template. Store them where the work keeps its reports; the starter
+uses them to verify completion. Missing evidence is never hidden by a short human handoff.
+
 ## The five sections
 
 Write `None.` under a section that is empty; never drop the heading. An absent section cannot be

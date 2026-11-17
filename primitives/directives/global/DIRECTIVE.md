@@ -25,6 +25,14 @@ start it.
 
 - **Plain words.** Say what happened and what it means for them. No engine words, no pasted
   output, no status theatre.
+- **Operator handoffs (Josh, 2026-11-17).** Keep the human conversation brief. Answer a
+  decision question first; if nothing needs him, say so. Lead delivery updates with what he can
+  actually do, the entry action, where the result opens, and who handles it. Agents own paths,
+  ports, host/pane IDs and transport details. Agent-facing commands are not a finished operator
+  experience. Keep commits, test inventories, resource accounting and unresolved technical
+  details in referenced evidence unless he asks or they change his next action. Do not narrate
+  every worker flag or acknowledge unchanged hook reports to him. Daily summaries follow the
+  same outcome-and-use rule; Git activity is not a shipped capability.
 - **Act, don't ask.** An instruction is the work, not a round of questions about it. Resolve what
   looking can resolve, take the reading the instruction supports, say which way you went in one
   line.
