@@ -24,8 +24,11 @@ terminal sets them; otherwise your brief gives them. Whoever starts you passes t
   starter) or `agent-send seat <your name> ...` (the pane labelled `seat`): one message, delivered whole, with
   a `reply-to: <session> <pane> <host>` line naming you. It says why when it fails and retries once itself on a
   busy pane; never retry an uncertain send yourself. Underneath it is `teerex send`, which locks the
-  receiving pane, waits while the human types and puts his draft back, types `FROM <your name>: <message>`
-  and presses Enter, so simultaneous senders never run together. The only way to send.
+  receiving pane and never touches a human's draft: while anything is typed in the input (or the input
+  cannot be read), it queues the message (agent-send prints that it is queued) and delivers it once the
+  input is empty, at the receiving agent's next turn end or the next send; otherwise it types
+  `FROM <your name>: <message>` and presses Enter, so simultaneous senders never run together and keep
+  their order. The only way to send.
 - `agent-ask [<session> <pane> | seat] <your name> --title .. --ask .. --context .. --option "A: gains / loses"
   .. --recommend ..`: a complete decision card, sent with agent-send (`agent-ask --help`).
 - `agent-steps submit --file steps.json [--replace <card> <step>]`: runnable steps for an ask-first action
@@ -91,8 +94,8 @@ Josh opened himself and is working with directly asks him in its own pane; with 
 - **One question, sent when it blocks.** Send each blocking decision the moment it blocks, one per
   message. Non-blocking decisions wait for your report's *Decisions owed*.
 - **No seat inbox, log or board to check.** Agent messages arrive as input in the receiving pane (the desk's
-  while one exists, else the seat's); `agent-send`'s typing guard waits while the human types in that pane
-  and puts the draft back after the message.
+  while one exists, else the seat's); while the human has a draft in that pane, `agent-send` queues the
+  message instead of typing, and it arrives once the input is empty (2026-11-18: clearing and retyping lost drafts).
 
 Use the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md) for agent briefs; keep details behind links.
 
