@@ -93,6 +93,10 @@ The steps of carrying work out are not the work itself; the work lives where the
 - Never print, log or commit a secret.
 - For credentials, follow credential continuity (`~/agent-core/primitives/rules/credential-continuity/RULE.md`).
   A new thread or session is not a reason to request a password again.
+  For an explicitly authorized disposable-key test, apply that rule's disposable-test
+  exception: an operator-supplied test key is not automatically a retained credential.
+  Authorized in-memory use is not disclosure; do not substitute a saved key or turn
+  an executable test into credential-entry homework. The no-print/no-log rule still holds.
 
 ## Ground, make, report
 
