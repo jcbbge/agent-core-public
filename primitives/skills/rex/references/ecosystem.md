@@ -14,6 +14,20 @@ the M5 only, and is designed and proven there. Programs in panes (applets, scrip
 on hive's Linux, where compute and its Rex server live: that is running, not viewing. Where a choice
 trades Linux-client support for a better Mac experience, take the Mac.
 
+## Keys: never on a key that is already taken
+
+Josh, 2026-11-19, after `cmd+alt+w` (bound to the work rundown) closed his tabs: never bind a key
+the Rex Mac app or macOS already uses. On the M5, the app's menu shortcuts and macOS's standard
+shortcuts fire before a config binding. `cmd+alt+w` is macOS's Close All, and the app has its own
+Close Other Tabs and close-all-windows commands.
+
+- `rex keymap` with no `--request` lists only the config layer. A clean result there proves nothing
+  about the app or macOS. Check against the app's full shortcut list (its settings, or a
+  `client.keymap` request carrying the app's layers) and against macOS's standard shortcuts.
+- A key you cannot prove is free stays unbound, and the action lives in the palette.
+- Never test a key by pressing it in Josh's app; prove it with the keymap check.
+- rexconfig's check refuses a binding on a reserved key (ask the rex-oracle).
+
 ## What Rex offers an extension
 
 | Point | Runs where | Can | Cannot |

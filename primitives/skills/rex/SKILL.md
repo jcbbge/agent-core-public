@@ -43,7 +43,7 @@ Estate policy:
 Doctor, surfaces, jobs, watches, visible runs, the board and recovery are documented in the
 upstream guide rather than copied here.
 
-**Extending Rex** (a key, action, view, watcher, harness extension or someone else's plugin): read
+**Extending Rex** (a key — never one the app or macOS already uses, see the reference — action, view, watcher, harness extension or someone else's plugin): read
 [references/ecosystem.md](references/ecosystem.md) first; rexconfig is the only writer of Rex's config.
 A view or dashboard in a pane is an applet: the [rex-applet skill](../rex-applet/SKILL.md).
 
