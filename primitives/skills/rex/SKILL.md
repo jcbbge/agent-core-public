@@ -1,6 +1,6 @@
 ---
 name: rex
-description: Rex is the terminal control plane on the M5 and on hive - sessions, tabs, panes, running and reading terminals, controlling Rex apps - plus teerex, the Rex extensions CLI - bounded reads and waits, supervised runs, safe sends into a pane, panes it opens/moves/closes, the board, restart snapshot/restore, named hosts. Use for any Rex task, any time an agent starts, reads, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
+description: Rex is the terminal control plane - its server and everything that drives it on hive, its app on the M5 - sessions, tabs, panes, running and reading terminals, controlling Rex apps - plus teerex, the Rex extensions CLI - bounded reads and waits, supervised runs, safe sends into a pane, panes it opens/moves/closes, the board, restart snapshot/restore, named hosts. Use for any Rex task, any time an agent starts, reads, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
 ---
 
 # Rex
@@ -26,11 +26,14 @@ Estate policy:
   with the pane id `agent-spawn` printed; its scratchpad viewer follows.
 - The seat is the pane labelled `seat`: `agent-send seat <your name> ...`.
 - Close only panes you opened (a written rule); `agent-close` refuses the seat pane; teerex's guard protects only the seat pane and its tab.
-- Machine check: `teerex doctor --all --config ~/.config/teerex/hosts.json` (both machines: build vs pin, Rex server, a guarded pane round trip, rexconfig, harness hooks).
+- **The M5 runs only the Rex app** (Josh, 2026-11-20). The app and its own built-in server are the app; leave
+  them alone. Rex config and Lua, teerex, rex-check and every Rex script run on hive; never run a Rex or
+  teerex command on the M5 over ssh. Every pane lives on hive's server, and the app shows it.
+- Machine check: `teerex doctor --all --config ~/.config/teerex/hosts.json` (hive: build vs pin, Rex server, a guarded pane round trip, rexconfig, harness hooks).
 - Questions for Josh go directly to the seat. `agent-ask` sends a complete decision card through
   agent-send; `agent-ask --help` lists its fields.
 - Messaging wrappers select `TEEREX_HOST` (default `hive`) and `TEEREX_HOSTS`
-  (default `~/.config/teerex/hosts.json`). Choose `m5` explicitly for M5 panes (send, read, open); agents themselves always run on hive. No host search or fallback.
+  (default `~/.config/teerex/hosts.json`, whose one host is `hive`). Agents and their panes live on hive. No host search or fallback.
 - Rexconfig (`~/rexconfig`, its README and `./install --check`) owns Rex configuration, named hosts,
   the agent commands and the `rex` wrapper: `rex claude|codex|pi` starts that agent clean with its
   standing flags (on hive in the terminal it was typed in; from the M5 in a labelled tab on hive); any other `rex ...` is the real Rex. Agent-core-sync does not install that configuration.

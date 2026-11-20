@@ -14,6 +14,14 @@ the M5 only, and is designed and proven there. Programs in panes (applets, scrip
 on hive's Linux, where compute and its Rex server live: that is running, not viewing. Where a choice
 trades Linux-client support for a better Mac experience, take the Mac.
 
+**The M5 runs only the Rex app** (Josh, 2026-11-20: "i dont want anything to run on the m5 ... any
+fukcing thing that has to do with rex, i do not want it on my m5 except the mac app"; the same day:
+"the app is connected to the server. the server is connected to the app. it doesnt matter where they
+are located"). The app and its own built-in server count as the app. No rexconfig, Rex Lua, teerex,
+rex-check or Rex script is installed or run there, and no agent runs a Rex command on it over ssh.
+Checks that need the app's view run on hive: the reserved-key check reads the app's cached key list
+from the Mac as plain files.
+
 ## Keys: never on a key that is already taken
 
 Josh, 2026-11-19, after `cmd+alt+w` (bound to the work rundown) closed his tabs: never bind a key
@@ -112,8 +120,7 @@ Rules that hold across all of them:
   "<name> needs Rex API N; <host> runs M"). Lua checks at action time with rexconfig's helper, never at
   load. Pieces that only call teerex rely on teerex's own refusal.
 - **Behaviours the docs do not promise** live in one list, rexconfig `docs/rex-behaviours.md`, each
-  with a probe. `rex-check` runs them all in one throwaway session (`rex-check --host m5` for the
-  Mac's Rex). Something new that relies on an unpromised behaviour adds its row and probe there.
+  with a probe. `rex-check` runs them all in one throwaway session on hive. Something new that relies on an unpromised behaviour adds its row and probe there.
 - **Rex updates** are noticed, not polled: the session-start hook runs `rex-check watch` (well under a
   second when nothing changed). On a version change it runs the probes in a visible pane, diffs the API
   field by field, and pages Josh's inbox once only if something we use broke, a listed want arrived,

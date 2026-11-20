@@ -18,7 +18,7 @@ login), say which link failed and what it printed.
 | Name | What it is | Role | Login | Reach it from anywhere |
 |---|---|---|---|---|
 | `hive` | Linux VPS (Hivelocity) | **All compute.** Code, Rivet, agents and their files live here. | `jrg` | `ssh hive <cmd>` |
-| `m5` | MacBook (M5), the operator's laptop | **The terminal.** Rex app, Chrome, the operator's eyes and hands. Mac-only tools. | `jrg` | `ssh m5 <cmd>` (from hive) |
+| `m5` | MacBook (M5), the operator's laptop | **The terminal.** Runs only the Rex app (with its own built-in server), Chrome, the operator's eyes and hands. Mac-only tools. | `jrg` | `ssh m5 <cmd>` (from hive) |
 | `m1` | MacBook (M1) | **A second Mac.** Its files and Mac-only tools. | `jcbbge` | `ssh m1 <cmd>`: **not in place yet** (2026-11-14: hive cannot resolve `m1`; its tunnel is not set up) |
 
 - Each Mac holds one always-on tunnel to hive and lends hive its login: the M5 at hive's port
@@ -26,10 +26,13 @@ login), say which link failed and what it printed.
   on any network. On the M5 that tunnel is `hive-tunnel` (launchd), which also carries the
   forwards: Rivet engine at the M5's 127.0.0.1:6420. The M5's Chrome debug port is not forwarded at rest;
   an agent opens it on hive's 127.0.0.1:9222 for one browser task with operator-mac's `mac-cdp`.
-- Rex reaches hive's Rex server natively: the M5's Rex host `hive` is
-  `ssh://jrg@hive/run/user/1000/rex/server.sock` (`rex -S hive ...`). teerex reaches both machines
-  through its named-host config on each machine, `~/.config/teerex/hosts.json`
-  (`teerex --config <it> --host hive ...`). No hand-built socket forward.
+- **The M5 runs only the Rex app (Josh, 2026-11-20: "i dont want anything to run on the m5 ... any
+  fukcing thing that has to do with rex, i do not want it on my m5 except the mac app"; the same day:
+  "the app is connected to the server ... it doesnt matter where they are located").** The app and its
+  own built-in server are the app; leave them alone. Rex config and Lua, teerex, rex-check and every Rex
+  script live and run on hive, and no agent runs a Rex command on the M5 over ssh. The app reaches
+  hive's Rex server through its host `hive` (`ssh://jrg@hive/run/user/1000/rex/server.sock`). teerex
+  runs on hive with one named host, `hive`, in `~/.config/teerex/hosts.json`. No hand-built socket forward.
 - Connections are shared (ControlMaster): a second `ssh <name> <cmd>` costs under 0.1 s. Call it
   as often as the work needs.
 - **Finder view, on the M5: not in place yet** (2026-11-14: `~/Machines` does not exist). When it
@@ -38,7 +41,8 @@ login), say which link failed and what it printed.
 
 ## Where things live (one place each)
 
-- Rex and teerex configuration: `~/rexconfig` on hive and m5; install with its `./install`.
+- Rex and teerex configuration: `~/rexconfig` on hive; install with its `./install`. On the m5 the same
+  checkout installs only the harness hooks, and `./install --check` reports any Rex tooling left there.
   Rex reads `~/.config/rex/init.lua`; teerex named hosts read `~/.config/teerex/hosts.json`.
 
 - Code, checkouts, Rivet, work items, agent sessions: **hive**.
@@ -52,17 +56,16 @@ From the ground up. Each layer only drives the one above it.
 
 1. **Machine.** The OS, its services (launchd on a Mac, systemd `--user` on hive), PATH, ssh.
 2. **Rex.** The terminal control plane, and one window onto agents among others. The Rex app
-   runs on the m5; a Rex server runs on each machine (hive: `~/opt/rex/bin/rex`, `rex.service`).
+   runs on the m5 with its own built-in server; hive's Rex server (`~/opt/rex/bin/rex`, `rex.service`)
+   holds every session, pane and agent.
    A pane's address is its session and block (`REX_SESSION`, `REX_BLOCK`; over ssh,
    `LC_REX_SESSION`, `LC_REX_BLOCK`).
 3. **teerex.** The Rex extensions CLI: bounded reads and waits, visible runs, safe whole-message sends,
    and the operating layer (panes, the board, restart snapshot/restore, named
    hosts). Every agent uses it for everything it does, and nothing is hand-built beside it; how is
-   in the `rex` skill. Installed: the build pinned in `~/rexconfig/teerex.version`, on m5 and hive
+   in the `rex` skill. Installed on hive only: the build pinned in `~/rexconfig/teerex.version`
    (`~/.local/opt/teerex-managed/current`; `teerex --version` and `readlink` of `current` say which).
    Earlier builds stay under `versions/` for rollback.
-   Both Rex servers are API 13. Named-host commands reach M5 panes from hive:
-   `teerex --config ~/.config/teerex/hosts.json --host m5 observe ...`.
    Configuration and installation belong to `~/rexconfig`; see its README and `./install --check`.
 4. **Rivet.** The engine on hive (127.0.0.1:6420, `rivet-node.service`, CLI `rv`). It drives work
    items through discovery, planning, implementation, tests, audit and the ship stop. Projects
@@ -85,7 +88,7 @@ From the ground up. Each layer only drives the one above it.
      `agent-send seat`; questions for the operator go there as decision cards.
    - **`/hive-oracle`**: the VPS: the machine, services, servers, runtimes, disks, network, where
      credentials live.
-   - **`/rex-oracle`**: Rex, teerex the utility, rexconfig, both machines' Rex setup.
+   - **`/rex-oracle`**: Rex, teerex the utility, rexconfig, hive's Rex setup and the M5's Rex app.
    - **`/rivet-oracle`**: Rivet's engine under the hood; never a project's items.
    An oracle maintains its layer; project work belongs to a seat.
 
