@@ -119,8 +119,8 @@ tell it with agent-send; to end it, close its pane with agent-close."
     fi
     if command -v teerex >/dev/null 2>&1 && printf '%s' "$cmd" | rex_capture_command; then
       deny "$harness" "engine-host: read terminals with teerex named hosts. \
-Run teerex --config ~/.config/teerex/hosts.json --host m5 observe --session <session> --block <block>. \
-Use --host hive for the rivet session; m5 for the operator's panes. \
+Run teerex --config ~/.config/teerex/hosts.json --host hive observe --session <session> --block <block>. \
+Every pane lives on hive's Rex server; the M5 runs only the Rex app. \
 For a change, save the observation then use teerex watch --baseline FILE --timeout-ms N."
     fi
     exit 0 ;;

@@ -27,7 +27,7 @@ Agent-core ships no launch wrapper.
   visible as its own session, started with `agent-spawn`;
 - a shell command that reads a Rex terminal with `rex capture`, whenever the
   [teerex](../../tools/teerex/TOOL.md) tool is installed. The read runs on the machine whose Rex
-  server holds the pane, by named host: `teerex --config ~/.config/teerex/hosts.json --host m5|hive
+  server holds the pane, by named host: `teerex --config ~/.config/teerex/hosts.json --host hive
   observe --session <session> --block <block>`. Only `rex [options] capture` or
   `rex [options] block capture` in command position counts (the start of a command, or after
   `;` `&&` `||` `|` `&` `(` `$(` or a newline). Those words inside quoted text, such as a message or a
