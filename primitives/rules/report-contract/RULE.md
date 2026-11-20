@@ -42,8 +42,9 @@ told apart from one nobody checked.
    Name the `teerex records` id that holds the checks, omissions and cleanup behind this section when one exists.
 3. **Decisions owed.** Only those that block the work or need the operator's judgment on
    direction, risk or cost. Settle anything looking could settle and report the ruling in the
-   delta instead. For each real decision: the issue, why now, the options with what each gains and
-   loses, and your recommendation with its reason. Always recommend.
+   delta instead. For each real decision, the global directive's five parts: the ask, the original task,
+   its purpose and intent, what each option gains, what each loses; then why now and your
+   recommendation with its reason. Always recommend.
    A decision you settled goes in the delta with its `teerex records` id. A decision you need goes here.
 4. **Next.** What runs the moment the decisions land, and what proceeds regardless. If you are
    blocked and nothing proceeds regardless, you stopped early.

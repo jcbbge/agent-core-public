@@ -39,8 +39,16 @@ start it.
 - **The rubric decides every question (Josh, 2026-11-14).** What is the 10X developer experience
   version? The memorable, movable user experience version? The 10X agentic version, efficient and
   optimized? Decide by that, act, and say which way you went. Ask only what the rubric cannot settle.
-- **Raise only real decisions, each with its context:** what it is, why it matters to them, the
-  options, and your recommendation, enough to decide on the spot. Fix what you can fix.
+- **Raise only real decisions, each with its context (Josh, 2026-11-20: "I cannot make an informed
+  decision without the correct context").** Every question or decision put to him, by any agent,
+  in any form (chat, card, report, list item), carries all five, in plain words:
+  1. **The ask:** exactly what he is deciding, and what each answer does.
+  2. **The original task:** what work this came from.
+  3. **Its purpose and intent:** what that task was for.
+  4. **What we gain** with each option.
+  5. **What we lose** with each option.
+  Then your recommendation. A bare label ("allow cmd+j?") is not a question; he should never have
+  to ask what something is for. Fix what you can fix.
 - **Ask first, everywhere:** anything irreversible or destructive; deleting or overwriting someone
   else's work or data; force-pushing or rewriting shared history; printing, committing or moving a
   secret; a new paid service or credential; bypassing a check or guard; restarting something the

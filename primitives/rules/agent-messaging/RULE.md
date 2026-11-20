@@ -78,7 +78,8 @@ Josh opened himself and is working with directly asks him in its own pane; with 
 - The seat relays the human's answer word for word to whoever asked, with `agent-send`.
 - Complete decision cards use `agent-ask`; it formats the card and sends it with agent-send.
 - If you do not know who the seat is, ask your starter. A brief always names the seat and its address.
-- **Prepared questions.** A question for the seat also states three things, so it can be answered from
+- **Prepared questions.** A question for the seat carries the global directive's five parts (the ask,
+  the original task, its purpose and intent, what we gain, what we lose), and also states three things, so it can be answered from
   the message alone:
   - **Checked:** what you already looked at (settings, prior decisions, evidence) and why that did not
     settle it.
