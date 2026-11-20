@@ -26,7 +26,13 @@ Close Other Tabs and close-all-windows commands.
   `client.keymap` request carrying the app's layers) and against macOS's standard shortcuts.
 - A key you cannot prove is free stays unbound, and the action lives in the palette.
 - Never test a key by pressing it in Josh's app; prove it with the keymap check.
-- rexconfig's check refuses a binding on a reserved key (ask the rex-oracle).
+- One exception (Josh, 2026-11-20: "YES", restoring `cmd+j`): a key macOS uses **only in Finder**
+  (Apple lists `cmd+j` only as Finder's Show View Options) counts as free in Rex, because Finder
+  shortcuts never fire inside another app. The exception is that narrow: a key with any system-wide,
+  standard app-menu or Rex app meaning stays reserved.
+- rexconfig's check, `keys/check_keys.py`, refuses a binding on a reserved key in `./install`,
+  `./install --check` and its tests. Its list is `keys/reserved.txt`; Finder-only keys are marked
+  there and pass.
 
 ## What Rex offers an extension
 
