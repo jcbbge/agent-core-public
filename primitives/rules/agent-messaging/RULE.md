@@ -121,9 +121,10 @@ and reaping what you spawn are in the global directive; they bind every agent th
 4. **Conflicting permission.** When two sources of authority disagree (see the directive's order of
    authority), act on the narrower and send the conflict to the seat, naming both sources. Never resolve it
    by taking the broader reading. Work both permit proceeds.
-5. Agents on one machine may also use their harness's own session messaging; the agent commands work everywhere.
+5. Agent-to-agent messages go only through `agent-send` (the agent contract); harness-internal session messaging is not used.
 6. **The rules and the brief arrive together (seat ruling, 2026-11-14).** A started agent's first prompt is
-   this protocol (rexconfig `agent/protocol.md`) followed by its brief; there is no acknowledgement step.
+   this protocol (rexconfig `agent/protocol.md`) followed by its brief; the started agent's first message back is its NQ
+   confirmation (the agent contract).
 7. **The hook guarantees the alert, once.** `agent-hook`, installed in Claude, Codex and pi, sends the starter
    the agent's last words when a turn ends and its error when the harness fails; a turn that ends neither
    finished nor flagged goes up as a flag, unless agents it started are still running. An agent whose

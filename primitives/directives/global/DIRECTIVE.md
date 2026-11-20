@@ -209,7 +209,7 @@ No agent waits to be noticed, and nobody asks the human to relay.
 - **Your address** is your session and pane: `AGENT_SESSION` and `AGENT_PANE` (over ssh,
   `LC_REX_SESSION` and `LC_REX_BLOCK`), or what your brief gives.
 - **Start an agent:** `agent-spawn --brief-file <brief.md> <session> <name> -- <claude|codex|pi>`: a visible
-  pane labelled `<name>` on hive, the rules and the brief as its first prompt (no acknowledgement step),
+  pane labelled `<name>` on hive, the rules and the brief as its first prompt; its first message back is its NQ confirmation,
   standing flags from rexconfig `agent/harness.json`; you are its starter and report-to. It prints the pane id.
 - **Send:** `agent-send <session> <pane> <your name> <message...>` (or `agent-send starter|seat <your name> ...`):
   whole message, locked, `FROM <your name>:` and a `reply-to:` line with your address added, Enter pressed.
