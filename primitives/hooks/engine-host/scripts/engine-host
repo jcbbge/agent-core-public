@@ -51,6 +51,41 @@ sys.exit(1)
 ' 2>/dev/null
 }
 
+# pause_command: exit 0 when the shell command on stdin runs kill, pkill or killall (in command
+# position) with a stop signal: -STOP -SIGSTOP -19 -TSTP -SIGTSTP -20, -s/--signal STOP|TSTP|19|20.
+# Quoted text is one token, so a message or commit text that mentions them never matches.
+pause_command() {
+  # shellcheck disable=SC2016 # the Python program is single-quoted on purpose
+  python3 -c '
+import os, re, shlex, sys
+try:
+    lex = shlex.shlex(sys.stdin.read(), posix=True, punctuation_chars="();<>|&\n")
+    lex.whitespace = " \t\r"; lex.whitespace_split = True
+    toks = [t.lstrip("`") for t in lex]
+except ValueError:
+    sys.exit(1)
+SEP = {";", "&&", "||", "|", "&", "(", "\n", "$(", "{", "!", "then", "do", "else", "exec", "time", "sudo", "env", "xargs"}
+STOP = re.compile(r"^(sig)?(stop|tstp)$|^(19|20)$", re.I)
+start = True
+for i, t in enumerate(toks):
+    if start and "=" in t and not t.startswith(("-", "=")):
+        continue
+    if start and os.path.basename(t) in ("kill", "pkill", "killall"):
+        args = toks[i + 1:]
+        for j, arg in enumerate(args):
+            if arg in SEP:
+                break
+            if arg.startswith("-") and STOP.match(arg.lstrip("-")):
+                sys.exit(0)
+            if arg in ("-s", "--signal", "-n") and j + 1 < len(args) and STOP.match(args[j + 1]):
+                sys.exit(0)
+            if arg.startswith("--signal=") and STOP.match(arg.split("=", 1)[1]):
+                sys.exit(0)
+    start = t in SEP or t == "$"
+sys.exit(1)
+' 2>/dev/null
+}
+
 deny() { # $1 harness, $2 reason
   case "$1" in
     claude|codex) jq -n --arg r "$2" '{hookSpecificOutput:{hookEventName:"PreToolUse",
@@ -77,6 +112,11 @@ It reports back to you through agent-send." ;;
     esac
     cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // .command // empty' 2>/dev/null) || exit 0
     [ -n "$cmd" ] || exit 0
+    if [ "${MW_WORKER:-}" != 1 ] && printf '%s' "$cmd" | pause_command; then
+      deny "$harness" "engine-host: agents are never paused (Josh, 2026-11-20): no SIGSTOP or SIGTSTP. \
+A paused program reads nothing and every message to it piles up unseen. To stop an agent's work, \
+tell it with agent-send; to end it, close its pane with agent-close."
+    fi
     if command -v teerex >/dev/null 2>&1 && printf '%s' "$cmd" | rex_capture_command; then
       deny "$harness" "engine-host: read terminals with teerex named hosts. \
 Run teerex --config ~/.config/teerex/hosts.json --host m5 observe --session <session> --block <block>. \

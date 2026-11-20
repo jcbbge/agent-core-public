@@ -33,6 +33,11 @@ Agent-core ships no launch wrapper.
   `;` `&&` `||` `|` `&` `(` `$(` or a newline). Those words inside quoted text, such as a message or a
   commit message, never do.
 
+- a shell command that pauses a process: `kill`, `pkill` or `killall` in command position with a
+  stop signal (`-STOP`, `-SIGSTOP`, `-19`, `-TSTP`, `-SIGTSTP`, `-20`, `-s STOP`, `--signal=STOP`).
+  Agents are never paused (Josh, 2026-11-20); a paused agent reads nothing and its messages pile up
+  unseen. Quoted text that mentions these never matches. Workers (`MW_WORKER=1`) pass.
+
 **Does not refuse:** a message, commit message or any quoted text that mentions the capture
 command; an agent on any machine, in or outside a Rex pane (Josh, 2026-11-12: "This is a suggested. It's not authoritative."). An agent an app such as T3 Code starts on hive
 passes.

@@ -161,6 +161,11 @@ The steps of carrying work out are not the work itself; the work lives where the
   may sit in another tab or out of sight, as long as Rex shows it. Never a harness-internal sub-agent (Claude's
   Task/Agent tool, Codex's internal sub-agents) or a background process outside Rex: those can't be
   tracked (Josh, 2026-11-13).
+- **Agents are never paused (Josh, 2026-11-20: "there is no such thing as a frozen state. its agent
+  response. or user response. if you input any text into the terminal input, SUBMIT THE TEXT").**
+  No agent or tool sends an agent, its harness or its helpers SIGSTOP or SIGTSTP. A paused program
+  reads nothing and every message to it piles up unseen. To stop work, tell the agent; to end it,
+  close its pane. Text typed into an agent's input is always submitted: paste and Enter are one act.
 - **Spend little.** Start what the work needs and nothing more.
 - **Reap what you spawn (Josh, 2026-11-14: "If you spawn something, you need to reap it").** Tabs,
   panes, sessions, test servers, temp dirs, worktrees, branches and processes, on hive and the M5.
