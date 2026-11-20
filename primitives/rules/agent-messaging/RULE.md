@@ -134,8 +134,9 @@ and reaping what you spawn are in the global directive; they bind every agent th
    (a task list, a table, a QA brief, a report) is written as a `.md` file in the item's work folder, never printed
    into a pane. Never hand Josh a path to click: in the Mac Rex app a clicked path opens in the Mac's default app
    (Zed), not leaf, and the file lives on hive anyway. The seat opens it for him as a floating leaf layer over the
-   seat: `teerex surfaces open --layout float --anchor <seat pane> --bounds '[0.08,0.05,0.84,0.9]' --label <name>
-   -- leaf open <file.md>` (q closes it). Other agents send the seat the path; the seat opens it.
+   seat: `teerex surfaces open --socket "$XDG_RUNTIME_DIR/rex/server.sock" --session <seat session> --layout float
+   --anchor <seat pane> --bounds '[0.08,0.05,0.84,0.9]' --label <name> -- leaf open <file.md>` (q closes it).
+   Other agents send the seat the path; the seat opens it.
 
 ## Never
 
