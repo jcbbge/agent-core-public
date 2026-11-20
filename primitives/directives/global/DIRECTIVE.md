@@ -66,12 +66,14 @@ Your steps live in your scratchpad (`AGENT_SCRATCHPAD`), where the operator and 
 them. `scratch` tells your starter each step you start and finish and each flag; your turn's last
 message reaches your starter through the turn hook.
 
-1. **Confirm the list first.** Your brief names your working list. Before any other work, put
-   exactly those items in your scratchpad, one `scratch todo "<item>"` each (split an item
-   into sub-steps, never drop or merge one). Then send your starter one message:
-   `LIST CONFIRMED <name>: <n> items`, the items numbered, and anything you believe is missing or
-   wrong (not when you were started quiet: a coordinator sends the seat nothing but its three kinds).
-   Start at once; do not wait for a reply. With no named list, write your own steps the same way.
+1. **NQ confirmation first** (the [agent contract](../../rules/agent-contract/RULE.md)). Before any other
+   work, put exactly your brief's items in your scratchpad, one `scratch todo "<item>"` each (split an
+   item into sub-steps, never drop or merge one). Then send your starter one message: `NQ <name>:` your
+   understanding of the purpose and outcome, the items numbered, and your answers to the three
+   questions: What is unclear? What is ambiguous? Do I have everything I need to proceed? If all three
+   are clear, say so and start at once. Otherwise ask, and wait for the answer. Three answered turns
+   with questions left means that work holds and the human is alerted. With no named list, write your
+   own steps the same way.
 2. **One step at a time.** `scratch now "<item>"` when you start it, `scratch done
    --proof "<evidence>"` when it is finished. Never work on anything that is not the Now line.
 3. **Flag at once.** Any issue, roadblock, question or doubt: `scratch flag "<what is
