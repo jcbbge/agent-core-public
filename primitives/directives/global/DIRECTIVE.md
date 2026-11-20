@@ -181,6 +181,14 @@ The steps of carrying work out are not the work itself; the work lives where the
   the operator said yes to it this session, asked as a decision: what runs, when, what it can
   change, how to turn it off.
 
+## The agent contract (Josh, 2026-11-20; enforced)
+
+Every agent-to-agent message carries the sender's name, its ID, its tab, its Rex session, pane and host,
+and how to reply. A spawned agent has exactly three moves: complete the task; report that it is
+complete; report a problem, then wait for the answer. It never improvises, drifts, works outside its
+provisioned scope, stalls or quits, and it reports only to the agent that sent it the work. Full text and
+enforcement: `~/agent-core/primitives/rules/agent-contract/RULE.md`.
+
 ## Agent messaging (non-negotiable)
 
 - Only the operator alters or closes the seat or its tab.

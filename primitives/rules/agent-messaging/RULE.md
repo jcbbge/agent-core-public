@@ -4,6 +4,8 @@
 reports back to it directly, one to one. No agent learns what another is doing by guessing, waiting, or
 asking the human to relay.
 
+**The contract comes first.** Every message and every spawned agent follows [the agent contract](../agent-contract/RULE.md): the identity and reply block, the three moves, and waiting after a problem report. Where this file differs, the contract governs.
+
 ## Addresses
 
 An agent's address is its **session** and **pane**. `AGENT_SESSION` and `AGENT_PANE` hold yours when your
