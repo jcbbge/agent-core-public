@@ -34,6 +34,14 @@ Close Other Tabs and close-all-windows commands.
   `./install --check` and its tests. Its list is `keys/reserved.txt`; Finder-only keys are marked
   there and pass.
 
+## Never refuse a newer Rex
+
+Josh, 2026-11-20, after teerex refused Rex Preview (API 18) because its range stopped at 13: "how
+does that make any sense to hard code a version ... it's in beta preview. it's going to change.
+remove that check." No tool, applet or check ever refuses Rex for being newer. Detect features:
+call the method, and if Rex answers `method_not_found` (or refuses the shape), say so plainly and
+name the method. A minimum revision is fine where a method truly first appears; a maximum never is.
+
 ## What Rex offers an extension
 
 | Point | Runs where | Can | Cannot |

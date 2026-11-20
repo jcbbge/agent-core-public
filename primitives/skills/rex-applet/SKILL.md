@@ -89,7 +89,7 @@ Worked example: `~/madewell-engine-view` (README, DESIGN.md, `tests/`). Read it 
 
 Use `rex api call --json` or `rex do script.lua --json --args '{…}'` (a Lua script for several calls
 that must happen together); never the control socket directly. Name the lowest API revision you
-tested on in one constant and, before the first Rex call, run
+tested on in one constant (a floor only; never refuse a newer Rex) and, before the first Rex call, run
 `rex-check api --need <N> --who <app>`: on exit 3 show its one line and stay read-only. Every Rex
 behaviour you rely on that its docs do not promise gets a row and a probe in rexconfig's
 `docs/rex-behaviours.md`, so `rex-check` re-proves it after each Rex update (ask the rex-oracle).
