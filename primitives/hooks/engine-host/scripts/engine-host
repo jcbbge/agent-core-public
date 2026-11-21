@@ -118,10 +118,11 @@ A paused program reads nothing and every message to it piles up unseen. To stop 
 tell it with agent-send; to end it, close its pane with agent-close."
     fi
     if command -v teerex >/dev/null 2>&1 && printf '%s' "$cmd" | rex_capture_command; then
-      deny "$harness" "engine-host: read terminals with teerex named hosts. \
-Run teerex --config ~/.config/teerex/hosts.json --host hive observe --session <session> --block <block>. \
-Every pane lives on hive's Rex server; the M5 runs only the Rex app. \
-For a change, save the observation then use teerex watch --baseline FILE --timeout-ms N."
+      deny "$harness" "engine-host: never read a screen to wait on or check an agent. \
+An agent's message wakes you; its state is its Program Status record: \
+rex do com.superlogical.terminal.program_status -b <block>. \
+For a command you ran in a pane: rex wait <block> --for <duration>, then rex block call -b <block> process for its exit. \
+To read the output of a pane you started: teerex --config ~/.config/teerex/hosts.json --host hive observe --session <session> --block <block>."
     fi
     exit 0 ;;
   *)

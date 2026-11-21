@@ -26,9 +26,10 @@ Agent-core ships no launch wrapper.
 - an in-process subagent (Claude Code's `Agent`, `Task` and `Workflow` tools): every agent is
   visible as its own session, started with `agent-spawn`;
 - a shell command that reads a Rex terminal with `rex capture`, whenever the
-  [teerex](../../tools/teerex/TOOL.md) tool is installed. The read runs on the machine whose Rex
-  server holds the pane, by named host: `teerex --config ~/.config/teerex/hosts.json --host hive
-  observe --session <session> --block <block>`. Only `rex [options] capture` or
+  [teerex](../../tools/teerex/TOOL.md) tool is installed. Agents never read a screen to wait on or
+  check another agent (agent contract): its message wakes them, and its state is its Program Status
+  record. Output of a pane the agent started is read with `teerex --config ~/.config/teerex/hosts.json
+  --host hive observe --session <session> --block <block>`. Only `rex [options] capture` or
   `rex [options] block capture` in command position counts (the start of a command, or after
   `;` `&&` `||` `|` `&` `(` `$(` or a newline). Those words inside quoted text, such as a message or a
   commit message, never do.
@@ -42,8 +43,9 @@ Agent-core ships no launch wrapper.
 command; an agent on any machine, in or outside a Rex pane (Josh, 2026-11-12: "This is a suggested. It's not authoritative."). An agent an app such as T3 Code starts on hive
 passes.
 
-**The refusal says:** the exact `agent-spawn` command, or the exact `teerex observe` /
-`teerex watch` command to use instead of `rex capture`.
+**The refusal says:** the exact `agent-spawn` command; or, instead of `rex capture`, the agent's
+Program Status record (`rex do com.superlogical.terminal.program_status -b <block>`), `rex wait` for a
+command, and `teerex observe` only for output of a pane the agent started.
 
 **When it cannot tell:** the guard's own failure (a missing `jq`, unreadable input) allows. It
 refuses only on a positive finding, never because of its own bug.

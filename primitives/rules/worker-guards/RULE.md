@@ -5,21 +5,12 @@ description: Applies to every refusal-capable guard, when installing it or when 
 
 # Worker guards
 
-A worker is an agent launched by a durable execution engine that keeps the worker's steps and
-enforcement on its own work item. The exact value `MW_WORKER=1` marks a worker. Workers pass every
-refusal-capable guard. Other values, including unset, empty, `0` and `true`, retain normal
-enforcement.
+A worker is an agent launched by a durable execution engine that enforces its own steps on its work
+item. Exactly `MW_WORKER=1` marks one; any other value, unset included, keeps normal enforcement.
 
-Check the worker identity before reading guard input, probing dependencies, loading
-helpers, parsing configuration or accessing guard state. Passage is silent: no output,
-denial or guard-state changes.
-
-For a tool with both guarding and ordinary commands, apply the exception only to
-its guarding command, before initialization. Nonblocking observers and ordinary
-tool commands retain their behavior. Non-worker behavior and explicit overrides
-remain unchanged.
-
-This exception skips mechanical enforcement; it does not authorize committing
-secrets, pushing known scanner hits, destructive operations, unattended installation
-without the operator's consent, or invisible agents. Grounding and visible-work
-duties still apply. A worker's work item is not replacement security enforcement.
+- Every refusal-capable guard lets a worker pass, silently: it checks `MW_WORKER` before reading input,
+  probing dependencies, loading helpers, parsing config or touching guard state, and changes nothing.
+- A tool that both guards and does ordinary work skips only its guarding command. Observers and
+  ordinary commands behave as always.
+- The exception skips enforcement, not the rules: no secrets committed, no scanner hits pushed, nothing
+  destructive, nothing installed without Josh's yes, no invisible agents.

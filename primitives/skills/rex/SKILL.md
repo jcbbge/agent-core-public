@@ -1,58 +1,42 @@
 ---
 name: rex
-description: Rex is the terminal control plane - its server and everything that drives it on hive, its app on the M5 - sessions, tabs, panes, running and reading terminals, controlling Rex apps - plus teerex, the Rex extensions CLI - bounded reads and waits, supervised runs, safe sends into a pane, panes it opens/moves/closes, the board, restart snapshot/restore, named hosts. Use for any Rex task, any time an agent starts, reads, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
+description: Rex is the terminal control plane - its server and everything that drives it on hive, its app on the M5 - sessions, tabs, panes, running and reading terminals, waiting on events, actions, native questions to Josh - plus teerex, the Rex extensions CLI, and rexconfig's agent commands. Use for any Rex task, any time an agent starts, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
 ---
 
 # Rex
 
-Read the installed Rex guide with `rex __internal skill`, then the
-[teerex README](https://github.com/jcbbge/teerex/blob/main/README.md) for reads, waits, sends and panes.
-Agent commands (starting agents, lists, hooks, the seat) are rexconfig's: `~/rexconfig/README.md`
-(Agent commands) and the [messaging rule](../../rules/agent-messaging/RULE.md).
-Check `teerex COMMAND --help` for the installed interface.
+Rex is the constant: build on it. Read the installed guide first, `rex __internal skill`, then
+`rex --help`, `rex actions --json` and `rex api list` for what this server offers. Hive's server is
+Preview; check a feature on it (`rex do -e 'return tostring(rex.ui ~= nil)'`) rather than assuming.
+How agents start, talk, wait and report is the [agent contract](../../rules/agent-contract/RULE.md).
 
-Estate policy:
+## The primitives
 
-- Agents should run on hive. A Rex pane is not required; the [engine-host guard](../../hooks/engine-host/HOOK.md)
-  refuses in-process subagents and directs terminal reads through teerex.
-- Every pane, read, wait, run, message and board goes through Rex and teerex; agent launch, lists,
-  hooks and the seat go through rexconfig's commands. Missing functionality belongs in a
-  jcbbge/teerex or jcbbge/rexconfig issue; never build plumbing beside them.
-- Start agents visibly with `agent-spawn --brief-file brief.md SESSION NAME -- claude|codex|pi`.
-  Follow the [messaging rule](../../rules/agent-messaging/RULE.md). Your report is your last message;
-  do not send it a second time. Launches run independently.
-- Keep your working list with `scratch todo|now|done|flag`, as the global directive's working-list
-  contract says. Reap what you spawn: answer the worker's report, then `agent-close <session> <pane>`
-  with the pane id `agent-spawn` printed; its scratchpad viewer follows.
-- The seat is the pane labelled `seat`: `agent-send seat <your name> ...`.
-- Close only panes you opened (a written rule); `agent-close` refuses the seat pane; teerex's guard protects only the seat pane and its tab.
-- **The M5 runs only the Rex app** (Josh, 2026-11-20). The app and its own built-in server are the app; leave
-  them alone. Rex config and Lua, teerex, rex-check and every Rex script run on hive; never run a Rex or
-  teerex command on the M5 over ssh. Every pane lives on hive's server, and the app shows it.
-- Machine check: `teerex doctor --all --config ~/.config/teerex/hosts.json` (hive: build vs pin, Rex server, a guarded pane round trip, rexconfig, harness hooks).
-- Questions for Josh go directly to the seat. `agent-ask` sends a complete decision card through
-  agent-send; `agent-ask --help` lists its fields.
-- Messaging wrappers select `TEEREX_HOST` (default `hive`) and `TEEREX_HOSTS`
-  (default `~/.config/teerex/hosts.json`, whose one host is `hive`). Agents and their panes live on hive. No host search or fallback.
-- Rexconfig (`~/rexconfig`, its README and `./install --check`) owns Rex configuration, named hosts,
-  the agent commands and the `rex` wrapper: `rex claude|codex|pi` starts that agent clean with its
-  standing flags (on hive in the terminal it was typed in; from the M5 in a labelled tab on hive); any other `rex ...` is the real Rex. Agent-core-sync does not install that configuration.
-- Never restart Rex or kill Rex processes without Josh's yes. Before a restart, use native recovery
-  impact/snapshot commands and record missing resume commands or unsent drafts. Never rename a shared session.
-- Long output for Josh lives in a Markdown document; the seat opens it for him as a floating `leaf` layer
-  (agent-messaging rule, item 8). Other agents send the seat the path.
-  Close only the panes you provisioned when the work lands.
+| Need | Use |
+|---|---|
+| Run something in a pane, wait for it | `rex run -s "$REX_SESSION" --label <name> --keep-open --wait -- <cmd>`; or `rex wait <block> --for <dur>` |
+| Wait for any event in a script | `rex.wait(event, filter, timeout)` in a Lua script run by `rex do <script.lua>`; `rex events -s <session> --json` to see event names |
+| A pane's state | its Program Status record: `rex do com.superlogical.terminal.program_status -b <block>`; its process: `rex block call -b <block> process` |
+| A decision from Josh | `agent-ask` (the `ask` action: `rex do ask`), shown on every connected Rex app; the answer returns to the caller |
+| A document for Josh | `rex do open_document path=<file.md>` from the seat's pane: leaf, floating over its window |
+| A key, action, view or watcher | read [references/ecosystem.md](references/ecosystem.md) first; never a key the app or macOS already uses; rexconfig is the only writer of Rex's config. A view in a pane is an applet: the [rex-applet skill](../rex-applet/SKILL.md) |
 
-Doctor, surfaces, jobs, watches, visible runs, the board and recovery are documented in the
-upstream guide rather than copied here.
+## teerex and rexconfig
 
-**Extending Rex** (a key — never one the app or macOS already uses, see the reference — action, view, watcher, harness extension or someone else's plugin): read
-[references/ecosystem.md](references/ecosystem.md) first; rexconfig is the only writer of Rex's config.
-A view or dashboard in a pane is an applet: the [rex-applet skill](../rex-applet/SKILL.md).
+- teerex (`teerex --help`) extends Rex: panes it opens, moves and closes, sends into a pane, the board,
+  restart snapshot and restore, named hosts (`~/.config/teerex/hosts.json`, one host: `hive`). A missing
+  verb is a jcbbge/teerex issue; never hand-build plumbing beside it.
+- rexconfig (`~/rexconfig`, its README, `./install --check`) owns Rex's config and the agent commands:
+  `agent-spawn`, `agent-send`, `agent-ask`, `agent-close`, `agent-role`, `scratch`, the `agent-hook`.
+  `rex claude|codex|pi` starts that agent clean; any other `rex ...` is Rex itself.
+- Machine check: `teerex doctor --all --config ~/.config/teerex/hosts.json`.
 
-The seat and the oracles are roles: `/seat` etc. run `agent-role <role>`, which labels the pane; there is
-no `seat` launcher, pointer or lock. `agent-read` returns native `observe --state` JSON, including evidence lines and unknowns; use `observe --tail` when you need newest raw text.
+## Never
 
-**Records.** When a check result, open question or handoff must outlive your turn, write it with `teerex records` in `~/.local/state/teerex-records` (once: `teerex records init --store ~/.local/state/teerex-records`). Put private text in a JSON `--fields-file -` rather than flags. **Before you stop on unfinished work, park:** `teerex records park --store … --host <host> --socket <socket> --session "$REX_SESSION" --block "$REX_BLOCK" --writer <your name> --fields-file -` with `question` and `next_action {actor, step, stop_when}`. Attach every teerex receipt that matters: `teerex records attach --id <id> --by <you> --evidence <packet.json> --check-command "<argv>" --assertion passed|failed|unknown --establishes "…" --does-not-establish "…"`. Never infer the assertion from exit 0. Record skipped checks with `records add omission` and leftovers with `records add cleanup`. In a decision card's `context`, add `records: teerex records resume --id <id>`. Run `records lint --id <id>` before reporting and name the id in your report. To pick work up, run `teerex records resume --id <id>` first; use `records navigate --focus yes` only if you need the pane.
-
-**Decisions.** When you settle a decision that someone could later reasonably reopen, record it with `teerex records new --kind decision` in `~/.local/state/teerex-records`. Include the claims it rests on (`--depends-on` pins for each version, ref or issue state they assume), at least one rejected option with `revisit_when`, and an invalidator. Before acting on an older decision, run `records revalidate --id <id>`. If it says `needs_review`, report that instead of acting on it. Never reopen a rejected option whose condition has not changed; ask the seat if you think it should be.
+- Read another agent's screen to wait on it or learn its state, or poll: use the record, `rex wait`, or
+  its message.
+- Send input into your own pane, or any pane you did not spawn (an `agent-send` message is the exception).
+- Run a Rex or teerex command on the M5; it runs only the Rex app.
+- Restart Rex or kill its processes without Josh's yes. A restart of `rex.service` ends every agent
+  inside it; take a restart snapshot first and record what cannot resume.
+- Rename a shared session.

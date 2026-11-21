@@ -37,6 +37,13 @@ if [ -d "$HOME/.claude" ]; then
     if $CHECK; then echo "stale: $l"; stale=1; continue; fi
     ln -sfn "$r" "$l"; echo "linked $l"
   done
+  # A link we made to a rule that no longer exists goes with it.
+  for l in "$HOME"/.claude/rules/*.md; do
+    case "$(readlink "$l" 2>/dev/null)" in "$AC"/primitives/rules/*) ;; *) continue;; esac
+    [ -e "$l" ] && continue
+    if $CHECK; then echo "stale: $l"; stale=1; continue; fi
+    rm -f "$l"; echo "removed $l"
+  done
 fi
 # Commands: each primitives/commands/<name>/COMMAND.md, in the form each installed harness takes.
 # A link we made is one that points into $CMDS; only those are ever removed.
