@@ -17,9 +17,33 @@ How agents start, talk, wait and report is the [agent contract](../../rules/agen
 | Run something in a pane, wait for it | `rex run -s "$REX_SESSION" --label <name> --keep-open --wait -- <cmd>`; or `rex wait <block> --for <dur>` |
 | Wait for any event in a script | `rex.wait(event, filter, timeout)` in a Lua script run by `rex do <script.lua>`; `rex events -s <session> --json` to see event names |
 | A pane's state | its Program Status record: `rex do com.superlogical.terminal.program_status -b <block>`; its process: `rex block call -b <block> process` |
-| A decision from Josh | `agent-ask` (the `ask` action: `rex do ask`), shown on every connected Rex app; the answer returns to the caller |
+| A decision from Josh | `agent-ask`, which opens the decision card (below); his answer, in his own words, returns to the caller |
 | A document for Josh | `rex do open_document path=<file.md>` from the seat's pane: leaf, floating over its window |
 | A key, action, view or watcher | read [references/ecosystem.md](references/ecosystem.md) first; never a key the app or macOS already uses; rexconfig is the only writer of Rex's config. A view in a pane is an applet: the [rex-applet skill](../rex-applet/SKILL.md) |
+
+## Asking Josh: the decision card
+
+A decision only Josh can make goes by `agent-ask`, nothing else: no question on a tab, no inbox page, no
+prompt in your own pane.
+
+```
+agent-ask <your name> --title "<a few words>" --task "<original task>" --purpose "<what it is for>" \
+  --intent "<what you are trying to achieve>" --ask "<what he decides>" \
+  --option "A: <what it gains> / <what it loses>" --option "B: <gains> / <loses>" --recommend "A: <why>"
+```
+
+- All six parts are required, each a full sentence (gains and losses too); `agent-ask` refuses otherwise.
+- It opens a large floating Rex pane over the asker's session's active tab: Task, Purpose, Intent, The ask,
+  each option's gain and loss, and the recommendation, wrapped and scrollable, never cut. Rex's palette
+  only says a decision is waiting.
+- He answers in a box at the bottom, typed or dictated. An option key only starts the answer; his words
+  govern. Enter twice sends.
+- Run it in the background. It blocks until he answers, then prints `{"answer", "text", "receipt"}`:
+  `answer` is the option id, or `text` when he answered only in words; `text` is his words verbatim; the
+  receipt is the record of his answer. Act on `text`.
+- Exit 75: the card could not open. Exit 1: he closed it without answering (the decision is still owed),
+  or the ask failed; stderr says which. Either way, report it to your starter as a problem, with the
+  question. There is no fallback.
 
 ## teerex and rexconfig
 
