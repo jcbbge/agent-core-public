@@ -30,18 +30,17 @@ When the estate changes, this file changes in the same commit.
 2. **Rex:** hive's server (`rex.service`) holds every session, pane and agent; the M5 app shows it. A
    pane's address is its session and block (`REX_SESSION`, `REX_BLOCK`). Keeper: `rex-oracle`.
 3. **teerex** (Rex extensions CLI) and **rexconfig** (`~/rexconfig`: Rex config, the agent commands
-   `agent-spawn`, `agent-send`, `agent-ask`, `agent-close`, `scratch`, and the turn hook `agent-hook`).
+   `start-work`, `board`, `agent-send`, `agent-ask`, `agent-close`, `scratch`, the hook `agent-hook`).
    Install with `~/rexconfig/install`. Keeper: `rex-oracle`.
 4. **The work engine.** The old Rivet engine (`rv`) is stopped since 2026-11-15; `rv` now prints where
    its history is kept. The live engine belongs to a private project, whose own repo documents it.
    Keeper: `rivet-oracle`.
 5. **Agents:** Claude, Codex, pi, any model, run on hive. Josh starts one clean with `rex claude|codex|pi`;
-   agents start agents with `agent-spawn`. High-level work (research, planning, review) on Claude;
-   coding on Codex.
+   other work starts as a run (`start-work`) and shows on the board. Research, planning and review on
+   Claude; coding on Codex.
 6. **Roles:** taken only when Josh types the command in an agent: `/seat` (the agent he works a project
    with), `/hive-oracle`, `/rex-oracle`, `/rivet-oracle`. Each runs `agent-role <role>`, which labels the
-   pane (one holder per role) and loads `~/agent-core/primitives/directives/<role>/DIRECTIVE.md`. The
-   **desk** is the standing coordinator, a pane labelled `desk`.
+   pane (one holder per role) and loads `~/agent-core/primitives/directives/<role>/DIRECTIVE.md`.
 
 ## agent-core
 

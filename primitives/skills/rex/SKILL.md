@@ -51,8 +51,8 @@ agent-ask <your name> --title "<a few words>" --task "<original task>" --purpose
   restart snapshot and restore, named hosts (`~/.config/teerex/hosts.json`, one host: `hive`). A missing
   verb is a jcbbge/teerex issue; never hand-build plumbing beside it.
 - rexconfig (`~/rexconfig`, its README, `./install --check`) owns Rex's config and the agent commands:
-  `agent-spawn`, `agent-send`, `agent-ask`, `agent-close`, `agent-role`, `scratch`, the `agent-hook`.
-  `rex claude|codex|pi` starts that agent clean; any other `rex ...` is Rex itself.
+  `start-work`, `board` (every run), `agent-send`, `agent-ask`, `agent-close`, `agent-role`, `scratch`,
+  the `agent-hook`. `rex claude|codex|pi` starts that agent clean; any other `rex ...` is Rex itself.
 - Machine check: `teerex doctor --all --config ~/.config/teerex/hosts.json`.
 
 ## Never

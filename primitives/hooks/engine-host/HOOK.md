@@ -24,7 +24,7 @@ Agent-core ships no launch wrapper.
 **Refuses:**
 
 - an in-process subagent (Claude Code's `Agent`, `Task` and `Workflow` tools): every agent is
-  visible as its own session, started with `agent-spawn`;
+  visible as its own session, started with `start-work`;
 - a shell command that reads a Rex terminal with `rex capture`, whenever the
   [teerex](../../tools/teerex/TOOL.md) tool is installed. Agents never read a screen to wait on or
   check another agent (agent contract): its message wakes them, and its state is its Program Status
@@ -43,7 +43,7 @@ Agent-core ships no launch wrapper.
 command; an agent on any machine, in or outside a Rex pane (Josh, 2026-11-12: "This is a suggested. It's not authoritative."). An agent an app such as T3 Code starts on hive
 passes.
 
-**The refusal says:** the exact `agent-spawn` command; or, instead of `rex capture`, the agent's
+**The refusal says:** the exact `start-work` command; or, instead of `rex capture`, the agent's
 Program Status record (`rex do com.superlogical.terminal.program_status -b <block>`), `rex wait` for a
 command, and `teerex observe` only for output of a pane the agent started.
 

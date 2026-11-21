@@ -1,7 +1,7 @@
 # Brief template
 
 A brief is the whole hand-off under the [agent contract](../../rules/agent-contract/RULE.md).
-`agent-spawn` refuses one missing any of these six headings. Aim for 40 lines; link details.
+`start-work` refuses one missing any of these six headings. Aim for 40 lines; link details.
 
 # Purpose and outcome
 Why the work exists and the tangible result: a file, a code change or a written response.

@@ -36,7 +36,8 @@ events, Program Status records, `rex do` actions and `rex wait`. Touch a harness
   receipt. Nothing else asks him: no other cards or prompts, no inbox pages, no questions on tabs.
 - **The inbox** (`inbox add`) is only for something he can use: a finished report to read, the daily
   digest. The digest always runs and always has real content.
-- **Long output** for him is a `.md` file. Send its path to the seat, which opens it for him in leaf.
+- **He sees the work on the board:** every run, done or not, and its blocker; nobody relays it to him.
+  Long output for him is a `.md` file whose path your report names.
 - Never type into his pane or write as him.
 
 ## Ask first

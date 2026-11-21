@@ -10,11 +10,13 @@ rexconfig's commands enforce most of it; it holds where they don't.
 
 ## Starting one
 
-- Every agent is a visible Rex pane: `agent-spawn --brief-file <brief.md> <session> <name> -- <claude|codex|pi>`.
-  It prints the pane id. Never a harness-internal sub-agent (Claude's Agent/Task tool, Codex's) or a
-  background process outside Rex.
+- Every piece of work is one run in its own Rex tab: `start-work [--run <name>] --brief-file <brief.md>
+  <session> <name> -- <claude|codex|pi>` prints the run and its pane id; the same `--run` resumes it.
+  Never a harness-internal sub-agent (Claude's Agent/Task tool, Codex's) or a process outside Rex.
+- The board shows every run by itself: what, who, step, blocker, and **DONE** only once the run has
+  returned the agent's final report. Nobody relays it.
 - The brief has the six sections of the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md);
-  `agent-spawn` refuses one that lacks any. Provision in full: the receiver must never rediscover what
+  `start-work` refuses one that lacks any. Provision in full: the receiver must never rediscover what
   you knew.
 - You are its starter. You answer every message it sends, check its proof yourself, and answer for it.
 
@@ -24,7 +26,7 @@ rexconfig's commands enforce most of it; it holds where they don't.
 2. Confirm: `scratch confirm --understanding "<purpose, outcome, scope, evidence>" --unclear "None"
    --ambiguous "None" --ready yes`. If anything is unclear, say it and use `--ready no`.
 3. Ready: start at once. Not ready: wait for `NQ ANSWER`. Each answer is one turn; a fourth question
-   holds the work and alerts the seat (the tools count).
+   holds the work (the tools count).
 
 Then you have three moves and no others: **complete** the task; **report** it complete; **report a
 problem** (what is stuck, what you tried, what you need) and wait for the answer. Stay inside the brief.
@@ -33,20 +35,20 @@ Something outside it: tell your starter once (what, where, why now, what you did
 ## The working list
 
 One step at a time: `scratch now "<item>"`, then `scratch done --proof "<evidence>"`. Any doubt or
-blocker: `scratch flag "<what is stuck; what you tried; what you need>"` at once, then keep doing what
-does not depend on it. A turn ends finished or flagged, never "I'll check back": you have no clock.
+blocker: `scratch flag "<what is stuck; what you tried; what you need>"` at once (it is the run's
+blocker), then keep doing what does not depend on it. A turn ends finished or flagged, never "I'll
+check back": you have no clock.
 
 ## Messages
 
-- `agent-send <session> <pane> <your name> "<message>"`, or `agent-send starter|seat <your name> "<message>"`,
+- `agent-send <session> <pane> <your name> "<message>"`, or `agent-send starter <your name> "<message>"`,
   is the only way one agent talks to another. It stamps who you are and how to reply, types and submits in
   one act, and answers **served** (the receiver's own status turned to working) or **failed**, with why.
   **Queued** means saved, not delivered.
 - Reply to the message's `reply-to:` line.
-- While a pane labelled `desk` exists, anything addressed to the seat goes to the desk (`agent-send` does
-  this). Never type into the seat's pane.
+- Never message the seat or type into its pane: the board shows the work; decisions go by `agent-ask`.
 - Your report is your turn's last message; the turn hook delivers it to your starter, once. Never also
-  send it with `agent-send`.
+  send it with `agent-send`. The same report is the run's return.
 
 ## Questions
 
@@ -73,16 +75,16 @@ does not depend on it. A turn ends finished or flagged, never "I'll check back":
 
 ## Panes
 
-- Close, rename, move or type into only panes you spawned, by the id `agent-spawn` printed. Leave every
+- Close, rename, move or type into only panes you spawned, by the id `start-work` printed. Leave every
   other pane alone, even one that looks dead; name it to your starter. An agent message is the exception.
 - Only Josh alters or closes the seat or its tab; `agent-close` refuses it.
 - Never pause an agent (no SIGSTOP or SIGTSTP). To stop its work, tell it; to end it, close its pane.
   Text typed into an input is always submitted.
 
-## Reporting up
+## Reporting
 
-Workers report to their lead, leads to their coordinator, coordinators and role holders to the desk
-(else the seat). Upward goes only a verified final report or a blocker you could not clear. A report
+A report goes once, to your starter, and stops there; nobody forwards it. Only a verified final report
+or a blocker you could not clear goes. A report
 says, in plain words: the result and where it is; the proof (what you ran this session, what it
 showed); what is unproven and why; the decisions you made by the rubric; and everything you started,
 each shown gone or named as still running with who stops it.
