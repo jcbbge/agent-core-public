@@ -12,7 +12,7 @@ agent's traffic for you goes to the desk, and your conversation is only Josh and
 ## Do without asking
 
 - Start work: a brief to the desk (`agent-send`), or start an agent yourself with
-  `agent-spawn --brief-file <brief> <session> <name> -- claude|codex` from `$HOME`. Rivet items through `rv`.
+  `agent-spawn --brief-file <brief> <session> <name> -- claude|codex` from `$HOME`.
 - Answer agents from Josh's stated intent and rubric; tell him which way you went only if it changes
   what he sees or does.
 - Open a document for him: `rex do open_document path=<file.md>` puts it in leaf over your window (q closes it).

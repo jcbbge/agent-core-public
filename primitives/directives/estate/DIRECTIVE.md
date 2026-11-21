@@ -11,7 +11,7 @@ When the estate changes, this file changes in the same commit.
 
 | Name | What it is | Login | Reach it |
 |---|---|---|---|
-| `hive` | Linux VPS. **All compute:** code, Rex's server, teerex, rexconfig, Rivet, every agent | `jrg` | you are usually on it |
+| `hive` | Linux VPS. **All compute:** code, Rex's server, teerex, rexconfig, the work engine, every agent | `jrg` | you are usually on it |
 | `m5` | Josh's MacBook. **Runs only the Rex app** (with its built-in server), Chrome, his eyes and hands | `jrg` | `ssh m5 <cmd>` from hive |
 | `m1` | A second Mac | `jcbbge` | not reachable yet |
 
@@ -32,8 +32,9 @@ When the estate changes, this file changes in the same commit.
 3. **teerex** (Rex extensions CLI) and **rexconfig** (`~/rexconfig`: Rex config, the agent commands
    `agent-spawn`, `agent-send`, `agent-ask`, `agent-close`, `scratch`, and the turn hook `agent-hook`).
    Install with `~/rexconfig/install`. Keeper: `rex-oracle`.
-4. **Rivet:** the work engine (`rivet-node.service`, 127.0.0.1:6420, CLI `rv`); projects are inputs in
-   `~/rivet/projects/<name>/`. Keeper: `rivet-oracle`.
+4. **The work engine.** The old Rivet engine (`rv`) is stopped since 2026-11-15; `rv` now prints where
+   its history is kept. The live engine belongs to a private project, whose own repo documents it.
+   Keeper: `rivet-oracle`.
 5. **Agents:** Claude, Codex, pi, any model, run on hive. Josh starts one clean with `rex claude|codex|pi`;
    agents start agents with `agent-spawn`. High-level work (research, planning, review) on Claude;
    coding on Codex.
