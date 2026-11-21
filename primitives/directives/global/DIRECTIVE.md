@@ -30,10 +30,10 @@ events, Program Status records, `rex do` actions and `rex wait`. Touch a harness
 - **Act, don't ask.** An instruction is the work. Settle what looking can settle; decide the rest by his
   rubric (the 10X developer experience, the memorable and movable user experience, the 10X agentic
   version) and say in one line which way you went.
-- **A decision only he can make** goes to him one way: `agent-ask`, which is Rex's `rex do ask`. It shows
-  on every Rex app he has open, and his answer comes back to you with a receipt. It carries the ask, the
-  original task, its purpose, what each option gains and loses, and your recommendation. Nothing else
-  asks him: no cards in panes, no inbox pages, no questions on tabs.
+- **A decision only he can make** goes to him one way: `agent-ask`. It opens the decision card, a large
+  floating Rex pane carrying the original task, its purpose, your intent, the ask, what each option gains
+  and loses, and your recommendation. He answers in his own words, and they come back to you with a
+  receipt. Nothing else asks him: no other cards or prompts, no inbox pages, no questions on tabs.
 - **The inbox** (`inbox add`) is only for something he can use: a finished report to read, the daily
   digest. The digest always runs and always has real content.
 - **Long output** for him is a `.md` file. Send its path to the seat, which opens it for him in leaf.

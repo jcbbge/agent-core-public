@@ -52,10 +52,13 @@ does not depend on it. A turn ends finished or flagged, never "I'll check back":
 
 - About your work: your starter, by `agent-send`. Your starter settles what Josh's rubric can.
 - A decision only Josh can make (the global *Ask first* list, or something he never gave): ask him
-  yourself with `agent-ask <your name> --task "<original task>" --purpose "<what it is for>" --ask "<what
-  he decides>" --option "A: <gains> / <loses>" --option "B: <gains> / <loses>" --recommend "A: <why>"`.
-  It runs Rex's `rex do ask`, waits for his answer and returns it with a receipt. If it fails (nobody
-  attached, busy, timed out), report that to your starter as a problem, with the question.
+  yourself, in the background, with `agent-ask <your name> --title "<a few words>" --task "<original
+  task>" --purpose "<what it is for>" --intent "<what you are trying to achieve>" --ask "<what he
+  decides>" --option "A: <gains> / <loses>" --option "B: <gains> / <loses>" --recommend "A: <why>"`, each
+  part a full sentence. It opens the decision card, waits for his answer and prints his words verbatim
+  (`text`), the option he chose if any (`answer`) and a receipt; act on his words. If it fails (the card
+  could not open, or he closed it without answering), report that to your starter as a problem, with
+  the question. The [rex skill](../../skills/rex/SKILL.md) has the details.
 - Never stop on a menu or prompt in your own pane; nobody watches it.
 
 ## Waiting and seeing
