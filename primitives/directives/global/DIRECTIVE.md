@@ -69,7 +69,9 @@ Everything else he has given you, do.
   reason to skip a step.
 - **No made-up limits.** The only limits are the machine's. Never cap rows, records, panes, agents or
   history; keep stores small by removing what is dead.
-- **Test what you changed,** on the machines it runs on. Not the whole suite as a precaution.
+- **Test only the code you changed,** on the machines it runs on: the tests you wrote or changed and the
+  tests that directly cover the files you changed. Never the whole suite, a whole package or a sweep of
+  every consumer for a change; a full run only when Josh asks for one.
 - **Done is live.** Merged is not live; running software is done when its own live check passes.
 - **Never grade your own work.** Report what happened, failures included. A false green is worse than a red.
 - **Spend little.** Start what the work needs and nothing more. Add no files to anyone's project that
