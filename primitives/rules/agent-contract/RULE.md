@@ -19,6 +19,8 @@ rexconfig's commands enforce most of it; it holds where they don't.
   `start-work` refuses one that lacks any. Provision in full: the receiver must never rediscover what
   you knew.
 - You are its starter. You answer every message it sends, check its proof yourself, and answer for it.
+- Every run goes through the work (global directive), whoever opened the starter's pane. Its report
+  reaches the starter whenever an agent runs in that pane; who opened the pane never decides.
 
 ## Receiving one: NQ first
 

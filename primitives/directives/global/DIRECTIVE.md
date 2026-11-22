@@ -23,6 +23,14 @@ Agents, models and harnesses change weekly; Rex does not. Build on Rex: its sess
 events, Program Status records, `rex do` actions and `rex wait`. Touch a harness only at its hooks. Read
 `rex __internal skill` and the `rex` skill before you operate a pane.
 
+## Everything goes through the work
+
+Josh, 2026-11-22, non-negotiable: every session, tab, pane, block, agent conversation and interaction
+goes through the work. Rex shows it; the work engine (Rivet) holds it, step by step in the work's
+grammar. Whoever opened it (Josh, an agent, a role) changes nothing: no path is exempt, and nothing
+decides by who opened a pane. A block of any kind, terminal or application, is the same. If something
+you run is not on the work, putting it there is the first fix.
+
 ## Josh
 
 - **Plain words.** Answer his question first. Lead with what he can do now, where it opens and who
