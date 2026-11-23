@@ -1,6 +1,6 @@
 ---
 name: rex
-description: Rex is the terminal control plane - its server and everything that drives it on hive, its app on the M5 - sessions, tabs, panes, running and reading terminals, waiting on events, actions, native questions to Josh - plus teerex, the Rex extensions CLI, and rexconfig's agent commands. Use for any Rex task, any time an agent starts, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
+description: Rex is the terminal control plane - its server and everything that drives it on hive, its app on the M5 - sessions, tabs, panes, running and reading terminals, waiting on events, actions, native questions to Josh - plus teerex (guarded send and clutch) and rexconfig's agent commands. Use for any Rex task, any time an agent starts, waits on or talks to another pane, lays out work across machines, or before a Rex restart.
 ---
 
 # Rex
@@ -9,6 +9,8 @@ Rex is the constant: build on it. Read the installed guide first, `rex __interna
 `rex --help`, `rex actions --json` and `rex api list` for what this server offers. Hive's server is
 Preview; check a feature on it (`rex do -e 'return tostring(rex.ui ~= nil)'`) rather than assuming.
 How agents start, talk, wait and report is the [agent contract](../../rules/agent-contract/RULE.md).
+Rex is the room: it shows the work and carries messages, and holds nothing durable. What must last
+(sessions, tasks, to-dos, agent runs) lives on Rivet.
 
 ## The primitives
 
@@ -47,13 +49,13 @@ agent-ask <your name> --title "<a few words>" --task "<original task>" --purpose
 
 ## teerex and rexconfig
 
-- teerex (`teerex --help`) provides guarded sends and cooperative holds on hive.
-  The `send` and `clutch` commands use the local Rex socket. See the [usage guide](https://github.com/jcbbge/teerex/blob/main/docs/usage.md).
+- teerex (`teerex --help`) is a thin utility over Rex: guarded `send` and cooperative holds (`clutch`),
+  nothing else. Both use the local Rex socket. See the [usage guide](https://github.com/jcbbge/teerex/blob/main/docs/usage.md).
 - Rex handles pane lookup, layout, capture, events and session persistence. Use
   `rex block capture` for command output from a pane you started.
 - rexconfig (`~/rexconfig`, its README, `./install --check`) owns Rex's config and the agent commands:
-  `start-work`, `board` (every run), `agent-send`, `agent-ask`, `agent-close`, `agent-role`, `scratch`,
-  the `agent-hook`. `rex claude|codex|pi` starts that agent clean; any other `rex ...` is Rex itself.
+  `start-work`, `agent-send`, `agent-ask`, `agent-close`, `agent-role`, `scratch`, the `agent-hook`, and
+  the task views (one tab per open task). `rex claude|codex|pi` starts that agent clean; any other `rex ...` is Rex itself.
 - On hive, `~/rexconfig/install --check` checks configuration and the pinned teerex build.
   `rex-check api --need 13 --who teerex` checks the live Rex API.
 

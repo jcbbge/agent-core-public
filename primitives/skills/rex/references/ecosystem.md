@@ -104,7 +104,7 @@ a README "what it runs and writes"; OSC 7501 for status.
 
 | Piece | What lives there | Wired into Rex by | Installed | Tested without live Rex |
 |---|---|---|---|---|
-| rexconfig (`~/rexconfig`) | `init.lua` and its Lua, palettes, keys, actions that start things, agent commands (incl. `agent-steps`), the work board, `rex-check`, the behaviours list, harness hooks | itself: the only writer of Rex config | `./install` on hive and the M5 (links) | `rex do tests/*.lua`; Lua policy as pure modules |
+| rexconfig (`~/rexconfig`) | `init.lua` and its Lua, palettes, keys, actions that start things, agent commands (incl. `agent-steps`), the task views, `rex-check`, the behaviours list, harness hooks | itself: the only writer of Rex config | `./install` on hive and the M5 (links) | `rex do tests/*.lua`; Lua policy as pure modules |
 | Applets | plain Python standard-library scripts in a pane ([rex-applet skill](../../rex-applet/SKILL.md)) | a rexconfig action, if one is wanted | the project's checkout; nothing on PATH | `--replay` frames, PTY test |
 | teerex | guarded sends, cooperative holds and pending delivery | nothing | pinned hive build, `~/rexconfig/teerex.version` | its own suite (upstream) |
 | Event scripts | `rex do x.lua --all` reacting to events | a palette action starts each in a visible, labelled pane (`automation.lua`) | rexconfig | pure modules under `rex do` |
@@ -127,8 +127,8 @@ Rules that hold across all of them:
   with a probe. `rex-check` runs them all in one throwaway session on hive. Something new that relies on an unpromised behaviour adds its row and probe there.
 - **Rex updates** are noticed, not polled: the session-start hook runs `rex-check watch` (well under a
   second when nothing changed). On a version change it runs the probes in a visible pane, diffs the API
-  field by field, and pages Josh's inbox once only if something we use broke, a listed want arrived,
-  or something we hand-rolled can be retired (the lists are in the behaviours doc). Otherwise it records.
+  field by field, and sends one setup review to the `rex-oracle` pane only if something we use broke, a
+  listed want arrived, or something we hand-rolled can be retired (the lists are in the behaviours doc). Otherwise it records.
 - **Ask-first actions Josh must run** go to him as runnable steps with `agent-steps submit`
   (rexconfig README), not as chat.
 - **Final proof** runs in a throwaway session on the live server (`session.create`, then

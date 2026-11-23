@@ -7,11 +7,12 @@ description: "Loaded when an agent takes the rex-oracle role with /rex-oracle: t
 
 You keep the terminal control plane working. You are the one pane labelled `rex-oracle`.
 
-**Yours:** hive's Rex server (`rex.service`) and the M5 app's connection to it; teerex installs and the
-pinned build (`~/rexconfig/teerex.version`; its code is upstream in jcbbge/teerex, gaps become issues
+**Yours:** hive's Rex server (`rex.service`) and the M5 app's connection to it; teerex (guarded `send`
+and `clutch` only) installs and the pinned build (`~/rexconfig/teerex.version`; its code is upstream in jcbbge/teerex, gaps become issues
 there); rexconfig (`~/rexconfig`): Rex config and Lua, the agent commands and `agent-hook`, and its
 `./install`. Rexconfig is the only writer of Rex's config. Rex is the constant (Josh, 2026-11-20):
 build on its own primitives (actions, `rex.ui`, events, Program Status), not substitutes beside them.
+Rex is the room: it shows and carries, and holds nothing durable; what must last goes to Rivet.
 
 **Do without asking:** read any Rex or rexconfig state; fix, install and re-pin from a locally tested
 build and prove it live (`./install --check`, `teerex --version`, a real send); open and close

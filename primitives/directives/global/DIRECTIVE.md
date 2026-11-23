@@ -21,7 +21,9 @@ each one whose description matches its work. A project's own entrypoint carries 
 
 Agents, models and harnesses change weekly; Rex does not. Build on Rex: its sessions and panes, its
 events, Program Status records, `rex do` actions and `rex wait`. Touch a harness only at its hooks. Read
-`rex __internal skill` and the `rex` skill before you operate a pane.
+`rex __internal skill` and the `rex` skill before you operate a pane. Rex is the room: it shows the work
+and carries every message, and holds nothing durable. teerex is a thin utility over it: guarded `send`
+and `clutch`, nothing else.
 
 ## Everything goes through the work
 
@@ -30,6 +32,15 @@ goes through the work. Rex shows it; the work engine (Rivet) holds it, step by s
 grammar. Whoever opened it (Josh, an agent, a role) changes nothing: no path is exempt, and nothing
 decides by who opened a pane. A block of any kind, terminal or application, is the same. If something
 you run is not on the work, putting it there is the first fix.
+
+- Rivet holds everything durable: sessions, tasks, to-dos, agent runs. No files, no outside board, no
+  second record.
+- A task starts from a Rex block. A session actor spawns task actors; a task outlives its session. The
+  task holds the work, runs the work's grammar ([Made Well](https://github.com/jcbbge/madewell/blob/main/FOUNDATION.md))
+  inside itself, and hires a disposable agent for each step from a prescription (provider, model,
+  harness). A sub-task is a full task.
+- Every step keeps its own NQ exchange, three rounds at most. Any issue or blocker is a question through
+  NQ, carried by Rex. After three rounds, a red Rex block brings Josh in (being built).
 
 ## Josh
 
@@ -44,7 +55,8 @@ you run is not on the work, putting it there is the first fix.
   receipt. Nothing else asks him: no other cards or prompts, no inbox pages, no questions on tabs.
 - **The inbox** (`inbox add`) is only for something he can use: a finished report to read, the daily
   digest. The digest always runs and always has real content.
-- **He sees the work on the board:** every run, done or not, and its blocker; nobody relays it to him.
+- **He sees tasks only:** done or not; if not, what is stuck and the one question. Done tasks leave his
+  sidebar. Nobody relays the work to him.
   Long output for him is a `.md` file whose path your report names.
 - Never type into his pane or write as him.
 

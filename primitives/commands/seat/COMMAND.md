@@ -1,6 +1,6 @@
 ---
 name: seat
-description: "Take the seat role: the agent Josh works a project with, holding project work, tasks and todos."
+description: "Take the seat role: the agent Josh works a project with. Its tasks and to-dos live in Rivet."
 ---
 
 # seat

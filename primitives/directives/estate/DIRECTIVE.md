@@ -27,17 +27,20 @@ When the estate changes, this file changes in the same commit.
 ## Layers, bottom up
 
 1. **Machine:** the OS and its services (systemd `--user` on hive). Keeper: `hive-oracle`.
-2. **Rex:** hive's server (`rex.service`) holds every session, pane and agent; the M5 app shows it. A
-   pane's address is its session and block (`REX_SESSION`, `REX_BLOCK`). Keeper: `rex-oracle`.
-3. **teerex** (Rex extensions CLI) and **rexconfig** (`~/rexconfig`: Rex config, the agent commands
-   `start-work`, `board`, `agent-send`, `agent-ask`, `agent-close`, `scratch`, the hook `agent-hook`).
-   Install with `~/rexconfig/install`. Keeper: `rex-oracle`.
-4. **The work engine.** The old Rivet engine (`rv`) is stopped since 2026-11-15; `rv` now prints where
-   its history is kept. The live engine belongs to a private project, whose own repo documents it.
-   Keeper: `rivet-oracle`.
+2. **Rex:** the room. Hive's server (`rex.service`) shows every session, pane and agent and carries
+   their messages; the M5 app shows it. It holds nothing durable. A pane's address is its session and
+   block (`REX_SESSION`, `REX_BLOCK`). Keeper: `rex-oracle`.
+3. **teerex** (guarded `send` and `clutch`, nothing else) and **rexconfig** (`~/rexconfig`: Rex config,
+   the agent commands `start-work`, `agent-send`, `agent-ask`, `agent-close`, `scratch`, the hook
+   `agent-hook`, and the task views). Install with `~/rexconfig/install`. Keeper: `rex-oracle`.
+4. **The work engine: Rivet.** It holds everything durable: sessions, tasks, to-dos, agent runs. A
+   session actor spawns task actors; each task runs the work's grammar and hires its agents. The live
+   engine belongs to a private project, whose own repo documents it. The old engine (`rv`) is stopped
+   since 2026-11-15; `rv` prints where its history is. The file stores agents still use (scratchpads,
+   receipts, run files, identity) are moving into Rivet and are not there yet. Keeper: `rivet-oracle`.
 5. **Agents:** Claude, Codex, pi, any model, run on hive. Josh starts one clean with `rex claude|codex|pi`;
-   other work starts as a run (`start-work`) and shows on the board. Research, planning and review on
-   Claude; coding on Codex.
+   other work starts as a task from a Rex block, and its agents are disposable hands for one step each
+   (`start-work` launches one today). Research, planning and review on Claude; coding on Codex.
 6. **Roles:** taken only when Josh types the command in an agent: `/seat` (the agent he works a project
    with), `/hive-oracle`, `/rex-oracle`, `/rivet-oracle`. Each runs `agent-role <role>`, which labels the
    pane (one holder per role) and loads `~/agent-core/primitives/directives/<role>/DIRECTIVE.md`.

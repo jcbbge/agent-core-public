@@ -10,11 +10,12 @@ rexconfig's commands enforce most of it; it holds where they don't.
 
 ## Starting one
 
-- Every piece of work is one run in its own Rex tab: `start-work [--run <name>] --brief-file <brief.md>
+- Every piece of work is a task on Rivet, started from a Rex block; each agent is a disposable hand for
+  one step. Today a hand starts in its own Rex tab: `start-work [--run <name>] --brief-file <brief.md>
   <session> <name> -- <claude|codex|pi>` prints the run and its pane id; the same `--run` resumes it.
   Never a harness-internal sub-agent (Claude's Agent/Task tool, Codex's) or a process outside Rex.
-- The board shows every run by itself: what, who, step, blocker, and **DONE** only once the run has
-  returned the agent's final report. Nobody relays it.
+- Josh sees the task by itself: done or not, and if not, what is stuck and the one question. It is done
+  only once the agent's final report has returned. Nobody relays it.
 - The brief has the six sections of the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md);
   `start-work` refuses one that lacks any. Provision in full: the receiver must never rediscover what
   you knew.
@@ -28,7 +29,9 @@ rexconfig's commands enforce most of it; it holds where they don't.
 2. Confirm: `scratch confirm --understanding "<purpose, outcome, scope, evidence>" --unclear "None"
    --ambiguous "None" --ready yes`. If anything is unclear, say it and use `--ready no`.
 3. Ready: start at once. Not ready: wait for `NQ ANSWER`. Each answer is one turn; a fourth question
-   holds the work (the tools count).
+   holds the work (the tools count). Every step keeps its own NQ exchange, three rounds at most; any
+   issue or blocker is a question through NQ. NQ passes through Rex and only flags a warning; after three
+   rounds a red Rex block brings Josh in (being built).
 
 Then you have three moves and no others: **complete** the task; **report** it complete; **report a
 problem** (what is stuck, what you tried, what you need) and wait for the answer. Stay inside the brief.
@@ -37,9 +40,10 @@ Something outside it: tell your starter once (what, where, why now, what you did
 ## The working list
 
 One step at a time: `scratch now "<item>"`, then `scratch done --proof "<evidence>"`. Any doubt or
-blocker: `scratch flag "<what is stuck; what you tried; what you need>"` at once (it is the run's
+blocker: `scratch flag "<what is stuck; what you tried; what you need>"` at once (it is the task's
 blocker), then keep doing what does not depend on it. A turn ends finished or flagged, never "I'll
-check back": you have no clock.
+check back": you have no clock. The list belongs to the task in Rivet; today `scratch` still keeps it in
+a scratchpad file, until that store moves.
 
 ## Messages
 
@@ -48,7 +52,7 @@ check back": you have no clock.
   one act, and answers **served** (the receiver's own status turned to working) or **failed**, with why.
   **Queued** means saved, not delivered.
 - Reply to the message's `reply-to:` line.
-- Never message the seat or type into its pane: the board shows the work; decisions go by `agent-ask`.
+- Never message the seat or type into its pane: the task shows the work; decisions go by `agent-ask`.
 - Your report is your turn's last message; the turn hook delivers it to your starter, once. Never also
   send it with `agent-send`. The same report is the run's return.
 
