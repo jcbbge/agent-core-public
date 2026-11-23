@@ -22,7 +22,7 @@ Usage:
   ground brief [--cwd C]          what to read before the first change in the cwd's repo
   ground status --sid S [--agent A] [--cwd C] [PATH]   the picture so far, for humans
 
-Always allowed: paths outside any git repo, TASKS.md ledgers, anything under .git/.
+Always allowed: paths outside any git repo, anything under .git/.
 Fails open on any internal error. Knobs: GROUND_GATE=off, GROUND_MIN_READS, SPINE_DIR.
 """
 import os, sys
@@ -66,7 +66,7 @@ def rel(p, root):
 
 def exempt(path, repo):
     r = rel(path, repo)
-    return os.path.basename(path) == "TASKS.md" or r == ".git" or r.startswith(".git/")
+    return r == ".git" or r.startswith(".git/")
 
 
 _grounds = {}

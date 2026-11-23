@@ -34,7 +34,7 @@ A Bash command that writes (`sed -i`, `>`, `tee`, `mv`, `cp`, `rm`, `git commit`
 counts as a write. Once an agent passes, it stays passed for that repo for the rest of
 the session. Sub-agents ground for themselves.
 
-These are never gated: paths outside any git repo, `TASKS.md`, anything under `.git/`.
+These are never gated: paths outside any git repo and anything under `.git/`.
 
 ## Wiring
 
