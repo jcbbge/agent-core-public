@@ -36,7 +36,7 @@ you run is not on the work, putting it there is the first fix.
 - Rivet holds everything durable: sessions, tasks, to-dos, agent runs. No files, no outside board, no
   second record.
 - A task starts from a Rex block. A session actor spawns task actors; a task outlives its session. The
-  task holds the work, runs the work's grammar ([Made Well](https://github.com/jcbbge/madewell/blob/main/FOUNDATION.md))
+  task holds the work, runs the work's grammar
   inside itself, and hires a disposable agent for each step from a prescription (provider, model,
   harness). A sub-task is a full task.
 - Every step keeps its own NQ exchange, three rounds at most. Any issue or blocker is a question through
