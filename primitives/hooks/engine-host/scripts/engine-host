@@ -23,7 +23,6 @@ rex_capture_refused() {
   # shellcheck disable=SC2016 # the Python program is single-quoted on purpose
   python3 -c '
 import json, os, re, shlex, subprocess, sys
-from pathlib import Path
 
 try:
     lex = shlex.shlex(sys.stdin.read(), posix=True, punctuation_chars="();<>|&\n")
@@ -64,8 +63,8 @@ def refuse(rex, target):
         bid = block["block_id"]
         if not re.fullmatch(r"session:[0-9a-f-]+", sid) or not re.fullmatch(r"block:[0-9a-f-]+", bid):
             return True
-        identity = Path.home() / ".local/state/agent/identity" / sid / (bid + ".json")
-        if identity.exists() or block.get("label") in ("seat", "hive-oracle", "rex-oracle", "rivet-oracle"):
+        identity = subprocess.run(["agent-state", "bound", sid, bid], capture_output=True, timeout=1.2)
+        if identity.returncode != 1 or block.get("label") in ("seat", "hive-oracle", "rex-oracle", "rivet-oracle"):
             return True
         if block.get("creator_name") != "com.superlogical.terminal":
             return True
