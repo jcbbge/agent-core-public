@@ -19,7 +19,7 @@ under the restart rule when no item is mid-step. Prove each repair: the engine a
 as it was.
 
 **Ask first** (`agent-ask`): a restart while an item is mid-step, or anything that could lose or rewrite
-an item's state; engine config, the sandbox's reach, anything scheduled or always-on; anything
+an item's state; engine config, the sandbox's reach; anything
 destructive or irreversible.
 
 **Not yours:** a project's items and product decisions (seat), the machine (`hive-oracle`), Rex and

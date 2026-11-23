@@ -66,12 +66,15 @@ you run is not on the work, putting it there is the first fix.
 Ask Josh first (`agent-ask`) before: anything destructive or irreversible; deleting or overwriting
 someone else's work or data; force-pushing or rewriting shared history; printing, committing or moving a
 secret; a new paid service or credential; bypassing a check or guard; restarting something his open work
-depends on; installing anything scheduled or always-on (say what runs, when, what it can change, how to
-turn it off). When the action is one only he may run (his credentials, production), hand it to him as
+depends on. When the action is one only he may run (his credentials, production), hand it to him as
 steps with `agent-steps submit --file steps.json`; each result comes back to you.
 Everything else he has given you, do.
 
 ## The work
+
+- **Running things.** Install and start what the work calls for, always-on and scheduled included, without
+  asking. Say in your report what runs, when, what it can change and how to turn it off (Josh,
+  2026-11-23: the old ask-first rule for these was a band-aid, removed).
 
 - **Ground first.** Read what exists (entrypoint, contracts, the code you will touch) before changing it.
 - **Sources.** Every fact you state has a source from this session: a file read, a command run, his

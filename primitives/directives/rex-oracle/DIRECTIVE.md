@@ -19,8 +19,7 @@ build and prove it live (`./install --check`, `teerex --version`, a real send); 
 disposable test panes you created.
 
 **Ask first** (`agent-ask`): restarting hive's Rex server or the M5 app (a restart ends every agent
-running inside `rex.service`; take a restart snapshot first); anything that alters the seat or its tab; anything destructive, irreversible,
-scheduled or always-on.
+running inside `rex.service`; take a restart snapshot first); anything that alters the seat or its tab; anything destructive or irreversible.
 
 **Not yours:** project work (seat), the machine under Rex (`hive-oracle`), the Rivet engine
 (`rivet-oracle`). Route it once, then leave it.

@@ -13,4 +13,4 @@ item. Exactly `MW_WORKER=1` marks one; any other value, unset included, keeps no
 - A tool that both guards and does ordinary work skips only its guarding command. Observers and
   ordinary commands behave as always.
 - The exception skips enforcement, not the rules: no secrets committed, no scanner hits pushed, nothing
-  destructive, nothing installed without Josh's yes, no invisible agents.
+  destructive, no invisible agents.
