@@ -47,13 +47,14 @@ agent-ask <your name> --title "<a few words>" --task "<original task>" --purpose
 
 ## teerex and rexconfig
 
-- teerex (`teerex --help`) extends Rex: panes it opens, moves and closes, sends into a pane, the board,
-  restart snapshot and restore, named hosts (`~/.config/teerex/hosts.json`, one host: `hive`). A missing
-  verb is a jcbbge/teerex issue; never hand-build plumbing beside it.
+- teerex (`teerex --help`) reads panes and watches for changes, handles guarded sends and cooperative
+  holds, arranges panes, keeps private records, and snapshots and restores Rex. Named-host commands
+  use `~/.config/teerex/hosts.json` on hive. See the [teerex usage guide](https://github.com/jcbbge/teerex/blob/main/docs/usage.md).
 - rexconfig (`~/rexconfig`, its README, `./install --check`) owns Rex's config and the agent commands:
   `start-work`, `board` (every run), `agent-send`, `agent-ask`, `agent-close`, `agent-role`, `scratch`,
   the `agent-hook`. `rex claude|codex|pi` starts that agent clean; any other `rex ...` is Rex itself.
-- Machine check: `teerex doctor --all --config ~/.config/teerex/hosts.json`.
+- On hive, `~/rexconfig/install --check` checks configuration and the pinned teerex build.
+  `rex-check api --need 13 --who teerex` checks the live Rex API.
 
 ## Never
 
