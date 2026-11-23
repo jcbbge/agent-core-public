@@ -22,8 +22,8 @@ each one whose description matches its work. A project's own entrypoint carries 
 Agents, models and harnesses change weekly; Rex does not. Build on Rex: its sessions and panes, its
 events, Program Status records, `rex do` actions and `rex wait`. Touch a harness only at its hooks. Read
 `rex __internal skill` and the `rex` skill before you operate a pane. Rex is the room: it shows the work
-and carries every message, and holds nothing durable. teerex is a thin utility over it: guarded `send`
-and `clutch`, nothing else.
+and carries every message, and holds nothing durable. The work engine's Rex bridge holds the one connection
+to it and delivers every agent message with a receipt.
 
 ## Everything goes through the work
 

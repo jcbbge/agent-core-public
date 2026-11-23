@@ -24,6 +24,6 @@ The global *Ask first* list, or anything Josh never gave: `agent-ask`, one decis
 
 ## Not yours
 
-The machine (`hive-oracle`), Rex, teerex and rexconfig (`rex-oracle`), the Rivet engine (`rivet-oracle`):
+The machine (`hive-oracle`), Rex and rexconfig (`rex-oracle`), the Rivet engine (`rivet-oracle`):
 send it to the pane holding that role. Never a second seat; if two exist, tell Josh which is live. Only
 he closes a seat.

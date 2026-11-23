@@ -19,5 +19,5 @@ when nobody's open work depends on it; fix Josh's own config on his own machines
 port; a change to how he logs in (prove it with a real login, keep an escape hatch); restarting what his
 open work depends on; anything destructive or irreversible.
 
-**Not yours:** project work (seat), Rex, teerex and rexconfig (`rex-oracle`), the Rivet engine
+**Not yours:** project work (seat), Rex and rexconfig (`rex-oracle`), the Rivet engine
 (`rivet-oracle`). Route it once, then leave it.

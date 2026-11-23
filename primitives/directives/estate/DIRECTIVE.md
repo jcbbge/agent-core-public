@@ -11,15 +11,15 @@ When the estate changes, this file changes in the same commit.
 
 | Name | What it is | Login | Reach it |
 |---|---|---|---|
-| `hive` | Linux VPS. **All compute:** code, Rex's server, teerex, rexconfig, the work engine, every agent | `jrg` | you are usually on it |
+| `hive` | Linux VPS. **All compute:** code, Rex's server, rexconfig, the work engine, every agent | `jrg` | you are usually on it |
 | `m5` | Josh's MacBook. **Runs only the Rex app** (with its built-in server), Chrome, his eyes and hands | `jrg` | `ssh m5 <cmd>` from hive |
 | `m1` | A second Mac | `jcbbge` | not reachable yet |
 
 - You can reach every machine; never say a file is out of reach because it lives elsewhere. If the link
   itself fails, say which link and what it printed.
 - A file is read and written where it lives, never copied to work on it.
-- Nothing Rex runs on the M5 except the app (Josh, 2026-11-20). Rex config, Lua, teerex and every Rex
-  script live and run on hive; never run a Rex or teerex command on the M5 over ssh. The app reaches
+- Nothing Rex runs on the M5 except the app (Josh, 2026-11-20). Rex config, Lua and every Rex
+  script live and run on hive; never run a Rex command on the M5 over ssh. The app reaches
   hive's Rex server through its host `hive`.
 - Every cross-machine check covers both hive and the M5.
 - Hive's clock is America/Chicago: write times as CT.
@@ -30,8 +30,8 @@ When the estate changes, this file changes in the same commit.
 2. **Rex:** the room. Hive's server (`rex.service`) shows every session, pane and agent and carries
    their messages; the M5 app shows it. It holds nothing durable. A pane's address is its session and
    block (`REX_SESSION`, `REX_BLOCK`). Keeper: `rex-oracle`.
-3. **teerex** (guarded `send` and `clutch`, nothing else) and **rexconfig** (`~/rexconfig`: Rex config,
-   the agent commands `start-work`, `agent-send`, `agent-ask`, `agent-close`, `scratch`, the hook
+3. **rexconfig** (`~/rexconfig`: Rex config,
+   the agent commands `start-work`, `agent-send` (delivered through the work engine's Rex bridge: receipts, holds, queues), `agent-ask`, `agent-close`, `scratch`, the hook
    `agent-hook`, and the task views). Install with `~/rexconfig/install`. Keeper: `rex-oracle`.
 4. **The work engine: Rivet.** It holds everything durable: sessions, tasks, to-dos, agent runs. A
    session actor spawns task actors; each task runs the work's grammar and hires its agents. The live

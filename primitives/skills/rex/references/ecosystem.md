@@ -10,14 +10,14 @@ plugin from someone else. Measured on Rex API revision 13 (hive 0.0.1794460237, 
 
 Josh, 2026-11-15: "im only using rex on my macbook m5 ... we dont have to support linux. the m5 is
 the hands." Every visual, popup, float, palette action, key and notification targets the Rex app on
-the M5 only, and is designed and proven there. Programs in panes (applets, scripts, teerex) still run
+the M5 only, and is designed and proven there. Programs in panes (applets, scripts) still run
 on hive's Linux, where compute and its Rex server live: that is running, not viewing. Where a choice
 trades Linux-client support for a better Mac experience, take the Mac.
 
 **The M5 runs only the Rex app** (Josh, 2026-11-20: "i dont want anything to run on the m5 ... any
 fukcing thing that has to do with rex, i do not want it on my m5 except the mac app"; the same day:
 "the app is connected to the server. the server is connected to the app. it doesnt matter where they
-are located"). The app and its own built-in server count as the app. No rexconfig, Rex Lua, teerex,
+are located"). The app and its own built-in server count as the app. No rexconfig, Rex Lua,
 rex-check or Rex script is installed or run there, and no agent runs a Rex command on it over ssh.
 Checks that need the app's view run on hive: the reserved-key check reads the app's cached key list
 from the Mac as plain files.
@@ -66,7 +66,7 @@ name the method. A minimum revision is fine where a method truly first appears; 
 | Floating layers, detached blocks | API | overlays, drawers, pre-started hidden panes | — |
 | Block creators / flavors | built into Rex | terminal flavors only | third parties cannot add a block type |
 | Hosts (`rex.host`, `rex -S`) | client | reach another machine's server | — |
-| Harness extensions (pi `.pi/agent/extensions`, Claude hooks) | inside the agent | call `rex do`/`rex api`/teerex from the agent's own events | — |
+| Harness extensions (pi `.pi/agent/extensions`, Claude hooks) | inside the agent | call `rex do`/`rex api` from the agent's own events | — |
 
 ## How people extend it now (five repos and leaf, Nov 2026)
 
@@ -106,9 +106,8 @@ a README "what it runs and writes"; OSC 7501 for status.
 |---|---|---|---|---|
 | rexconfig (`~/rexconfig`) | `init.lua` and its Lua, palettes, keys, actions that start things, agent commands (incl. `agent-steps`), the task views, `rex-check`, the behaviours list, harness hooks | itself: the only writer of Rex config | `./install` on hive and the M5 (links) | `rex do tests/*.lua`; Lua policy as pure modules |
 | Applets | plain Python standard-library scripts in a pane ([rex-applet skill](../../rex-applet/SKILL.md)) | a rexconfig action, if one is wanted | the project's checkout; nothing on PATH | `--replay` frames, PTY test |
-| teerex | guarded sends, cooperative holds and pending delivery | nothing | pinned hive build, `~/rexconfig/teerex.version` | its own suite (upstream) |
 | Event scripts | `rex do x.lua --all` reacting to events | a palette action starts each in a visible, labelled pane (`automation.lua`) | rexconfig | pure modules under `rex do` |
-| Harness extensions | per harness: pi extensions, Claude/Codex hooks | nothing; they call `rex do`, `rex api`, teerex | agent-core-sync / rexconfig hooks | the harness's own tests |
+| Harness extensions | per harness: pi extensions, Claude/Codex hooks | nothing; they call `rex do`, `rex api`, `agent-send` | agent-core-sync / rexconfig hooks | the harness's own tests |
 | Others' Lua plugins (leaf today) | `~/.config/rex/plugins/<name>/` | rexconfig's guarded `dofile` | by hand, a pinned version | `rex config check` |
 
 Rules that hold across all of them:
@@ -122,7 +121,7 @@ Rules that hold across all of them:
 - **API revision**: each piece names the lowest revision it was tested on, in one constant, and checks
   it once before its first Rex call with `rex-check api --need N --who <name>` (exit 3 and one line:
   "<name> needs Rex API N; <host> runs M"). Lua checks at action time with rexconfig's helper, never at
-  load. Pieces that only call teerex rely on teerex's own refusal.
+  load. Pieces that only call `agent-send` rely on the bridge's refusal.
 - **Behaviours the docs do not promise** live in one list, rexconfig `docs/rex-behaviours.md`, each
   with a probe. `rex-check` runs them all in one throwaway session on hive. Something new that relies on an unpromised behaviour adds its row and probe there.
 - **Rex updates** are noticed, not polled: the session-start hook runs `rex-check watch` (well under a

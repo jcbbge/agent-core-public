@@ -1,6 +1,6 @@
 ---
 name: rex-oracle
-description: "Take the rex-oracle role: keeper of Rex, teerex installs and rexconfig on both machines."
+description: "Take the rex-oracle role: keeper of Rex, the Rex SDK fork and rexconfig on both machines."
 ---
 
 # rex-oracle
