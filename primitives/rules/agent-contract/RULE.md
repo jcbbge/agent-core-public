@@ -54,7 +54,8 @@ a scratchpad file, until that store moves.
   one act, and answers **served** (the receiver's own status turned to working) or **failed**, with why.
   **Queued** means saved, not delivered.
 - Reply to the message's `reply-to:` line.
-- Never message the seat or type into its pane: the task shows the work; decisions go by `agent-ask`.
+- The seat is an agent like any other: message it with `agent-send` when you have something for it.
+  A decision only Josh can make still goes by `agent-ask`.
 - Your report is your turn's last message; the turn hook delivers it to your starter, once. Never also
   send it with `agent-send`. The same report is the run's return.
 
