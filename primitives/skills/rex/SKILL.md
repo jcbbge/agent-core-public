@@ -47,9 +47,10 @@ agent-ask <your name> --title "<a few words>" --task "<original task>" --purpose
 
 ## teerex and rexconfig
 
-- teerex (`teerex --help`) reads panes and watches for changes, handles guarded sends and cooperative
-  holds, arranges panes, keeps private records, and snapshots and restores Rex. Named-host commands
-  use `~/.config/teerex/hosts.json` on hive. See the [teerex usage guide](https://github.com/jcbbge/teerex/blob/main/docs/usage.md).
+- teerex (`teerex --help`) provides guarded sends and cooperative holds on hive.
+  The `send` and `clutch` commands use the local Rex socket. See the [usage guide](https://github.com/jcbbge/teerex/blob/main/docs/usage.md).
+- Rex handles pane lookup, layout, capture, events and session persistence. Use
+  `rex block capture` for command output from a pane you started.
 - rexconfig (`~/rexconfig`, its README, `./install --check`) owns Rex's config and the agent commands:
   `start-work`, `board` (every run), `agent-send`, `agent-ask`, `agent-close`, `agent-role`, `scratch`,
   the `agent-hook`. `rex claude|codex|pi` starts that agent clean; any other `rex ...` is Rex itself.
@@ -63,5 +64,5 @@ agent-ask <your name> --title "<a few words>" --task "<original task>" --purpose
 - Send input into your own pane, or any pane you did not spawn (an `agent-send` message is the exception).
 - Run a Rex or teerex command on the M5; it runs only the Rex app.
 - Restart Rex or kill its processes without Josh's yes. A restart of `rex.service` ends every agent
-  inside it; take a restart snapshot first and record what cannot resume.
+  inside it. Save unsent input first and record which agents need to resume.
 - Rename a shared session.

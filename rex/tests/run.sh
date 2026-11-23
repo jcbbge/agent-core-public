@@ -13,10 +13,10 @@ python3 - <<'PY'
 import json, subprocess
 hook='primitives/hooks/engine-host/scripts/engine-host'
 deny=('rex capture -s session:x -b block:x', 'rex --server unix:///missing capture', 'rex -S hive block capture -s s -b b',
-      'cd ~ && rex capture -s s', 'X=1 rex capture', 'echo $(rex capture -s s)', 'ls\nrex capture',
+      'cd ~ && rex capture -s s', 'X=1 rex capture', 'echo $(rex capture -s s)', 'ls\nrex capture', 'agent-read session:x block:x',
       '"/Applications/Rex Server.app/Contents/MacOS/rex" --autostart=false capture -s s')
-allow=('echo hello', 'echo rex capture', 'rex block ls --json', 'echo "unclosed',
-       'agent-send s b me "engine-host refuses rex capture whenever teerex is installed"', "git commit -m 'stop using rex capture'")
+allow=('echo hello', 'echo rex capture', 'rex block capture --help', 'rex block ls --json', 'echo "unclosed',
+       'agent-send s b me "engine-host guards rex capture"', "git commit -m 'stop using rex capture'")
 for command in deny+allow:
     r=subprocess.run([hook,'hook','claude'],input=json.dumps({'tool_name':'Bash','tool_input':{'command':command}}),text=True,capture_output=True,check=True)
     if command in deny:

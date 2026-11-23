@@ -1,6 +1,6 @@
 ---
 name: engine-host
-description: Agents should run on hive, where the Rivet engine is, whatever app is their window. A suggestion, never a refusal; on a Mac, typing an agent name opens it on hive. Also refuses in-process subagents and sends Rex terminal reads through teerex.
+description: Agents should run on hive, where the Rivet engine is, whatever app is their window. A suggestion, never a refusal; on a Mac, typing an agent name opens it on hive. Also refuses in-process subagents and guards Rex terminal reads.
 ---
 
 # Engine Host
@@ -25,14 +25,12 @@ Agent-core ships no launch wrapper.
 
 - an in-process subagent (Claude Code's `Agent`, `Task` and `Workflow` tools): every agent is
   visible as its own session, started with `start-work`;
-- a shell command that reads a Rex terminal with `rex capture`, whenever the
-  [teerex](../../tools/teerex/TOOL.md) tool is installed. Agents never read a screen to wait on or
-  check another agent (agent contract): its message wakes them, and its state is its Program Status
-  record. Output of a pane the agent started is read with `teerex --config ~/.config/teerex/hosts.json
-  --host hive observe --session <session> --block <block>`. Only `rex [options] capture` or
-  `rex [options] block capture` in command position counts (the start of a command, or after
-  `;` `&&` `||` `|` `&` `(` `$(` or a newline). Those words inside quoted text, such as a message or a
-  commit message, never do.
+- `rex capture`, `rex block capture` and `agent-read` in command position when the target
+  is an agent's pane or cannot be identified. Use `rex block capture -s SESSION -b BLOCK` with
+  the IDs Rex returned for an ordinary command pane you started. The guard checks Rex's block,
+  Program Status and process metadata and the local agent identity registry. It checks the
+  kind of program in the pane. The agent contract limits capture to panes you started.
+  Quoted text mentioning a command does not count.
 
 - a shell command that pauses a process: `kill`, `pkill` or `killall` in command position with a
   stop signal (`-STOP`, `-SIGSTOP`, `-19`, `-TSTP`, `-SIGTSTP`, `-20`, `-s STOP`, `--signal=STOP`).
@@ -45,14 +43,14 @@ passes.
 
 **The refusal says:** the exact `start-work` command; or, instead of `rex capture`, the agent's
 Program Status record (`rex do com.superlogical.terminal.program_status -b <block>`), `rex wait` for a
-command, and `teerex observe` only for output of a pane the agent started.
+command, and `rex block capture` for output of an ordinary command pane the agent started.
 
 **When it cannot tell:** the guard's own failure (a missing `jq`, unreadable input) allows. It
-refuses only on a positive finding, never because of its own bug.
+treats a recognized screen read with unavailable target metadata as unidentified.
 
 **Off switch:** remove the hook entry. There is no per-call override.
 
-**No worker exception.** The subagent and teerex refusals apply to engine workers too. This guard overrides the
+**No worker exception.** The subagent and screen-read refusals apply to engine workers too. This guard overrides the
 [worker exception](../../rules/worker-guards/RULE.md).
 
 `scripts/` holds the reference implementation:

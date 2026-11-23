@@ -62,7 +62,7 @@ name the method. A minimum revision is fine where a method truly first appears; 
 | Actions (`rex.action`) | server, when invoked | palette entry, key, `rex do NAME`, typed args | hide per pane; fill Rex's own pickers |
 | Scripts (`rex do file.lua [--all]`) | their own process, as long as they run | events (`rex.on`), timers, every API call | define actions or keys that persist |
 | Server API (`rex api call`, socket protocol `rex.control.v1`) | any program | everything a client can do; `--json` schemas | — |
-| Program status (OSC 7501) | any program in a pane | idle/working/done/blocked/error records, read by tabs, pickers, Lua, `teerex observe` | — |
+| Program status (OSC 7501) | any program in a pane | idle/working/done/blocked/error records, read by tabs, pickers, Lua, `rex do com.superlogical.terminal.program_status` | — |
 | Floating layers, detached blocks | API | overlays, drawers, pre-started hidden panes | — |
 | Block creators / flavors | built into Rex | terminal flavors only | third parties cannot add a block type |
 | Hosts (`rex.host`, `rex -S`) | client | reach another machine's server | — |
@@ -106,7 +106,7 @@ a README "what it runs and writes"; OSC 7501 for status.
 |---|---|---|---|---|
 | rexconfig (`~/rexconfig`) | `init.lua` and its Lua, palettes, keys, actions that start things, agent commands (incl. `agent-steps`), the work board, `rex-check`, the behaviours list, harness hooks | itself: the only writer of Rex config | `./install` on hive and the M5 (links) | `rex do tests/*.lua`; Lua policy as pure modules |
 | Applets | plain Python standard-library scripts in a pane ([rex-applet skill](../../rex-applet/SKILL.md)) | a rexconfig action, if one is wanted | the project's checkout; nothing on PATH | `--replay` frames, PTY test |
-| teerex | observe, watch, compare, guarded sends, cooperative holds, pane operations, records and recovery | nothing | pinned hive build, `~/rexconfig/teerex.version` | its own suite (upstream) |
+| teerex | guarded sends, cooperative holds and pending delivery | nothing | pinned hive build, `~/rexconfig/teerex.version` | its own suite (upstream) |
 | Event scripts | `rex do x.lua --all` reacting to events | a palette action starts each in a visible, labelled pane (`automation.lua`) | rexconfig | pure modules under `rex do` |
 | Harness extensions | per harness: pi extensions, Claude/Codex hooks | nothing; they call `rex do`, `rex api`, teerex | agent-core-sync / rexconfig hooks | the harness's own tests |
 | Others' Lua plugins (leaf today) | `~/.config/rex/plugins/<name>/` | rexconfig's guarded `dofile` | by hand, a pinned version | `rex config check` |

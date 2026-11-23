@@ -72,11 +72,10 @@ Worked example: `~/madewell-engine-view` (README, DESIGN.md, `tests/`). Read it 
    - from the Mac (how Josh starts it; it runs on hive, he sees it in his app):
      `rex -S hive run --label <app> --shell=none -- ~/path/<app>/<app>`
    - from an agent on hive: `rex run --label <app> --shell=none -- ~/path/<app>/<app>`
-   - floating over a pane: `teerex surfaces open --socket <socket> --session <session> --layout float --anchor <pane> --bounds '[0.1,0.1,0.8,0.8]' --label <app> -- ~/path/<app>/<app>`
-     (hive's socket: `/run/user/1000/rex/server.sock`; `~/.config/teerex/hosts.json` names each machine's)
+   - floating over a pane: call Rex's `session.new_layer` with that pane's window ID, the desired bounds, and the applet's terminal command as the layout.
 9. **Prove it live** in a throwaway session: `rex api call session.create '{"label":"<app>-proof"}'`,
    `rex run -s <session> --label <app> --shell=none -- <path>`, then
-   `teerex observe --socket <socket> --session <s> --block <b> --state` shows the `<app>/health`
+   `rex do com.superlogical.terminal.program_status -s <s> -b <b>` shows the `<app>/health`
    record. Clean up: `rex api call block.close '{"session_id":"<s>","block_id":"<b>"}'`, then
    `rex api call session.destroy '{"session_id":"<s>"}'`, then `rex api call session.list '{}'` shows it gone.
 10. **Prove it where it is seen**: once, in the Rex app on the M5, with the size Josh uses. Ask the
