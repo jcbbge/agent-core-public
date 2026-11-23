@@ -197,9 +197,15 @@ case "${1:-}" in
     tool=$(printf '%s' "$input" | jq -r '.tool_name // empty' 2>/dev/null)
     case "$tool" in
       Agent|Task|Workflow)
-        deny "$harness" "engine-host: every agent is visible as its own session; in-process subagents ($tool) are refused. \
-Start it visibly: start-work --brief-file <brief.md> \"\$REX_SESSION\" <name> -- <claude|codex|pi>. \
-It reports back to you through agent-send." ;;
+        # A harness's own sub-agent is allowed when it works in the system (Josh, 2026-11-23): its brief
+        # names the task it picks up and the contractor rulebook. A page fetch is a tool, not a contractor.
+        sub_type=$(printf '%s' "$input" | jq -r '.tool_input.subagent_type // empty' 2>/dev/null)
+        brief=$(printf '%s' "$input" | jq -r '[.tool_input.prompt, .tool_input.script, .tool_input.args] | map(tostring) | join("\n")' 2>/dev/null)
+        if [ "$sub_type" = "web-fetch" ] || { printf '%s' "$brief" | grep -Eq '^[[:space:]]*(//[[:space:]]*|#[[:space:]]*)?Task: *[A-Za-z0-9][A-Za-z0-9_:.-]*' \
+             && printf '%s' "$brief" | grep -q 'CONTRACTOR.md'; }; then exit 0; fi
+        deny "$harness" "engine-host: a sub-agent may run only inside the system (Josh, 2026-11-23). \
+Its brief must name the task it picks up ('Task: <key>') and the rulebook (~/rivet/CONTRACTOR.md): it answers NQ on that task, \
+writes to the task's streams, and talks to other agents only through Rex. Or start it as its own Rex agent with start-work." ;;
     esac
     cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // .command // empty' 2>/dev/null) || exit 0
     [ -n "$cmd" ] || exit 0

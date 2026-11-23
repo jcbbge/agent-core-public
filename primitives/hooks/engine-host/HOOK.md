@@ -1,6 +1,6 @@
 ---
 name: engine-host
-description: Agents should run on hive, where the Rivet engine is, whatever app is their window. A suggestion, never a refusal; on a Mac, typing an agent name opens it on hive. Also refuses in-process subagents and guards Rex terminal reads.
+description: Agents should run on hive, where the Rivet engine is, whatever app is their window. A suggestion, never a refusal; on a Mac, typing an agent name opens it on hive. Also refuses sub-agents that work outside the system and guards Rex terminal reads.
 ---
 
 # Engine Host
@@ -23,8 +23,11 @@ Agent-core ships no launch wrapper.
 
 **Refuses:**
 
-- an in-process subagent (Claude Code's `Agent`, `Task` and `Workflow` tools): every agent is
-  visible as its own session, started with `start-work`;
+- a harness sub-agent (Claude Code's `Agent`, `Task` and `Workflow` tools) whose brief does not put it
+  in the system. Allowed (Josh, 2026-11-23: the rule was against agents outside the system, not the
+  mechanism) when the brief names the task it picks up (`Task: <key>`) and the contractor rulebook
+  (`~/rivet/CONTRACTOR.md`); a `web-fetch` page read is a tool and passes. The brief check is a gate,
+  not proof: the rulebook binds the sub-agent to NQ on the task, the task's streams and Rex;
 - `rex capture`, `rex block capture` and `agent-read` in command position when the target
   is an agent's pane or cannot be identified. Use `rex block capture -s SESSION -b BLOCK` with
   the IDs Rex returned for an ordinary command pane you started. The guard checks Rex's block,
