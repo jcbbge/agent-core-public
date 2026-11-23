@@ -31,7 +31,7 @@ rexconfig's commands enforce most of it; it holds where they don't.
 3. Ready: start at once. Not ready: wait for `NQ ANSWER`. Each answer is one turn; a fourth question
    holds the work (the tools count). Every step keeps its own NQ exchange, three rounds at most; any
    issue or blocker is a question through NQ. NQ passes through Rex and only flags a warning; after three
-   rounds a red Rex block brings Josh in (being built).
+   rounds the task queues the question in Decisions for Josh.
 
 Then you have three moves and no others: **complete** the task; **report** it complete; **report a
 problem** (what is stuck, what you tried, what you need) and wait for the answer. Stay inside the brief.
@@ -63,10 +63,10 @@ a scratchpad file, until that store moves.
   yourself, in the background, with `agent-ask <your name> --title "<a few words>" --task "<original
   task>" --purpose "<what it is for>" --intent "<what you are trying to achieve>" --ask "<what he
   decides>" --option "A: <gains> / <loses>" --option "B: <gains> / <loses>" --recommend "A: <why>"`, each
-  part a full sentence. It opens the decision card, waits for his answer and prints his words verbatim
-  (`text`), the option he chose if any (`answer`) and a receipt; act on his words. If it fails (the card
-  could not open, or he closed it without answering), report that to your starter as a problem, with
-  the question. The [rex skill](../../skills/rex/SKILL.md) has the details.
+  part a full sentence. It queues the question in Decisions, waits for his answer and prints his words
+  verbatim (`text`), the option he chose if any (`answer`) and a receipt; act on his words. If it fails
+  (it could not queue, or the decision was stopped), report that to your starter as a problem, with the
+  question. The [rex skill](../../skills/rex/SKILL.md) has the details.
 - Never stop on a menu or prompt in your own pane; nobody watches it.
 
 ## Waiting and seeing
