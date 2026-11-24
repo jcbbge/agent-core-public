@@ -99,6 +99,15 @@ each shown gone or named as still running with who stops it.
 
 ## Reaping
 
+Nothing an agent opens outlives it (Josh, 2026-11-24). A tab is a task: it shows a task's state in Rex's
+own vocabulary (working, blocked, done, error) and leaves when the task is done.
+
+- **You own what you open.** Every pane, tab, window and session you create goes on your ledger by
+  itself (rexconfig's `rex`, `start-work` and `task-view`). Your final report is refused while anything
+  on it is open, then the turn hook reaps it; your close and `agent-close` reap it too, deepest first.
+  `rex-reap` reaps your own now; `rex-reap --keep <id> --to <who>` hands one that must outlive you to a
+  named owner, and your report names it.
+- **A closed pane ends its task.** It never stays blocked waiting on a pane that is gone.
 - Prefer commands that run once and exit. Anything long-running runs in a Rex pane you own, never
   detached; stop its whole process group.
 - A finished worker closes its own pane once its report is served. One still open after you accept its

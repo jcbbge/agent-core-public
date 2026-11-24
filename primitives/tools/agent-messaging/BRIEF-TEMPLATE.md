@@ -11,7 +11,8 @@ The receiver; the sender (name, session, pane, host); what each owes the other.
 
 # Provisioning
 Verified sources, decisions already made, access and exact locations. The numbered working list; its
-last item is always: reap.
+last item is always: reap (every pane, tab, window and session it opened is closed or handed to a named
+owner, and every worktree, branch, server and temp file it made is removed).
 
 # Scope and authority
 What is permitted, what is excluded, what must be left alone.
