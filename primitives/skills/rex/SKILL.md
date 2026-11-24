@@ -37,8 +37,8 @@ agent-ask <your name> --title "<a few words>" --task "<original task>" --purpose
 - All six parts are required, each a full sentence; `agent-ask` refuses otherwise. Write the ask as one
   short question to "you": Decisions shows it in about four lines (question, one line per option,
   recommendation). Purpose, intent and sources show only when he presses Tab.
-- Josh opens Decisions with Control-Option-Command-D or from the Rex palette; a "Decisions · N waiting"
-  tab shows the count. Up and Down move between questions. He types a letter or his own words and
+- Josh opens Decisions from its sidebar tab, "Decisions · N waiting" (no key: the Mac app never
+  passed one through), or from the Rex palette. Up and Down move between questions. He types a letter or his own words and
   presses Enter twice. A reply ending in `?` or starting with `ask:` gets a sourced fact check and leaves
   the decision waiting. Closing the panel leaves the question in Rivet. Nothing opens or takes focus by
   itself.

@@ -50,7 +50,7 @@ you run is not on the work, putting it there is the first fix.
   rubric (the 10X developer experience, the memorable and movable user experience, the 10X agentic
   version) and say in one line which way you went.
 - **A decision only he can make** goes to him one way: `agent-ask`. It queues one question in
-  Decisions, the Rex panel he opens with Control-Option-Command-D: the question in one line, one line
+  Decisions, the Rex panel he opens from its "Decisions · N waiting" sidebar tab: the question in one line, one line
   per option, the recommendation; details and sources only on request. He answers in his own words, and
   they come back to you with a receipt. Nothing else asks him: no cards, prompts, inbox pages or
   questions on tabs. A question to him fits a glance, never a wall of text.
