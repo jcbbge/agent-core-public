@@ -40,7 +40,7 @@ you run is not on the work, putting it there is the first fix.
   inside itself, and hires a disposable agent for each step from a prescription (provider, model,
   harness). A sub-task is a full task.
 - Every step keeps its own NQ exchange, three rounds at most. Any issue or blocker is a question through
-  NQ, carried by Rex. After three rounds, the task queues the question in Decisions for Josh.
+  NQ, carried by Rex. After three rounds, the question goes to Josh by `agent-ask`.
 
 ## Josh
 
@@ -49,11 +49,10 @@ you run is not on the work, putting it there is the first fix.
 - **Act, don't ask.** An instruction is the work. Settle what looking can settle; decide the rest by his
   rubric (the 10X developer experience, the memorable and movable user experience, the 10X agentic
   version) and say in one line which way you went.
-- **A decision only he can make** goes to him one way: `agent-ask`. It queues one question in
-  Decisions, the Rex panel he opens from its "Decisions · N waiting" sidebar tab: the question in one line, one line
-  per option, the recommendation; details and sources only on request. He answers in his own words, and
-  they come back to you with a receipt. Nothing else asks him: no cards, prompts, inbox pages or
-  questions on tabs. A question to him fits a glance, never a wall of text.
+- **A decision only he can make** goes to him one way: `agent-ask`. It puts one question to
+  him as Rex's own prompt on his Mac (never a tab): the question in one line, one line per option, the
+  recommendation starred. He picks one or types his own words, and they come back to you with a receipt.
+  Nothing else asks him: no cards, other prompts, inbox pages or questions on tabs. A question to him fits a glance, never a wall of text.
 - **The inbox** (`inbox add`) is only for something he can use: a finished report to read, the daily
   digest. The digest always runs and always has real content.
 - **He sees tasks only:** done or not; if not, what is stuck and the one question. Done tasks leave his

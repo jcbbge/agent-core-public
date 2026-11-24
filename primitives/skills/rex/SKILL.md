@@ -19,14 +19,14 @@ Rex is the room: it shows the work and carries messages, and holds nothing durab
 | Run something in a pane, wait for it | `rex run -s "$REX_SESSION" --label <name> --keep-open --wait -- <cmd>`; or `rex wait <block> --for <dur>` |
 | Wait for any event in a script | `rex.wait(event, filter, timeout)` in a Lua script run by `rex do <script.lua>`; `rex events -s <session> --json` to see event names |
 | A pane's state | its Program Status record: `rex do com.superlogical.terminal.program_status -b <block>`; its process: `rex block call -b <block> process` |
-| A decision from Josh | `agent-ask`, which queues a question in Decisions (below); his answer, in his own words, returns to the caller |
+| A decision from Josh | `agent-ask`, which puts the question to him as Rex's own prompt (below); his answer, in his own words, returns to the caller |
 | A document for Josh | `rex do open_document path=<file.md>` from the seat's pane: leaf, floating over its window |
 | A key, action, view or watcher | read [references/ecosystem.md](references/ecosystem.md) first; never a key the app or macOS already uses; rexconfig is the only writer of Rex's config. A view in a pane is an applet: the [rex-applet skill](../rex-applet/SKILL.md) |
 
 ## Asking Josh: Decisions
 
 A decision only Josh can make goes by `agent-ask`, nothing else: no question on a tab, no inbox page, no
-prompt in your own pane. Tasks that exhaust their three NQ rounds queue theirs in the same place.
+prompt in your own pane. A task that exhausts its three NQ rounds asks the same way.
 
 ```
 agent-ask <your name> --title "<a few words>" --task "<original task>" --purpose "<what it is for>" \
@@ -35,17 +35,16 @@ agent-ask <your name> --title "<a few words>" --task "<original task>" --purpose
 ```
 
 - All six parts are required, each a full sentence; `agent-ask` refuses otherwise. Write the ask as one
-  short question to "you": Decisions shows it in about four lines (question, one line per option,
-  recommendation). Purpose, intent and sources show only when he presses Tab.
-- Josh opens Decisions from its sidebar tab, "Decisions · N waiting" (no key: the Mac app never
-  passed one through), or from the Rex palette. Up and Down move between questions. He types a letter or his own words and
-  presses Enter twice. A reply ending in `?` or starting with `ask:` gets a sourced fact check and leaves
-  the decision waiting. Closing the panel leaves the question in Rivet. Nothing opens or takes focus by
-  itself.
-- Run it in the background. It returns `{"answer","text","receipt"}`: `answer` is the option id, or
-  `text` when he answered only in words; `text` is his words verbatim. Act on `text`.
-- Exit 75: the question could not be queued. Exit 1: the answer could not be read or the decision was
-  stopped. Either way, report it to your starter as a problem, with the question.
+  short question to "you".
+- It reaches him as Rex's own prompt on his Mac (rexconfig's `decision` action calls `rex.ui.pick`): the
+  question as its title, one row per option (what it gains, then what it costs), a star on the
+  recommendation. He picks a row or types his own words. No tab opens and nothing takes focus.
+- Run it in the background; it waits as long as he takes. It returns `{"answer","text","receipt"}`:
+  `answer` is the option id, or `text` when he answered only in words; `text` is his words verbatim.
+  Act on `text`.
+- Exit 75: the question could not reach a Rex app. Exit 1: he closed it without answering (declined),
+  or the answer could not be recorded. Either way, report it to your starter as a problem, with the
+  question.
 
 ## Messages and rexconfig
 
