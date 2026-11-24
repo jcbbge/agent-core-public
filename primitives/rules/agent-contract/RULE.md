@@ -44,8 +44,7 @@ Something outside it: tell your starter once (what, where, why now, what you did
 One step at a time: `scratch now "<item>"`, then `scratch done --proof "<evidence>"`. Any doubt or
 blocker: `scratch flag "<what is stuck; what you tried; what you need>"` at once (it is the task's
 blocker), then keep doing what does not depend on it. A turn ends finished or flagged, never "I'll
-check back": you have no clock. The list belongs to the task in Rivet; today `scratch` still keeps it in
-a scratchpad file, until that store moves.
+check back": you have no clock. The list belongs to the task in Rivet; `scratch` reads and writes it there.
 
 ## Messages
 

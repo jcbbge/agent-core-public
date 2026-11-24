@@ -36,8 +36,8 @@ When the estate changes, this file changes in the same commit.
 4. **The work engine: Rivet.** It holds everything durable: sessions, tasks, to-dos, agent runs. A
    session actor spawns task actors; each task runs the work's grammar and hires its agents. The live
    engine belongs to a private project, whose own repo documents it. The old engine (`rv`) is stopped
-   since 2026-11-15; `rv` prints where its history is. The file stores agents still use (scratchpads,
-   receipts, run files, identity) are moving into Rivet and are not there yet. Keeper: `rivet-oracle`.
+   since 2026-11-15; `rv` prints where its history is. Agents' records (scratchpads,
+   receipts, runs, identity) live in Rivet, reached through rexconfig's commands. Keeper: `rivet-oracle`.
 5. **Agents:** Claude, Codex, pi, any model, run on hive. Josh starts one clean with `rex claude|codex|pi`;
    other work starts as a task from a Rex block, and its agents are disposable hands for one step each
    (`start-work` launches one today). Research, planning and review on Claude; coding on Codex.
