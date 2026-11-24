@@ -9,6 +9,8 @@ Rex is the constant: build on it. Read the installed guide first, `rex __interna
 `rex --help`, `rex actions --json` and `rex api list` for what this server offers. Hive's server is
 Preview; check a feature on it (`rex do -e 'return tostring(rex.ui ~= nil)'`) rather than assuming.
 How agents start, talk, wait and report is the [agent contract](../../rules/agent-contract/RULE.md).
+What a server, block and client are, why actions live in the client's config, how servers reach each
+other, and the unpublished block plugins: [references/model.md](references/model.md).
 Rex is the room: it shows the work and carries messages, and holds nothing durable. What must last
 (sessions, tasks, to-dos, agent runs) lives on Rivet.
 

@@ -64,8 +64,9 @@ name the method. A minimum revision is fine where a method truly first appears; 
 | Server API (`rex api call`, socket protocol `rex.control.v1`) | any program | everything a client can do; `--json` schemas | — |
 | Program status (OSC 7501) | any program in a pane | idle/working/done/blocked/error records, read by tabs, pickers, Lua, `rex do com.superlogical.terminal.program_status` | — |
 | Floating layers, detached blocks | API | overlays, drawers, pre-started hidden panes | — |
-| Block creators / flavors | built into Rex | terminal flavors only | third parties cannot add a block type |
+| Block creators / flavors | built into Rex; plugins through `rex server run --block-dir DIR` | terminal, tunnel, onboarding today | the plugin protocol is unpublished (see [model.md](model.md)) |
 | Hosts (`rex.host`, `rex -S`) | client | reach another machine's server | — |
+| Browser in a pane | terminal-browser (kitty graphics, inside a terminal block) | works on a remote server and on iOS; agent CLI `terminal-browser action` | not a native block; rexweb overlays a Mac window and works only on the Mac's own server |
 | Harness extensions (pi `.pi/agent/extensions`, Claude hooks) | inside the agent | call `rex do`/`rex api` from the agent's own events | — |
 
 ## How people extend it now (five repos and leaf, Nov 2026)
