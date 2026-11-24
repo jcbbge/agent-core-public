@@ -38,7 +38,7 @@ Rex. Where it sits among Rex's other extension shapes: [the rex skill's ecosyste
   `●` ok (green, 2), `▲` attention (yellow, 3), `✗` problem (red, 1), `○` idle or none, `▸` selected
   (cyan, 6), rules `─` (grey, 8 / 90), `░▒▓█` density, `▁▂▃▄▅▆▇█` sparklines.
 
-Worked example: `~/madewell-engine-view` (README, DESIGN.md, `tests/`). Read it for scale, not to copy.
+Worked example: rexconfig's `bin/inbox` (a standard-library viewer in a floating Rex pane) and `bin/task-view`. Read them for scale, not to copy.
 
 ## Build one
 
