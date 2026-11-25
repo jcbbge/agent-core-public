@@ -107,4 +107,14 @@ for d in "$HOME"/.codex/skills/*/; do
 done
 for l in "$HOME"/.codex/prompts/*.md; do if ours "$l"; then drop "$l"; fi; done
 $CHECK || rmdir "$HOME/.codex/prompts" 2>/dev/null || true
+# Skills: every agent-core skill is linked into each harness's skills folder (2026-11-25: skills added since the
+# hand-made links of Nov 12 reached no harness). An entry of the same name, ours or not, is never touched.
+for s in "$AC"/primitives/skills/*/; do
+  s=${s%/}; n=$(basename "$s")
+  for dir in "$HOME/.claude/skills" "$HOME/.pi/agent/skills" "$HOME/.codex/skills"; do
+    [ -d "$dir" ] || continue
+    if [ -e "$dir/$n" ] || [ -L "$dir/$n" ]; then continue; fi
+    if $CHECK; then echo "stale: $dir/$n"; stale=1; else ln -s "$s" "$dir/$n"; echo "linked $dir/$n"; fi
+  done
+done
 exit $stale
