@@ -24,7 +24,9 @@ When the estate changes, this file changes in the same commit.
   guidebook is `~/rexconfig/oracle/GUIDEBOOK.md` (private); read it before acting across machines, and
   start every session with its first move. Work compute (every task and its hands) still runs on hive.
 - Rex config, Lua and every Rex script live and run on hive. The app reaches hive's Rex server through
-  its host `hive`; a session on the M5's own built-in server has none of hive's actions or keys.
+  its host `hive`; a session on the M5's own built-in server has none of hive's actions or keys, except
+  one linked config file for the app's own server (rexconfig `m5/rex/init.lua`, Josh 2026-11-25): the
+  Rex app shortcuts he needs in every tab, starting with Cmd-Option-\ for the inbox.
 - Every cross-machine check covers both hive and the M5.
 - Hive's clock is America/Chicago: write times as CT.
 

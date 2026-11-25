@@ -18,7 +18,8 @@ trades Linux-client support for a better Mac experience, take the Mac.
 fukcing thing that has to do with rex, i do not want it on my m5 except the mac app"; the same day:
 "the app is connected to the server. the server is connected to the app. it doesnt matter where they
 are located"). The app and its own built-in server count as the app. No rexconfig, Rex Lua,
-rex-check or Rex script is installed or run there, and no agent runs a Rex command on it over ssh.
+rex-check or Rex script is installed or run there, except one config file for the app's own server that
+carries the app shortcuts that must work in every tab (Josh, 2026-11-25), and no agent runs a Rex command on it over ssh.
 Checks that need the app's view run on hive: the reserved-key check reads the app's cached key list
 from the Mac as plain files.
 
