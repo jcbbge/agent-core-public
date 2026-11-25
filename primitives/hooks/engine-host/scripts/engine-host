@@ -201,8 +201,19 @@ case "${1:-}" in
         # names the task it picks up and the contractor rulebook. A page fetch is a tool, not a contractor.
         sub_type=$(printf '%s' "$input" | jq -r '.tool_input.subagent_type // empty' 2>/dev/null)
         brief=$(printf '%s' "$input" | jq -r '[.tool_input.prompt, .tool_input.script, .tool_input.args] | map(tostring) | join("\n")' 2>/dev/null)
-        if [ "$sub_type" = "web-fetch" ] || { printf '%s' "$brief" | grep -Eq '^[[:space:]]*(//[[:space:]]*|#[[:space:]]*)?Task: *[A-Za-z0-9][A-Za-z0-9_:.-]*' \
-             && printf '%s' "$brief" | grep -q 'CONTRACTOR.md'; }; then exit 0; fi
+        [ "$sub_type" = "web-fetch" ] && exit 0
+        if printf '%s' "$brief" | grep -Eq '^[[:space:]]*(//[[:space:]]*|#[[:space:]]*)?Task: *[A-Za-z0-9][A-Za-z0-9_:.-]*' \
+             && printf '%s' "$brief" | grep -q 'CONTRACTOR.md'; then
+          # The handoff check (standing rule, 2026-11-25): the sender answered three questions from the receiver's
+          # seat. Only "yes, none, none", each with its reason on the line, passes.
+          if printf '%s' "$brief" | grep -Eq '^#{1,6}[[:space:]]+Handoff check[[:space:]]*$' \
+               && printf '%s' "$brief" | grep -Eq '^[[:space:]]*1\.[[:space:]]*Everything needed: yes[.:;,]?[[:space:]]+[^[:space:]]' \
+               && printf '%s' "$brief" | grep -Eq '^[[:space:]]*2\.[[:space:]]*Questions about next steps: none[.:;,]?[[:space:]]+[^[:space:]]' \
+               && printf '%s' "$brief" | grep -Eq '^[[:space:]]*3\.[[:space:]]*Ambiguity: none[.:;,]?[[:space:]]+[^[:space:]]'; then exit 0; fi
+          deny "$harness" "engine-host: the brief has no passing Handoff check. Before a hand-off, answer from the receiver's seat, \
+in a '# Handoff check' section: '1. Everything needed: yes. <what and where>', '2. Questions about next steps: none. <the steps>', \
+'3. Ambiguity: none. <each two-way reading and how it is settled>'. If an answer fails, write a better brief first."
+        fi
         deny "$harness" "engine-host: a sub-agent may run only inside the system (Josh, 2026-11-23). \
 Its brief must name the task it picks up ('Task: <key>') and the rulebook (~/rivet/CONTRACTOR.md): it answers NQ on that task, \
 writes to the task's streams, and talks to other agents only through Rex. Or start it as its own Rex agent with start-work." ;;
