@@ -138,6 +138,12 @@ Everything else he has given you, do.
   tests that directly cover the files you changed. Never the whole suite, a whole package or a sweep of
   every consumer for a change; a full run only when Josh asks for one.
 - **Done is live.** Merged is not live; running software is done when its own live check passes.
+- **An unfinished task means you do not stop** (standing rule, 2026-11-25). While your session's task list
+  holds an unfinished task, keep working until it is done: wait in the foreground on what you started, act
+  on each result, land it, prove it live. Never end your turn on a status report with work still open. If
+  you need information, a clarification or a decision, ask (your starter by `agent-send`; a decision only
+  the owner can make by `agent-ask`) and keep working on everything that does not depend on the answer. A
+  Stop hook refuses to let a session with open tasks stop.
 - **Never grade your own work.** Report what happened, failures included. A false green is worse than a red.
 - **Spend little.** Start what the work needs and nothing more. Add no files to anyone's project that
   the work does not need.
