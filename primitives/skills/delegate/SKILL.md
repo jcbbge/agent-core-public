@@ -9,9 +9,15 @@ Generates a complete handoff spec from a diagnosis or problem already establishe
 
 ## The Core Self-Check
 
-> "Does this contain all of the information that I, myself, would need to complete this? What contextual information would be helpful if I came into this blindly and was asked to complete it?"
+Before handing off, answer from the receiver's seat:
 
-The document is done when a blind agent can pick it up and execute — not when all sections are filled.
+1. If I were given this task, would I have all the information I need to complete it?
+2. If I were given this task, would I have any questions about my next steps?
+3. If I were given this task, is any detail ambiguous?
+
+Only yes, none, none passes. Explain why in the document's `# Handoff check` section: what it
+provides and where, the ordered next steps, and each possible reading and how it is settled. If
+any answer fails, revise the brief and answer the receiver's questions before handing it over.
 
 ## Trigger Phrases
 
@@ -147,11 +153,16 @@ Current state: [observable state after work]
 Stop rule triggered: [yes/no — if yes, describe]
 Notes: [anything unexpected]
 ​```
-```
+``` 
+
+# Handoff check
+1. Everything needed: yes. [what this document gives and where]
+2. Questions about next steps: none. [the steps in order]
+3. Ambiguity: none. [each possible reading and its resolution]
 
 ---
 
-### Part 3 — Checklist Results (show this after the document)
+### Part 3 - Checklist Results (show this after the document)
 
 Emit this block after the document, with each item explicitly marked:
 

@@ -19,9 +19,26 @@ rexconfig's commands enforce most of it; it holds where they don't.
   that task and talks to other agents only through Rex. Never work outside Rivet, Rex and NQ.
 - Josh sees the task by itself: done or not, and if not, what is stuck and the one question. It is done
   only once the agent's final report has returned. Nobody relays it.
-- The brief has the six sections of the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md);
+- The brief has the seven sections of the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md);
   `start-work` refuses one that lacks any. Provision in full: the receiver must never rediscover what
   you knew.
+- Before handing work to anyone (another person, the oracle, a harness sub-agent or a task's sub-task),
+  ask from the receiver's seat: (1) If I were given this task, would I have all the information needed
+  to complete it? (2) Would I have questions about my next steps? (3) Is any detail ambiguous?
+  Only **yes, none, none** passes. Write why for each answer. If one fails, improve the brief: look
+  ahead for discrepancies, resolve every question and settle every reading before handing it off.
+  The bar is that a reader cannot misread the instructions. Include this required section in the brief:
+
+  ```markdown
+  # Handoff check
+  1. Everything needed: yes. <what the brief provides and where>
+  2. Questions about next steps: none. <the next steps in order>
+  3. Ambiguity: none. <each possible reading and how the brief settles it>
+  ```
+
+  Each answer's explanation belongs on that line. The gate checks the form, not whether the reasons
+  are sound; the sender remains responsible for their substance. Rivet's internal step packets derive
+  from checked work words, not fresh hand-offs.
 - You are its starter. You answer every message it sends, check its proof yourself, and answer for it.
 - Every run goes through the work (global directive), whoever opened the starter's pane. Its report
   reaches the starter whenever an agent runs in that pane; who opened the pane never decides.

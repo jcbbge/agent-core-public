@@ -145,7 +145,7 @@ Everything else he has given you, do.
 ## Agents
 
 The [agent contract](../../rules/agent-contract/RULE.md) binds every agent: start, message, wait,
-report, reap. Read it before you start or answer one.
+report, reap. Read it before you start or answer one. Before every hand-off, include its required Handoff check.
 
 ## Memory
 
