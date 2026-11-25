@@ -67,3 +67,14 @@ Asking for orientation does not expand authorization. Existing authorized work m
 ## Steps (Josh, 2026-11-25 adjustment)
 
 **State** is the steps that complete the current task, numbered, each marked done (verified) or not done, so YES or NO visibly follows from them: YES only when every step is done and verified.
+
+## Acceptance test (Josh, 2026-11-25)
+
+The briefing is right when it changes in the matching place as one fact changes, and stays the same when
+only the confidence of the wording changes:
+
+| Pair | Must change |
+|---|---|
+| Tests pass / the required live outcome is verified | NO becomes YES only for the live outcome |
+| A worker is running / its last start message is stale (no activity since) | In flight: running becomes stopped or unknown |
+| A blocker the agent can resolve / one that needs his permission | Your move: nothing needed becomes one question |
