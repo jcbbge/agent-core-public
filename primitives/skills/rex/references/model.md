@@ -68,3 +68,14 @@ terminal-browser (MIT, `zenbu-labs/terminal-browser`) renders Chromium into a te
 graphics, so it works in a session on a remote server and on iOS; `terminal-browser action` lets an agent
 drive it. Installed on hive 2026-11-24 with setup skipped and telemetry off; needs `libgtk-3-0` on Linux.
 It is a tool, not the app layer: nothing drives work from it.
+
+## What a server can and cannot see of a client (checked 2026-11-24, preview.22)
+
+- A client's keys and pastes reach a block as requests the client sends (`block.event`, `client.key`);
+  the server publishes no "someone is typing here" event, so no other client can tell when Josh is
+  typing. The nearest signal is the resize that follows a tab switch on that server.
+- A server never sees a client's activity on another server. When Josh moves from a hive tab to a tab
+  on the Mac's own server, hive still believes he is in the last hive tab; anything keyed on "where he
+  is looking" must expire on its own.
+- `agent-send` needs a live sender pane on hive (it reads the sender's Rex session); a command run over
+  plain ssh cannot send.
