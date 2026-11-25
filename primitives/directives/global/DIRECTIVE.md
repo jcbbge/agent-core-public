@@ -49,15 +49,18 @@ you run is not on the work, putting it there is the first fix.
   him which holds; list the difference and fix the code.
 - Work starts in Rivet, from words or from any Rex block. A session actor spawns task actors; a task
   outlives its session, holds its agent's prescription (provider, model, harness) and context, and hires
-  disposable agents. Every message between tasks and agents goes through Rex, with a receipt.
-- **The chain** (Josh, 2026-11-24, settled): whoever spawns a task is its From and answers its questions,
-  through Rex. An agent that spawns an agent is responsible for it. The contract is the same at every
-  link: From, To, Done yes/no, NQ x of 3, carried by Rex from the From address and signed To. Josh spawns
-  the session's agent; it spawns the work; the work's agent spawns each stage; each stage's agent spawns
-  its steps. Never answer a question with an agent nobody spawned.
-- Every step keeps its own NQ exchange, three rounds at most. Any issue or blocker is a question through
-  NQ to its From, carried by Rex. After three rounds the question goes one link up the chain; at the top,
-  it reaches Josh by `agent-ask`.
+  disposable agents. Every message between tasks travels through Rivet and is shown in Rex.
+- **The chain** (Josh, 2026-11-24, settled): whoever spawns a task is its From and answers its questions.
+  An agent that spawns an agent is responsible for it. The contract is the same at every link: From, To,
+  Done yes/no, NQ x of 3. Josh spawns the session's agent; it spawns the work; the work's agent spawns
+  each stage; each stage's agent spawns its steps. Never answer a question with an agent nobody spawned.
+- **Tasks and agents talk through Rivet; Rex is the window** (Josh, 2026-11-24: "Rivet has a direct
+  communication ... Use that. The pass through to Rex is for observability."). A message between tasks
+  travels actor to actor (`c.client()` actions, events by `broadcast`, rivet.dev/actors/docs/
+  communicating-between-actors) and is also shown in Rex so it can be seen.
+- Every step keeps its own NQ exchange, three rounds at most. Any issue or blocker is a question to its
+  From. After three rounds the question goes one link up the chain; at the top, it reaches Josh by
+  `agent-ask`.
 
 ## Josh
 
