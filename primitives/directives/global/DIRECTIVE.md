@@ -50,8 +50,14 @@ you run is not on the work, putting it there is the first fix.
 - Work starts in Rivet, from words or from any Rex block. A session actor spawns task actors; a task
   outlives its session, holds its agent's prescription (provider, model, harness) and context, and hires
   disposable agents. Every message between tasks and agents goes through Rex, with a receipt.
+- **The chain** (Josh, 2026-11-24, settled): whoever spawns a task is its From and answers its questions,
+  through Rex. An agent that spawns an agent is responsible for it. The contract is the same at every
+  link: From, To, Done yes/no, NQ x of 3, carried by Rex from the From address and signed To. Josh spawns
+  the session's agent; it spawns the work; the work's agent spawns each stage; each stage's agent spawns
+  its steps. Never answer a question with an agent nobody spawned.
 - Every step keeps its own NQ exchange, three rounds at most. Any issue or blocker is a question through
-  NQ, carried by Rex. After three rounds, the question goes to Josh by `agent-ask`.
+  NQ to its From, carried by Rex. After three rounds the question goes one link up the chain; at the top,
+  it reaches Josh by `agent-ask`.
 
 ## Josh
 
