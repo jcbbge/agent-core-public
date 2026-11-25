@@ -18,7 +18,7 @@ want=$(printf '%s\n%s\n\n%s\n\n%s\n' \
   "" "$(body "$AC/primitives/directives/global/DIRECTIVE.md")" "$(body "$AC/primitives/directives/estate/DIRECTIVE.md")")
 
 stale=0
-for pair in ".claude:CLAUDE.md" ".codex:AGENTS.md" ".pi/agent:AGENTS.md" ".config/opencode:AGENTS.md" ".gemini:GEMINI.md"; do
+for pair in ".claude:CLAUDE.md" ".codex:AGENTS.md" ".pi/agent:AGENTS.md" ".config/opencode:AGENTS.md" ".gemini:GEMINI.md" ".factory:AGENTS.md"; do
   dir="$HOME/${pair%%:*}"; f="$dir/${pair##*:}"
   [ -d "$dir" ] || continue
   # Compare without the header line: the revision changes on every commit, the instructions may not.

@@ -16,7 +16,7 @@ What it makes true on the machine it runs on:
   reported, never reset).
 - Each installed harness's always-loaded file is exactly the global directive followed by the
   estate directive, with a header saying it is generated: Claude Code `~/.claude/CLAUDE.md`, Codex
-  `~/.codex/AGENTS.md`, pi `~/.pi/agent/AGENTS.md`, opencode `~/.config/opencode/AGENTS.md`, Gemini
+  `~/.codex/AGENTS.md`, pi `~/.pi/agent/AGENTS.md`, opencode `~/.config/opencode/AGENTS.md`, Factory `~/.factory/AGENTS.md`, Gemini
   `~/.gemini/GEMINI.md`. A harness counts as installed when its folder exists.
 - `~/.claude/rules/<name>.md` links to every `primitives/rules/<name>/RULE.md`.
 - Every `primitives/commands/<name>/COMMAND.md` is linked in the form each installed harness takes
