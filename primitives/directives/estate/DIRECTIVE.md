@@ -12,15 +12,19 @@ When the estate changes, this file changes in the same commit.
 | Name | What it is | Login | Reach it |
 |---|---|---|---|
 | `hive` | Linux VPS. **All compute:** code, Rex's server, rexconfig, the work engine, every agent | `jrg` | you are usually on it |
-| `m5` | Josh's MacBook. **Runs only the Rex app** (with its built-in server), Chrome, his eyes and hands | `jrg` | `ssh m5 <cmd>` from hive |
+| `m5` | Josh's MacBook. **The oracle's seat** (below), the Rex app (with its built-in server), Chrome, his eyes and hands | `jrg` | `ssh m5 <cmd>` from hive |
 | `m1` | A second Mac | `jcbbge` | not reachable yet |
 
 - You can reach every machine; never say a file is out of reach because it lives elsewhere. If the link
   itself fails, say which link and what it printed.
 - A file is read and written where it lives, never copied to work on it.
-- Nothing Rex runs on the M5 except the app (Josh, 2026-11-20). Rex config, Lua and every Rex
-  script live and run on hive; never run a Rex command on the M5 over ssh. The app reaches
-  hive's Rex server through its host `hive`.
+- **The oracle starts on the M5** (Josh, 2026-11-25: "you, the instance, will always start from the
+  MacBook M5. You will be the all-seeing, all-knowing Oracle Agent"). Whatever harness or model he
+  starts there oversees both machines and keeps Rex on both, the Rex bridge, rex-sdk and Rivet. Its
+  guidebook is `~/rexconfig/oracle/GUIDEBOOK.md` (private); read it before acting across machines, and
+  start every session with its first move. Work compute (every task and its hands) still runs on hive.
+- Rex config, Lua and every Rex script live and run on hive. The app reaches hive's Rex server through
+  its host `hive`; a session on the M5's own built-in server has none of hive's actions or keys.
 - Every cross-machine check covers both hive and the M5.
 - Hive's clock is America/Chicago: write times as CT.
 
@@ -41,7 +45,8 @@ When the estate changes, this file changes in the same commit.
 5. **Agents:** Claude, Codex, pi, any model, run on hive. Josh starts one clean with `rex claude|codex|pi`;
    other work starts as a task from a Rex block, and its agents are disposable hands for one step each
    (`start-work` launches one today). Research, planning and review on Claude; coding on Codex.
-6. **Roles:** taken only when Josh types the command in an agent: `/seat` (the agent he works a project
+6. **Roles:** the oracle on the M5 keeps every layer; the narrower roles below remain for an agent
+   Josh points at one layer. Taken only when Josh types the command in an agent: `/seat` (the agent he works a project
    with), `/hive-oracle`, `/rex-oracle`, `/rivet-oracle`. Each runs `agent-role <role>`, which labels the
    pane (one holder per role) and loads `~/agent-core/primitives/directives/<role>/DIRECTIVE.md`.
 
