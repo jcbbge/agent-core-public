@@ -11,8 +11,9 @@ rexconfig's commands enforce most of it; it holds where they don't.
 ## Starting one
 
 - Every piece of work is a task on Rivet, started from a Rex block; each agent is a disposable hand for
-  one step. Today a hand starts in its own Rex tab: `start-work [--run <name>] --brief-file <brief.md>
-  <session> <name> -- <claude|codex|pi>` prints the run and its pane id; the same `--run` resumes it.
+  one step. The task is the tab: a hand runs as a pane inside its task's tab, never in a tab of its own
+  (Josh, 2026-11-24). `start-work [--run <name>] --brief-file <brief.md> <session> <name> --
+  <claude|codex|pi>` prints the run and its pane id; the same `--run` resumes it.
   A harness's own sub-agent is allowed only inside the system (Josh, 2026-11-23): it picks up a task
   (`Task: <key>` in its brief), follows the contractor rulebook (`~/rivet/CONTRACTOR.md`), answers NQ on
   that task and talks to other agents only through Rex. Never work outside Rivet, Rex and NQ.

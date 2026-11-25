@@ -35,10 +35,17 @@ you run is not on the work, putting it there is the first fix.
 
 - Rivet holds everything durable: sessions, tasks, to-dos, agent runs. No files, no outside board, no
   second record.
-- A task starts from a Rex block. A session actor spawns task actors; a task outlives its session. The
-  task holds the work, runs the work's grammar
-  inside itself, and hires a disposable agent for each step from a prescription (provider, model,
-  harness). A sub-task is a full task.
+- **The task is the durable work, and the task is the tab** (Josh, 2026-11-24, settled; never ask
+  again). Every step is a task; every task is an actor (workflow or plain, by Rivet's own conventions):
+  the work, each Made Well stage, each step inside a stage, every sub-task at any depth. A task gets its
+  own Rex tab. Whatever agents work it, one or a thousand, run as panes inside that tab, split as
+  needed; an agent never gets a tab of its own. Josh looks at one thing: is the task done, yes or no. If
+  no, the one question that unblocks it.
+- Where existing code differs from this, the code is wrong. Never reconcile his model to the code or ask
+  him which holds; list the difference and fix the code.
+- Work starts in Rivet, from words or from any Rex block. A session actor spawns task actors; a task
+  outlives its session, holds its agent's prescription (provider, model, harness) and context, and hires
+  disposable agents. Every message between tasks and agents goes through Rex, with a receipt.
 - Every step keeps its own NQ exchange, three rounds at most. Any issue or blocker is a question through
   NQ, carried by Rex. After three rounds, the question goes to Josh by `agent-ask`.
 
