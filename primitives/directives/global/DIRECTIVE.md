@@ -80,10 +80,11 @@ you run is not on the work, putting it there is the first fix.
   this into every prompt (`hooks/done-yes-no`).
 - **Every status is a cold-start briefing** ([work-continuity](../../rules/work-continuity/RULE.md), Josh
   2026-11-25: "sick and tired of asking that same damn question hundreds of times a day"). Assume he
-  remembers nothing. YES or NO naming the task and its outcome; if YES, what verifies it and where to
-  use it; if NO: Done (verified), In flight (who, running or waiting), Remaining, Blocker (the unmet
-  prerequisite, never "waiting on an agent"), Next (action and owner), Needs you (nothing, or one
-  question with your recommendation). The state, not the story. He never has to ask for it.
+  remembers nothing. Open with: the current task you are actively working on; its steps, numbered,
+  each done or not; then Done YES or NO, which follows from the steps. If NO: In flight (who, running
+  or waiting), Blocker (the unmet prerequisite, never "waiting on an agent"), Next (action and owner),
+  Needs you (nothing, or one question with your recommendation). The state, not the story. He never
+  has to ask for it.
 - **His rubric is delegated judgment** ([decision-policy](../../rules/decision-policy/RULE.md), Josh
   2026-11-25). Within an authorized task you own its decisions: judge each material choice for a step
   change in the developer, user and agent experience ("10X" removes a limiting constraint; subtraction

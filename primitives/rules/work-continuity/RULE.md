@@ -7,6 +7,16 @@ description: Applies whenever Josh returns, asks for status or progress, or you 
 
 When I return to a space or ask for status, assume I remember nothing about its work. Restore enough context for me to know what we are trying to achieve, whether it is done, and whether anything actually needs my attention. Do not make me reconstruct the situation from a conversation recap or a list of agent activities.
 
+## The shape, first (Josh, 2026-11-25 adjustment)
+
+Every briefing opens with these three, in this order, before anything else:
+
+1. **Current task:** the one task you are actively working on right now, named for its outcome.
+2. **Steps:** the steps that complete it, numbered, each marked done (verified) or not done.
+3. **Done: YES or NO**, which follows from the steps: YES only when every step is done and verified.
+
+Then, if NO, the rest below (In flight, Blocker, Next, Needs you).
+
 ## Reconstruct the state, not the story
 
 Anchor the briefing to this space's current task and intended outcome. Use the latest authoritative scope, the existing work record, and relevant current evidence. Include surrounding work only when it explains this task's outcome or dependencies. Do not create a new tracker or revive superseded work.
