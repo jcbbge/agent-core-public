@@ -21,6 +21,11 @@ anything marked planned or unpublished.
 - A new block kind must come from the server; clients draw it. Overlay tools (rexweb) paint over a
   terminal block and the server never knows.
 
+**Session.** One sitting from **New Session** to **End session**, with a scratch pad owned by the
+session, not a task or a pane. Add to it with `note "<text>"` and read it with `note list`.
+Ending a session preserves the pad and the task statuses. The next session shows its notes and
+unfinished tasks once without taking ownership of those tasks.
+
 ## Servers never talk to each other
 
 Every connection is client to server. One server reaches another only through a client connected to

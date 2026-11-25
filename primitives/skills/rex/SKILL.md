@@ -14,6 +14,10 @@ other, and the unpublished block plugins: [references/model.md](references/model
 Rex is the room: it shows the work and carries messages, and holds nothing durable. What must last
 (sessions, tasks, to-dos, agent runs) lives on Rivet.
 
+A session is one sitting. **New Session** starts one with a fresh pad; **End session** shows its tasks
+and notes, then closes it. Use `note "<text>"` or `note list` in any pane of that session. The next
+session shows what the last one left once; it does not inherit that session's tasks.
+
 ## The primitives
 
 | Need | Use |

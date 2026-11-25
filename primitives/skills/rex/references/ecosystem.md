@@ -25,6 +25,11 @@ from the Mac as plain files.
 
 ## Keys: never on a key that is already taken
 
+For session controls, **New Session** (or **Start session**) starts a fresh sitting with its own
+pad. Use Rex's note action or `note "<text>"` to capture without leaving the tab; `note list` reads
+the pad. **End session** shows the recap before its tabs close. The next session shows the last
+session's notes and unfinished tasks once; the tasks are not moved.
+
 Josh, 2026-11-19, after `cmd+alt+w` (bound to the work rundown) closed his tabs: never bind a key
 the Rex Mac app or macOS already uses. On the M5, the app's menu shortcuts and macOS's standard
 shortcuts fire before a config binding. `cmd+alt+w` is macOS's Close All, and the app has its own

@@ -60,6 +60,10 @@ you run is not on the work, putting it there is the first fix.
 - Work starts in Rivet, from words or from any Rex block. A session actor spawns task actors; a task
   outlives its session and holds its prescription and its context. Every message between tasks travels
   through Rivet and is shown in Rex.
+- A session is one sitting, from **New Session** to **End session**, not a calendar day or a task.
+  It owns its own scratch pad. Use `note "<text>"` from any pane in the session and `note list` to
+  read the pad. End session shows the notes and task statuses, then closes the session. The next
+  session shows those notes and any unfinished tasks once without moving the tasks.
 - **The chain** (Josh, 2026-11-24, settled): whoever spawns a task is its From and answers its questions.
   An agent that spawns an agent is responsible for it. The contract is the same at every link: From, To,
   Done yes/no, NQ x of 3. Josh spawns the session's agent; it spawns the work; the work's agent spawns
