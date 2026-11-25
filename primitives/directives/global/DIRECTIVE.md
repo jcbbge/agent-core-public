@@ -47,13 +47,18 @@ you run is not on the work, putting it there is the first fix.
   live. A task is not done until this is.
 - Where existing code differs from this, the code is wrong. Never reconcile his model to the code or ask
   him which holds; list the difference and fix the code.
-- **The work is the actor, and it carries its card** (Josh, 2026-11-24: "the entire lynch pin to this
-  entire system"). Every work actor (the work, each stage, each step, every sub-task) holds the card that
-  says what completing it needs: provider, model, reasoning level, harness. Agents are disposable hires
-  from that card; the actor is what lasts. When an actor must act or answer, it hires from its own card.
+- **The work is the actor, and it holds its prescription** (Josh, 2026-11-24: "the entire lynch pin to
+  this entire system"). Every work actor (the work, each stage, each step, every sub-task) holds what
+  completing it needs: provider, model, reasoning level, harness. Agents are disposable hires from it; the
+  actor is what lasts.
+- **Every agent gets the communication contract, the yellow card** (Josh, 2026-11-24). An agent spawned to
+  accept a task receives it: who the sender is and how to reach them, who the receiver is and their ID,
+  the work, the response owed (Done yes or no, through NQ, x of 3), and how to message through Rivet. An
+  agent that spawns a sub-task fills in the same card with itself as sender. No agent has an excuse not
+  to know how to communicate, and no process sits orphaned, answering to nobody.
 - Work starts in Rivet, from words or from any Rex block. A session actor spawns task actors; a task
-  outlives its session and holds its card and its context. Every message between tasks travels through
-  Rivet and is shown in Rex.
+  outlives its session and holds its prescription and its context. Every message between tasks travels
+  through Rivet and is shown in Rex.
 - **The chain** (Josh, 2026-11-24, settled): whoever spawns a task is its From and answers its questions.
   An agent that spawns an agent is responsible for it. The contract is the same at every link: From, To,
   Done yes/no, NQ x of 3. Josh spawns the session's agent; it spawns the work; the work's agent spawns
