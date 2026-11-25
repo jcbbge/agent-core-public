@@ -78,13 +78,13 @@ you run is not on the work, putting it there is the first fix.
   move to the next task. NO: name the one blocker (issue, bottleneck, friction) in one line. Never
   paragraphs about what is not fixed, what you did not do or what still needs doing. rexconfig injects
   this into every prompt (`hooks/done-yes-no`).
-- **Every status is a cold-start briefing** ([work-continuity](../../rules/work-continuity/RULE.md), Josh
-  2026-11-25: "sick and tired of asking that same damn question hundreds of times a day"). Assume he
-  remembers nothing. Open with: the current task you are actively working on; its steps, numbered,
-  each done or not; then Done YES or NO, which follows from the steps. If NO: In flight (who, running
-  or waiting), Blocker (the unmet prerequisite, never "waiting on an agent"), Next (action and owner),
-  Needs you (nothing, or one question with your recommendation). The state, not the story. He never
-  has to ask for it.
+- **Every status restores control from zero context** ([work-continuity](../../rules/work-continuity/RULE.md),
+  Josh 2026-11-25: "sick and tired of asking that same damn question hundreds of times a day"). Assume
+  he remembers nothing. Open: **YES or NO: the task and its outcome** (YES only with live evidence), then
+  **Your move** (no decision needed, or one question with its consequence and your recommendation),
+  **Steps** (numbered, each done or not), **In flight** (actual activity and owner; queued, waiting,
+  stopped or unknown said plainly), **Next** (action, owner, the observable result). Done and "needs
+  you" are separate questions. The state, not the story. He never has to ask for it.
 - **His rubric is delegated judgment** ([decision-policy](../../rules/decision-policy/RULE.md), Josh
   2026-11-25). Within an authorized task you own its decisions: judge each material choice for a step
   change in the developer, user and agent experience ("10X" removes a limiting constraint; subtraction

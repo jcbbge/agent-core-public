@@ -1,61 +1,69 @@
 ---
 name: work-continuity
-description: Applies whenever Josh returns, asks for status or progress, or you report on a task to him: the cold-start Reorient briefing (YES/NO, Done, In flight, Remaining, Next, Needs you).
+description: Applies whenever Josh returns, asks for status or progress, or you report on a task to him: the zero-context Reorient briefing (YES/NO and the task, Your move, Steps, In flight, Next).
 ---
 
-# Reorient me: cold-start task briefing (Josh, 2026-11-25)
+# Reorient me: restore control from zero context (Josh, 2026-11-25)
 
-When I return to a space or ask for status, assume I remember nothing about its work. Restore enough context for me to know what we are trying to achieve, whether it is done, and whether anything actually needs my attention. Do not make me reconstruct the situation from a conversation recap or a list of agent activities.
+When I return or ask for status, assume I remember nothing about this work. Give me the smallest self-contained account that lets me correctly decide whether to intervene or leave the work with its owner. Restore the context needed for that decision, not the whole conversation.
 
-## The shape, first (Josh, 2026-11-25 adjustment)
+## Reconstruct before compressing
 
-Every briefing opens with these three, in this order, before anything else:
+Identify this space's current task, intended user-visible outcome, and actual acceptance conditions. Use the latest authoritative scope and relevant current evidence in the existing work record and artifacts. Do not let the newest message or busiest agent substitute for the main task.
 
-1. **Current task:** the one task you are actively working on right now, named for its outcome.
-2. **Steps:** the steps that complete it, numbered, each marked done (verified) or not done.
-3. **Done: YES or NO**, which follows from the steps: YES only when every step is done and verified.
+Distinguish proven outcomes from claims, current execution from earlier start messages, and unknown state from failure. Repeated completion claims are not independent verification. Preserve all completion-critical gaps; omit optional improvements and superseded work. Inspect only what is needed to resolve uncertainty material to this briefing, not the whole project.
 
-Then, if NO, the rest below (In flight, Blocker, Next, Needs you).
+## Answer two independent questions
 
-## Reconstruct the state, not the story
+1. **Is the task done?** YES only when its acceptance conditions are evidenced, including live verification when required. Otherwise NO; distinguish unfinished work from unverified completion.
+2. **Does this require me?** An unfinished task is not automatically a request for my attention. Apply the delegated-judgment policy before escalating. A question the agent can settle through the rubric, inspection, or an authorized test stays with the agent.
 
-Anchor the briefing to this space's current task and intended outcome. Use the latest authoritative scope, the existing work record, and relevant current evidence. Include surrounding work only when it explains this task's outcome or dependencies. Do not create a new tracker or revive superseded work.
+Do not turn “no decision needed from you” into a claim that work is progressing. To describe ongoing progress, establish the actual owner, current activity, and next observable result. If execution is stopped or continuity is unknown, say so—even when the repair does not require my judgment.
 
-Distinguish what is proven complete, what is genuinely executing, what is waiting or stalled, and what remains. An earlier start message does not prove something is still running; an agent's completion claim does not prove the required result. Label unavailable or stale evidence explicitly rather than guessing. Do not perform a whole-project audit to answer a local status question.
+## Explain the path to done
 
-## Lead with the answer
+Select facts by their effect on completion, not by how much activity they describe:
 
-Start with YES or NO: is the task done against its actual acceptance conditions?
+- What relevant outcome has already been achieved and verified?
+- What is genuinely in flight, queued, waiting, or stopped, and who owns it?
+- What required outcome or evidence is still missing?
+- What condition currently prevents the next necessary transition? Distinguish normal unfinished work from a blocker. “Waiting on an agent” is not a cause: inspect its actual question, failure, or dependency when available. Do not invent a diagnosis when the evidence stops short.
+- What concrete action comes next, who owns it, and what observable event will show that it worked?
 
-If YES:
+Show dependencies rather than an undifferentiated backlog. Do not hide independent completion-critical blockers behind a single convenient explanation. If selecting the next action requires ordinary judgment, use the decision policy rather than asking me to sequence the work.
 
-**YES — [name the task and the delivered outcome]. [What verifies it and where it is usable.]**
+## Deliver a self-contained briefing
 
-Stop there unless an already-authorized next task matters to my immediate orientation. Do not invent more work.
+Begin with the answer and the task, then put any required intervention before supporting detail.
 
-If NO:
+**YES — [task and achieved outcome]. [What proves it and where it is usable.]**
 
-**NO — [name the task and intended outcome]. [The immediate reason it is not done.]**
-- **Done:** the relevant outcomes already completed and verified—not effort spent.
-- **In flight:** what is actually happening now, who owns it, and the result being awaited. Distinguish running from queued or waiting. Say if nothing is executing or current activity is unknown.
-- **Remaining:** the outcome gaps between the present state and done, in dependency order. Include required verification or delivery; exclude optional improvements.
-- **Next:** the concrete next action, its owner, and what it will unblock or finish.
-- **Needs you:** “Nothing” or the one specific decision, permission, or missing fact that genuinely requires me.
+Or:
 
-Use concrete names and plain words that make sense without previous messages. Avoid unexplained IDs, “the issue,” “as discussed,” invented percentages, and unsupported completion estimates. Keep it readable at a glance; expand only when a material decision requires it.
+**NO — [task and intended outcome]. [Specific gap preventing completion.]**
+**Your move:** [No decision needed from you / one necessary question, its consequence, and a justified recommendation].
+**State:** [Relevant verified progress → remaining completion-critical gaps].
+**In flight:** [Actual activity and owner; distinguish queued, waiting, stopped, or unknown].
+**Next:** [Action and owner → observable result that will advance or close the task].
 
-## Explain the obstruction, not just the status label
+Use concrete names and plain words. The reader must understand this without previous messages: no “still,” “the issue,” “as discussed,” or unexplained agent IDs standing in for context. Do not use invented percentages, unsupported estimates, or reassurance in place of evidence. Keep it readable at a glance; expand only to preserve a material distinction.
 
-Unfinished does not necessarily mean blocked. If work is progressing normally, say “No blocker; [owner] is completing [remaining step].” Do not manufacture a question for me.
+When my input is required, isolate the smallest decision that unlocks progress. Include what it changes and who will act on the answer. State a timing constraint only when grounded; never manufacture urgency. Use the established channel for an actual approval request.
 
-If blocked, identify the unmet prerequisite and the action that would satisfy it. “Waiting on a subagent” is not an explanation: inspect its actual question, failure, or dependency where available. Identify who can resolve it. If the cause cannot be established from available evidence, say what is unknown and who will investigate; do not substitute a plausible diagnosis.
+## Check the briefing before sending
 
-Apply the delegated-judgment policy before putting anything under “Needs you.” Questions an agent can settle through the rubric, inspection, or a safe test belong to that agent, not to me. An unresolved agent decision is not automatically an unresolved user decision.
+- **Erase the history:** Does this still identify the task, current situation, and next action?
+- **Separate done from busy:** Would completed implementation without required live proof still produce NO?
+- **Separate blocked from needs me:** Would an agent-resolvable blocker stay with the agent, while a real approval boundary reach me?
+- **Remove false continuity:** Have you avoided calling old, stalled, or unowned work “in flight”?
+- **Preserve the decision:** Would omitting any remaining detail change my understanding of completion, required intervention, or the next step? If not, remove it. Do not remove uncertainty that could change that decision.
 
-For a genuine question to me, give the smallest decision that unlocks progress, the consequence it controls, and a recommendation when justified. Do not make me read the whole history, diagnose a raw error, or choose among an unfiltered list of options.
+These checks constrain the briefing; they are not evidence that the underlying work succeeded. Do not print them.
 
-## Preserve the boundary
+Asking for orientation does not expand authorization. Existing authorized work may continue; do not delay the briefing until all repairs are finished. Do not promise monitoring, resumption, or notification without an actual owner and supported mechanism.
 
-This briefing is read-only; requesting orientation is not authorization to start or change work. Existing authorized work may continue independently. Do not delay the briefing until you have fixed everything, and do not claim future monitoring or execution without a real owner and supported mechanism.
+**Give me enough context to regain control—not so much context that I have to take over the work.**
 
-The briefing must leave me able to answer immediately: **What is this? Is it done? If not, why not? Who is moving it forward? Do I need to do anything?**
+## Steps (Josh, 2026-11-25 adjustment)
+
+**State** is the steps that complete the current task, numbered, each marked done (verified) or not done, so YES or NO visibly follows from them: YES only when every step is done and verified.
