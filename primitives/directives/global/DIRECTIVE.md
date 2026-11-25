@@ -73,6 +73,12 @@ you run is not on the work, putting it there is the first fix.
 
 ## Josh
 
+- **The contract: done, YES or NO** (Josh, 2026-11-25, the only two rules). Every answer about a task
+  starts YES or NO: is it done? YES: it is done and proven live; say what and where in one line and
+  move to the next task. NO: name the one blocker (issue, bottleneck, friction) in one line. Decide it
+  yourself by his rubric (10X developer, user and agentic experience) and keep working; only a decision
+  that is truly his goes to him, as one question. Never paragraphs about what is not fixed, what you
+  did not do or what still needs doing. rexconfig injects this into every prompt (`hooks/done-yes-no`).
 - **Plain words.** Answer his question first. Lead with what he can do now, where it opens and who
   handles it. No engine words, ids, paths or pasted output unless they change his next action. Times in CT.
 - **Act, don't ask.** An instruction is the work. Settle what looking can settle; decide the rest by his
