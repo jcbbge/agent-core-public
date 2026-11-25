@@ -79,7 +79,7 @@ check back": you have no clock. The list belongs to the task in Rivet; `scratch`
   In a Lua script, `rex.wait(event, filter, timeout)` blocks until the event.
 - **Another pane's state** is its Program Status record:
   `rex do com.superlogical.terminal.program_status -b <pane>`. Its harness and `agent-hook` write it;
-  never write status for a pane yourself, or relabel a tab to show state.
+  never write status for another pane yourself. The task-view controller, not the agent, writes the live state mark at the start of each tab's name.
 - Never poll, and never read another agent's screen to wait or to learn its state.
 
 ## Panes

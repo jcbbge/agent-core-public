@@ -39,8 +39,9 @@ you run is not on the work, putting it there is the first fix.
   again). Every step is a task; every task is an actor (workflow or plain, by Rivet's own conventions):
   the work, each Made Well stage, each step inside a stage, every sub-task at any depth. A task gets its
   own Rex tab. Whatever agents work it, one or a thousand, run as panes inside that tab, split as
-  needed; an agent never gets a tab of its own. Josh looks at one thing: is the task done, yes or no. If
-  no, the one question that unblocks it.
+  needed; an agent never gets a tab of its own. The task-view controller prefixes each tab with its
+  live Rex Program Status mark; agents do not relabel tabs to show state. Josh looks at one thing: is the
+  task done, yes or no. If no, the one question that unblocks it.
 - **Back in Service** closes every task (Josh, 2026-11-24): reap everything you spawned (panes,
   worktrees, branches, processes, services, temp files); update every document, AGENTS.md, CLAUDE.md,
   directive and instruction your change makes stale; update every system that depends on it; prove it
