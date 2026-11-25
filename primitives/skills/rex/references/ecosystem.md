@@ -23,12 +23,14 @@ carries the app shortcuts that must work in every tab (Josh, 2026-11-25), and no
 Checks that need the app's view run on hive: the reserved-key check reads the app's cached key list
 from the Mac as plain files.
 
-## Keys: never on a key that is already taken
+## Sessions: one sitting each, with its own pad
 
-For session controls, **New Session** (or **Start session**) starts a fresh sitting with its own
-pad. Use Rex's note action or `note "<text>"` to capture without leaving the tab; `note list` reads
+**New Session** (or **Start session**) starts a fresh sitting with its own pad, never a reused one.
+Use Rex's note action or `note "<text>"` to capture without leaving the tab; `note list` reads
 the pad. **End session** shows the recap before its tabs close. The next session shows the last
 session's notes and unfinished tasks once; the tasks are not moved.
+
+## Keys: never on a key that is already taken
 
 Josh, 2026-11-19, after `cmd+alt+w` (bound to the work rundown) closed his tabs: never bind a key
 the Rex Mac app or macOS already uses. On the M5, the app's menu shortcuts and macOS's standard
