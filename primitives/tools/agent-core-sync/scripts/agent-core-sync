@@ -32,6 +32,7 @@ done
 if [ -d "$HOME/.claude" ]; then
   mkdir -p "$HOME/.claude/rules"
   for r in "$AC"/primitives/rules/*/RULE.md; do
+    [ -f "$r" ] || continue
     n=$(basename "$(dirname "$r")"); l="$HOME/.claude/rules/$n.md"
     [ "$(readlink "$l" 2>/dev/null)" = "$r" ] && continue
     if $CHECK; then echo "stale: $l"; stale=1; continue; fi

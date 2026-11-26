@@ -1,6 +1,6 @@
 ---
 name: agent-core-sync
-description: Brings this machine's agents up to date with agent-core - pulls the repo, writes every installed harness's always-loaded instructions from the global and estate directives, and links the rules and commands. Run it on each machine after an agent-core change lands.
+description: Syncs the minimal Rex/Rivet connection map into harness entrypoints and manages optional command and skill links.
 ---
 
 # agent-core-sync
@@ -18,9 +18,9 @@ What it makes true on the machine it runs on:
   estate directive, with a header saying it is generated: Claude Code `~/.claude/CLAUDE.md`, Codex
   `~/.codex/AGENTS.md`, pi `~/.pi/agent/AGENTS.md`, opencode `~/.config/opencode/AGENTS.md`, Factory `~/.factory/AGENTS.md`, Gemini
   `~/.gemini/GEMINI.md`. A harness counts as installed when its folder exists.
-- `~/.claude/rules/<name>.md` links to every `primitives/rules/<name>/RULE.md`.
+- Links to retired rules in `~/.claude/rules/` are removed; no process rules are installed.
 - Every `primitives/commands/<name>/COMMAND.md` is linked in the form each installed harness takes
-  (the README's Commands row): Claude Code `~/.claude/commands/<name>.md` (`/<name>`), unless
+  as optional shortcuts: Claude Code `~/.claude/commands/<name>.md` (`/<name>`), unless
   `~/.claude/skills/<name>` exists; Codex `~/.codex/skills/<name>/SKILL.md` (`$<name>`), unless a skill
   of that name is in `~/.codex/skills` or `~/.agents/skills`; pi `~/.pi/agent/prompts/<name>.md`
   (`/<name>`). Codex 0.169 skips a SKILL.md that is a symlink, so there it is a generated copy of the
@@ -32,5 +32,4 @@ What it makes true on the machine it runs on:
 Never edit a generated file. Change agent-core and push; then `git -C ~/agent-core pull` on each
 machine (hive and m5) runs it through the post-merge hook. `agent-core-sync` by hand does the same.
 
-Only Claude Code gets the rules linked; every other harness is told by the global directive to read
-`~/agent-core/primitives/rules/<name>/RULE.md` itself.
+The always-loaded files contain only the system connection map. Optional skills and commands do not impose a work process.
