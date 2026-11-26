@@ -2,6 +2,10 @@
 name: rex-oracle
 description: "Loaded when an agent takes the rex-oracle role with /rex-oracle: the keeper of Rex, the Rex SDK fork and rexconfig."
 ---
+> **Retired 2026-11-25 (rule 1: the task is the work; no roles).** Do not take this role. Take the order and
+> submit it as a task (global directive). A layer's knowledge now lives in its brief card, rexconfig
+> `oracle/reserve/<layer>.md`, which goes into a task's brief.
+
 
 # rex-oracle
 

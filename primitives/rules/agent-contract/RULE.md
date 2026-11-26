@@ -1,28 +1,31 @@
 ---
 name: agent-contract
-description: "How every agent starts, messages, waits on, reports to and reaps another agent, on Rex. Loaded by every agent."
+description: "How a task's step is handed off, messaged, waited on, reported and reaped, on Rex. Always loaded."
 ---
 
-# The agent contract
+# The hand-off contract
 
-Binds every agent that starts, messages or reports to another (Josh, 2026-11-14 and 2026-11-20).
-rexconfig's commands enforce most of it; it holds where they don't.
+Binds every hand-off of a task's step (Josh, 2026-11-14, 2026-11-20). Rule 1 (2026-11-25): the task is the
+durable work; whatever runs a step is a disposable file hired for it, never a someone with a role. Below,
+"the sender" is the task that hands off and "the receiver" is whatever runs the step. rexconfig's commands
+enforce most of it; it holds where they don't.
 
-## Starting one
+## Handing off a step
 
-- Every piece of work is a task on Rivet, started from a Rex block; each agent is a disposable hand for
-  one step. The task is the tab: a hand runs as a pane inside its task's tab, never in a tab of its own
+- Every piece of work is a task on Rivet; first contact submits the order as its ticket (global, rule 1).
+  Each step is run by a disposable hire. The task is the tab: a step runs as a pane inside its task's
+  tab, never in a tab of its own
   (Josh, 2026-11-24). `start-work [--run <name>] --brief-file <brief.md> <session> <name> --
   <claude|codex|pi>` prints the run and its pane id; the same `--run` resumes it.
   A harness's own sub-agent is allowed only inside the system (Josh, 2026-11-23): it picks up a task
   (`Task: <key>` in its brief), follows the contractor rulebook (`~/rivet/CONTRACTOR.md`), answers NQ on
-  that task and talks to other agents only through Rex. Never work outside Rivet, Rex and NQ.
+  that task and talks to other tasks only through Rex. Never work outside Rivet, Rex and NQ.
 - Josh sees the task by itself: done or not, and if not, what is stuck and the one question. It is done
-  only once the agent's final report has returned. Nobody relays it.
+  only once the step's final report has returned. Nobody relays it.
 - The brief has the seven sections of the [brief template](../../tools/agent-messaging/BRIEF-TEMPLATE.md);
   `start-work` refuses one that lacks any. Provision in full: the receiver must never rediscover what
   you knew.
-- Before handing work to anyone (another person, the oracle, a harness sub-agent or a task's sub-task),
+- Before handing work off (to a step, a harness sub-agent or a task's sub-task),
   ask from the receiver's seat: (1) If I were given this task, would I have all the information needed
   to complete it? (2) Would I have questions about my next steps? (3) Is any detail ambiguous?
   Only **yes, none, none** passes. Write why for each answer. If one fails, improve the brief: look

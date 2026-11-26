@@ -1,6 +1,6 @@
 ---
 name: estate
-description: Always loaded with global. This installation's machines, where things live, and who keeps each layer. The only place they are written down.
+description: Always loaded with global. This installation's machines, where things live, and the layers. The only place they are written down.
 ---
 
 # The estate
@@ -11,18 +11,17 @@ When the estate changes, this file changes in the same commit.
 
 | Name | What it is | Login | Reach it |
 |---|---|---|---|
-| `hive` | Linux VPS. **All compute:** code, Rex's server, rexconfig, the work engine, every agent | `jrg` | you are usually on it |
-| `m5` | Josh's MacBook. **The oracle's seat** (below), the Rex app (with its built-in server), Chrome, his eyes and hands | `jrg` | `ssh m5 <cmd>` from hive |
+| `hive` | Linux VPS. **All compute:** code, Rex's server, rexconfig, the work engine, every task's steps | `jrg` | you are usually on it |
+| `m5` | Josh's MacBook. **First contact** (below), the Rex app (with its built-in server), Chrome, his eyes and hands | `jrg` | `ssh m5 <cmd>` from hive |
 | `m1` | A second Mac | `jcbbge` | not reachable yet |
 
 - You can reach every machine; never say a file is out of reach because it lives elsewhere. If the link
   itself fails, say which link and what it printed.
 - A file is read and written where it lives, never copied to work on it.
-- **The oracle starts on the M5** (Josh, 2026-11-25: "you, the instance, will always start from the
-  MacBook M5. You will be the all-seeing, all-knowing Oracle Agent"). Whatever harness or model he
-  starts there oversees both machines and keeps Rex on both, the Rex bridge, rex-sdk and Rivet. Its
-  guidebook is `~/rexconfig/oracle/GUIDEBOOK.md` (private); read it before acting across machines, and
-  start every session with its first move. Work compute (every task and its hands) still runs on hive.
+- **First contact is on the M5** (Josh, 2026-11-25). He starts a session there and gives a blanket order;
+  it is taken in his words and submitted as a task's ticket in Rivet (global, rule 1). Whatever harness or
+  model he starts there can reach both machines. Its guidebook is `~/rexconfig/oracle/GUIDEBOOK.md`
+  (private); read it before acting across machines. Every task's steps run on hive.
 - Rex config, Lua and every Rex script live and run on hive. The app reaches hive's Rex server through
   its host `hive`; a session on the M5's own built-in server has none of hive's actions or keys, except
   one linked config file for the app's own server (rexconfig `m5/rex/init.lua`, Josh 2026-11-25): the
@@ -32,25 +31,23 @@ When the estate changes, this file changes in the same commit.
 
 ## Layers, bottom up
 
-1. **Machine:** the OS and its services (systemd `--user` on hive). Keeper: `hive-oracle`.
-2. **Rex:** the room. Hive's server (`rex.service`) shows every session, pane and agent and carries
+1. **Machine:** the OS and its services (systemd `--user` on hive).
+2. **Rex:** the room. Hive's server (`rex.service`) shows every session, task and pane and carries
    their messages; the M5 app shows it. It holds nothing durable. A pane's address is its session and
-   block (`REX_SESSION`, `REX_BLOCK`). Keeper: `rex-oracle`.
+   block (`REX_SESSION`, `REX_BLOCK`).
 3. **rexconfig** (`~/rexconfig`: Rex config,
-   the agent commands `start-work`, `agent-send` (delivered through the work engine's Rex bridge: receipts, holds, queues), `agent-ask`, `agent-close`, `scratch`, the hook
-   `agent-hook`, and the task views). Install with `~/rexconfig/install`. Keeper: `rex-oracle`.
-4. **The work engine: Rivet.** It holds everything durable: sessions, tasks, to-dos, agent runs. A
-   session actor spawns task actors; each task runs the work's grammar and hires its agents. The live
+   the commands `start-work`, `agent-send` (delivered through the work engine's Rex bridge: receipts, holds, queues), `agent-ask`, `agent-close`, `scratch`, `note`, the hook
+   `agent-hook`, and the task views). Install with `~/rexconfig/install`.
+4. **The work engine: Rivet.** It holds everything durable: sessions, tasks, to-dos, step runs. A
+   session actor spawns task actors; each task runs the work's grammar and hires what runs each step. The live
    engine belongs to a private project, whose own repo documents it. The old engine (`rv`) is stopped
-   since 2026-11-15; `rv` prints where its history is. Agents' records (scratchpads,
-   receipts, runs, identity) live in Rivet, reached through rexconfig's commands. Keeper: `rivet-oracle`.
-5. **Agents:** Claude, Codex, pi, any model, run on hive. Josh starts one clean with `rex claude|codex|pi`;
-   other work starts as a task from a Rex block, and its agents are disposable hands for one step each
-   (`start-work` launches one today). Research, planning and review on Claude; coding on Codex.
-6. **Roles:** the oracle on the M5 keeps every layer; the narrower roles below remain for an agent
-   Josh points at one layer. Taken only when Josh types the command in an agent: `/seat` (the agent he works a project
-   with), `/hive-oracle`, `/rex-oracle`, `/rivet-oracle`. Each runs `agent-role <role>`, which labels the
-   pane (one holder per role) and loads `~/agent-core/primitives/directives/<role>/DIRECTIVE.md`.
+   since 2026-11-15; `rv` prints where its history is. Every record (scratchpads, receipts, runs) lives
+   in Rivet, reached through rexconfig's commands.
+5. **Steps:** a step runs on a harness and model (Claude, Codex, pi) named in its task's prescription,
+   hired from the task for that step and gone after it. Josh can start a harness clean with
+   `rex claude|codex|pi`. There are no roles: the old role directives (`seat`, `hive-oracle`,
+   `rex-oracle`, `rivet-oracle`) are retired; a layer's knowledge lives in its brief card
+   (rexconfig `oracle/reserve/<layer>.md`), which goes into a task's brief, not into a persona.
 
 ## agent-core
 
