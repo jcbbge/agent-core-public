@@ -12,16 +12,15 @@ When the estate changes, this file changes in the same commit.
 | Name | What it is | Login | Reach it |
 |---|---|---|---|
 | `hive` | Linux VPS. **All compute:** code, Rex's server, rexconfig, the work engine, every task's steps | `jrg` | you are usually on it |
-| `m5` | Josh's MacBook. **First contact** (below), the Rex app (with its built-in server), Chrome, his eyes and hands | `jrg` | `ssh m5 <cmd>` from hive |
+| `m5` | Josh's MacBook. The Rex app (with its built-in server), Chrome, his eyes and hands | `jrg` | `ssh m5 <cmd>` from hive |
 | `m1` | A second Mac | `jcbbge` | not reachable yet |
 
 - You can reach every machine; never say a file is out of reach because it lives elsewhere. If the link
   itself fails, say which link and what it printed.
 - A file is read and written where it lives, never copied to work on it.
-- **First contact is on the M5** (Josh, 2026-11-25). He starts a session there and gives a blanket order;
-  it is taken in his words and submitted as a task's ticket in Rivet (global, rule 1). Whatever harness or
-  model he starts there can reach both machines. Its guidebook is `~/rexconfig/oracle/GUIDEBOOK.md`
-  (private); read it before acting across machines. Every task's steps run on hive.
+- Josh uses the Rex app on the M5 to reach its own server or hive's shared server. His starting a session or
+  naming a focus does not itself start a Rivet work order. The private map of the two machines is
+  `~/rexconfig/oracle/GUIDEBOOK.md`; read it before acting across machines. Compute runs on hive.
 - Rex config, Lua and every Rex script live and run on hive. The app reaches hive's Rex server through
   its host `hive`; a session on the M5's own built-in server has none of hive's actions or keys, except
   one linked config file for the app's own server (rexconfig `m5/rex/init.lua`, Josh 2026-11-25): the

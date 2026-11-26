@@ -12,8 +12,8 @@ enforce most of it; it holds where they don't.
 
 ## Handing off a step
 
-- Every piece of work is a task on Rivet; first contact submits the order as its ticket (global, rule 1).
-  Each step is run by a disposable hire. The task is the tab: a step runs as a pane inside its task's
+- For work explicitly handed off to Rivet, each step is run by a disposable hire. The task is the tab:
+  a step runs as a pane inside its task's
   tab, never in a tab of its own
   (Josh, 2026-11-24). `start-work [--run <name>] --brief-file <brief.md> <session> <name> --
   <claude|codex|pi>` prints the run and its pane id; the same `--run` resumes it.
