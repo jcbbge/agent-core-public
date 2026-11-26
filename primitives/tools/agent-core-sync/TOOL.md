@@ -1,35 +1,10 @@
 ---
 name: agent-core-sync
-description: Syncs the minimal Rex/Rivet connection map into harness entrypoints and manages optional command and skill links.
+description: Writes the Rex/Rivet connection map into harness entrypoints and retires agent-core-owned process links.
 ---
 
 # agent-core-sync
 
-`agent-core-sync` (on PATH from `scripts/`). Safe to run again; it changes only what agent-core owns.
+`agent-core-sync` is installed on PATH from `scripts/`. `--check` reports drift without writing. It generates the always-loaded `CLAUDE.md` and `AGENTS.md` files from the global and estate connection maps for installed harnesses on this host. It removes only links into this repo's retired rule, command and skill directories, plus Codex command copies marked as owned by agent-core. It does not touch foreign settings, other hooks or unowned files.
 
-**Present when:** `agent-core-sync --check` exits 0, meaning every installed harness's entrypoint
-matches what agent-core would write and every command link is in place.
-
-What it makes true on the machine it runs on:
-
-- agent-core is at the latest pushed `main` (fast-forward only; a dirty or diverged checkout is
-  reported, never reset).
-- Each installed harness's always-loaded file is exactly the global directive followed by the
-  estate directive, with a header saying it is generated: Claude Code `~/.claude/CLAUDE.md`, Codex
-  `~/.codex/AGENTS.md`, pi `~/.pi/agent/AGENTS.md`, opencode `~/.config/opencode/AGENTS.md`, Factory `~/.factory/AGENTS.md`, Gemini
-  `~/.gemini/GEMINI.md`. A harness counts as installed when its folder exists.
-- Links to retired rules in `~/.claude/rules/` are removed; no process rules are installed.
-- Every `primitives/commands/<name>/COMMAND.md` is linked in the form each installed harness takes
-  as optional shortcuts: Claude Code `~/.claude/commands/<name>.md` (`/<name>`), unless
-  `~/.claude/skills/<name>` exists; Codex `~/.codex/skills/<name>/SKILL.md` (`$<name>`), unless a skill
-  of that name is in `~/.codex/skills` or `~/.agents/skills`; pi `~/.pi/agent/prompts/<name>.md`
-  (`/<name>`). Codex 0.169 skips a SKILL.md that is a symlink, so there it is a generated copy of the
-  COMMAND.md, its folder marked by `.agent-core-command` (the source path). What it made (a link into
-  `primitives/commands/`, or a marked Codex folder) is removed when its command is gone or now skipped,
-  and `~/.codex/prompts` links into agent-core are removed. A file it did not make
-  is left alone and named.
-
-Never edit a generated file. Change agent-core and push; then `git -C ~/agent-core pull` on each
-machine (hive and m5) runs it through the post-merge hook. `agent-core-sync` by hand does the same.
-
-The always-loaded files contain only the system connection map. Optional skills and commands do not impose a work process.
+Run on hive and M5 after publishing changes; the repo's post-merge hook also invokes it. No work process or skill bundle is installed by default.
