@@ -1,10 +1,8 @@
 # agent-core
 
-Shared optional agent resources. The always-loaded `global` and `estate` directives contain only system topology. They define no task grammar, workflow, roles or response format.
+Shared optional agent resources. No globally loaded directives or generated harness entrypoints are installed; opening a Rex session or discussing a focus does not prescribe an agent workflow.
 
-- `primitives/directives/global/DIRECTIVE.md`: Rex and Rivet are separate systems.
-- `primitives/directives/estate/DIRECTIVE.md`: the hive/M5 connection map.
 - `primitives/skills/` and `primitives/tools/`: optional source material; skills are not linked into harnesses by default.
-- `primitives/tools/agent-core-sync/scripts/agent-core-sync`: writes the two topology documents to harness entrypoints on each host and removes previously installed process rules, shortcuts and skill links.
+- `primitives/tools/agent-core-sync/scripts/agent-core-sync`: removes only agent-core-owned generated harness entrypoints and its old process-rule, shortcut and skill links on each host; it preserves unowned settings and hooks.
 
-The private Rivet installation and Rex bridge details live with the installed projects, not in this public repository: `~/rivet/app/BRIDGE.md`, `~/rex-sdk/FORK.md` and `~/rexconfig/docs/rex-rivet.md` on hive.
+Technical connection documentation lives in the installed private projects, not in always-loaded instructions: `~/rexconfig/docs/rex-rivet.md` (two Rex servers), `~/rivet/app/BRIDGE.md` (Rivet control and SDK-backed Rex messages), and `~/rex-sdk/FORK.md` (SDK integration) on hive.
