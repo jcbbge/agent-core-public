@@ -1,50 +1,10 @@
 # agent-core
 
-The agent distro: nine primitives, for any harness, model, provider or machine. Each file says
-what must be true once it is installed, not how to install it. Install every item so that what its
-file says is true in your environment, and report anything you could not make true.
+Shared optional agent resources. The always-loaded `global` and `estate` directives contain only system topology. They define no task grammar, workflow, roles or response format.
 
-## Form
+- `primitives/directives/global/DIRECTIVE.md`: Rex and Rivet are separate systems.
+- `primitives/directives/estate/DIRECTIVE.md`: the hive/M5 connection map.
+- `primitives/skills/` and `primitives/tools/`: optional reference material and tools, not a mandatory work process.
+- `primitives/tools/agent-core-sync/scripts/agent-core-sync`: writes the two topology documents to harness entrypoints on each host. Removed rule links are cleaned up by the sync.
 
-Every item is a folder named for the item, holding one main file and, optionally, supporting
-material:
-
-```
-<primitive>/<name>/
-  <MAIN>.md      frontmatter: name, description (what it is and when it applies)
-  scripts/       code that helps carry it out
-  references/    material read on demand
-  assets/        files it uses
-```
-
-This is the Agent Skills format, applied to all nine. Anything in `scripts/` is a reference
-implementation; the main file is the specification.
-
-## The nine primitives
-
-| # | Primitive | Folder | Main file | What it is |
-|---|-----------|--------|-----------|------------|
-| 1 | Directives | `primitives/directives/` | `DIRECTIVE.md` | Instructions always loaded: `global` for every agent; others for a role, when launched as that role |
-| 2 | Rules | `primitives/rules/` | `RULE.md` | Instructions loaded when the work matches the rule's description |
-| 3 | Skills | `primitives/skills/` | `SKILL.md` | Knowledge and procedures loaded on demand |
-| 4 | Commands | `primitives/commands/` | `COMMAND.md` | A named shortcut the operator types to start a skill or workflow. `agent-core-sync` installs each as: Claude Code `~/.claude/commands/<name>.md`, typed `/<name>` (skipped where a skill of that name is linked); Codex `~/.codex/skills/<name>/SKILL.md` as a generated copy, typed `$<name>` (0.169 has no custom prompts: `/prompts:` finds nothing; it skips a symlinked SKILL.md; skipped where a skill of that name exists in `~/.codex/skills` or `~/.agents/skills`); pi `~/.pi/agent/prompts/<name>.md`, typed `/<name>`. Proved on hive 2026-11-15 with a probe command in each (Claude 2.1.325 `claude -p /probe`, pi 1.4.0 `pi -p /probe`, Codex 0.169 TUI `$probe`) |
-| 5 | Tools | `primitives/tools/` | `TOOL.md` | A command-line tool agents call; present when its own check answers |
-| 6 | Hooks | `primitives/hooks/` | `HOOK.md` | A guard on an agent event that can refuse it |
-| 7 | MCP servers | `primitives/mcp/` | `MCP.md` | A service agents call over MCP; environment values by name only |
-| 8 | Subagents | `primitives/subagents/` | `AGENT.md` | An agent role; the environment chooses its model |
-| 9 | Plugins | `primitives/plugins/` | `PLUGIN.md` | A named bundle of other items, installed only when every part is |
-
-## Hook events
-
-Every refusal-capable guard follows the [worker exception](primitives/rules/worker-guards/RULE.md).
-
-| Event | When |
-|---|---|
-| session-start | a session begins |
-| prompt | the operator submits a prompt |
-| before-tool | before a tool call runs; a guard can refuse it |
-| after-tool | after a tool call returns |
-| stop | the agent is about to end its turn; a guard can refuse it |
-| session-end | a session ends |
-| before-commit | a commit is about to be recorded |
-
+The private Rivet installation and Rex bridge details live with the installed projects, not in this public repository: `~/rivet/app/BRIDGE.md`, `~/rex-sdk/FORK.md` and `~/rexconfig/docs/rex-rivet.md` on hive.
