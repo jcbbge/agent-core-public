@@ -1,80 +1,16 @@
 ---
 name: work-continuity
-description: Applies whenever Josh returns, asks for status or progress, or you report on a task to him: the zero-context Reorient briefing (YES/NO and the task, Your move, Steps, In flight, Next).
+description: Applies when Josh returns, asks for status, or needs to regain context about work.
 ---
 
-# Reorient me: restore control from zero context (Josh, 2026-11-25)
+# Restore context without a status ritual
 
-When I return or ask for status, assume I remember nothing about this work. Give me the smallest self-contained account that lets me correctly decide whether to intervene or leave the work with its owner. Restore the context needed for that decision, not the whole conversation.
+Answer the question Josh asked, in plain words. For a progress question, name the work and say what is done, what is actually happening now, and the one next action or obstacle that matters. Give the evidence for a completion claim. If execution is stopped, unknown, or waiting, say that rather than calling it progress.
 
-## Reconstruct before compressing
+Assume he remembers nothing relevant, but do not recite history. A simple question deserves a simple answer. For several genuinely independent jobs, a short list may help; a table is not required. Do not add headings, stage counts, timestamps, a checklist, or a notification promise merely because this is a status update. Include them only when they change his understanding or next move.
 
-Identify this space's current task, intended user-visible outcome, and actual acceptance conditions. Use the latest authoritative scope and relevant current evidence in the existing work record and artifacts. Do not let the newest message or busiest agent substitute for the main task.
+**Completion and intervention are different.** Unfinished does not mean he must act. If he does not need to act, do not announce the obvious. If a real decision or approval only he can give blocks the work, use the established decision channel and ask the smallest question, with its consequence and your recommendation. Apply the decision-policy rule first; never ask him to ratify a choice he delegated.
 
-Distinguish proven outcomes from claims, current execution from earlier start messages, and unknown state from failure. Repeated completion claims are not independent verification. Preserve all completion-critical gaps; omit optional improvements and superseded work. Inspect only what is needed to resolve uncertainty material to this briefing, not the whole project.
+Do not invent a watcher or promise that he will hear later without a real owner and delivery mechanism. Do not imply that an agent is working because it was hired once; establish current activity. Preserve uncertainty when it changes whether the outcome is proven or intervention is necessary.
 
-## Answer two independent questions
-
-1. **Is the task done?** YES only when its acceptance conditions are evidenced, including live verification when required. Otherwise NO; distinguish unfinished work from unverified completion.
-2. **Does this require me?** An unfinished task is not automatically a request for my attention. Apply the delegated-judgment policy before escalating. A question the agent can settle through the rubric, inspection, or an authorized test stays with the agent.
-
-Do not turn “no decision needed from you” into a claim that work is progressing. To describe ongoing progress, establish the actual owner, current activity, and next observable result. If execution is stopped or continuity is unknown, say so—even when the repair does not require my judgment.
-
-## Explain the path to done
-
-Select facts by their effect on completion, not by how much activity they describe:
-
-- What relevant outcome has already been achieved and verified?
-- What is genuinely in flight, queued, waiting, or stopped, and who owns it?
-- What required outcome or evidence is still missing?
-- What condition currently prevents the next necessary transition? Distinguish normal unfinished work from a blocker. “Waiting on an agent” is not a cause: inspect its actual question, failure, or dependency when available. Do not invent a diagnosis when the evidence stops short.
-- What concrete action comes next, who owns it, and what observable event will show that it worked?
-
-Show dependencies rather than an undifferentiated backlog. Do not hide independent completion-critical blockers behind a single convenient explanation. If selecting the next action requires ordinary judgment, use the decision policy rather than asking me to sequence the work.
-
-## Deliver a self-contained briefing
-
-Begin with the answer and the task, then put any required intervention before supporting detail.
-
-**YES — [task and achieved outcome]. [What proves it and where it is usable.]**
-
-Or:
-
-**NO — [task and intended outcome]. [Specific gap preventing completion.]**
-**Your move:** [No decision needed from you / one necessary question, its consequence, and a justified recommendation].
-**State:** [Relevant verified progress → remaining completion-critical gaps].
-**In flight:** [Actual activity and owner; distinguish queued, waiting, stopped, or unknown].
-**Next:** [Action and owner → observable result that will advance or close the task].
-
-Use concrete names and plain words. The reader must understand this without previous messages: no “still,” “the issue,” “as discussed,” or unexplained agent IDs standing in for context. Do not use invented percentages, unsupported estimates, or reassurance in place of evidence. Keep it readable at a glance; expand only to preserve a material distinction.
-
-When my input is required, isolate the smallest decision that unlocks progress. Include what it changes and who will act on the answer. State a timing constraint only when grounded; never manufacture urgency. Use the established channel for an actual approval request.
-
-## Check the briefing before sending
-
-- **Erase the history:** Does this still identify the task, current situation, and next action?
-- **Separate done from busy:** Would completed implementation without required live proof still produce NO?
-- **Separate blocked from needs me:** Would an agent-resolvable blocker stay with the agent, while a real approval boundary reach me?
-- **Remove false continuity:** Have you avoided calling old, stalled, or unowned work “in flight”?
-- **Preserve the decision:** Would omitting any remaining detail change my understanding of completion, required intervention, or the next step? If not, remove it. Do not remove uncertainty that could change that decision.
-
-These checks constrain the briefing; they are not evidence that the underlying work succeeded. Do not print them.
-
-Asking for orientation does not expand authorization. Existing authorized work may continue; do not delay the briefing until all repairs are finished. Do not promise monitoring, resumption, or notification without an actual owner and supported mechanism.
-
-**Give me enough context to regain control—not so much context that I have to take over the work.**
-
-## Steps (Josh, 2026-11-25 adjustment)
-
-**State** is the steps that complete the current task, numbered, each marked done (verified) or not done, so YES or NO visibly follows from them: YES only when every step is done and verified.
-
-## Acceptance test (Josh, 2026-11-25)
-
-The briefing is right when it changes in the matching place as one fact changes, and stays the same when
-only the confidence of the wording changes:
-
-| Pair | Must change |
-|---|---|
-| Tests pass / the required live outcome is verified | NO becomes YES only for the live outcome |
-| A worker is running / its last start message is stale (no activity since) | In flight: running becomes stopped or unknown |
-| A blocker the agent can resolve / one that needs his permission | Your move: nothing needed becomes one question |
+The test is practical: after reading the answer, can Josh tell what happened, whether the intended result works, and whether anything genuinely requires him? Remove anything that does not help answer those questions.
