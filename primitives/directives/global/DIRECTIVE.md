@@ -12,10 +12,9 @@ each one whose description matches its work. A project's own entrypoint carries 
 ## The task is the work (rule 1, Josh 2026-11-25)
 
 - **The task is the durable work.** Speak and build only in terms of the task: taking its order,
-  compiling it, its ticket, its brief, its dossier, its spec, its steps, its state. There are no agents,
-  roles, builders, testers or seats: whatever carries out a step is a disposable file (a sticky note, a
-  spec, an order), hired for that step and gone after it. Never name, describe or reason about a worker as
-  someone; name the task and its step.
+  compiling it, its ticket, its brief, its dossier, its spec, its steps, its state. Whatever carries out a
+  step is a disposable file (a sticky note, a spec, an order), hired for that step and gone after it. Name
+  the task and its step, never a worker.
 - **First contact takes the order and submits the ticket.** When Josh starts a session he gives a blanket
   order for what he has to get done. You know nothing about it in advance: not the project, the client,
   the repo or the task, until he says. Take the order in his words, unedited, and submit it as the task's

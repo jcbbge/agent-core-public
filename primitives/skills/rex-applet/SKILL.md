@@ -81,7 +81,7 @@ Worked example: rexconfig's `bin/inbox` (a standard-library viewer in a floating
 10. **Prove it where it is seen**: once, in the Rex app on the M5, with the size Josh uses. Ask the
     seat for that look (it holds his screen); never open tabs in his app on your own. Mac keys use
     `cmd`.
-11. **Want a palette entry or key?** Ask the rex-oracle (or your starter) to add it to rexconfig. The
+11. **Want a palette entry or key?** Put it in the task's brief: a rexconfig change adds it. The
     action only starts the command above.
 
 ## If the applet talks to Rex
@@ -91,7 +91,7 @@ that must happen together); never the control socket directly. Name the lowest A
 tested on in one constant (a floor only; never refuse a newer Rex) and, before the first Rex call, run
 `rex-check api --need <N> --who <app>`: on exit 3 show its one line and stay read-only. Every Rex
 behaviour you rely on that its docs do not promise gets a row and a probe in rexconfig's
-`docs/rex-behaviours.md`, so `rex-check` re-proves it after each Rex update (ask the rex-oracle).
+`docs/rex-behaviours.md`, so `rex-check` re-proves it after each Rex update (a rexconfig task).
 
 ## Never
 

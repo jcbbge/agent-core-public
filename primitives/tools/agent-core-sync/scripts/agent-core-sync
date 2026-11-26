@@ -97,7 +97,7 @@ for c in "$CMDS"/*/COMMAND.md; do
   # pi: /<name>.
   if [ -d "$HOME/.pi/agent" ]; then want_link "$HOME/.pi/agent/prompts/$n.md" "$c"; fi
 done
-# Links we made for commands that no longer exist, and Codex prompt links (a retired mechanism).
+# Links we made for commands that no longer exist, and Codex prompt links.
 for l in "$HOME"/.claude/commands/*.md "$HOME"/.pi/agent/prompts/*.md; do
   if ours "$l" && [ ! -f "$l" ]; then drop "$l"; fi
 done

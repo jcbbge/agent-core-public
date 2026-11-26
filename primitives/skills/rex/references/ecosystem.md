@@ -135,8 +135,8 @@ Rules that hold across all of them:
   with a probe. `rex-check` runs them all in one throwaway session on hive. Something new that relies on an unpromised behaviour adds its row and probe there.
 - **Rex updates** are noticed, not polled: the session-start hook runs `rex-check watch` (well under a
   second when nothing changed). On a version change it runs the probes in a visible pane, diffs the API
-  field by field, and sends one setup review to the `rex-oracle` pane only if something we use broke, a
-  listed want arrived, or something we hand-rolled can be retired (the lists are in the behaviours doc). Otherwise it records.
+  field by field, and opens one setup-review task only if something we use broke, a
+  listed want arrived, or something we hand-rolled can be removed (the lists are in the behaviours doc). Otherwise it records.
 - **Ask-first actions Josh must run** go to him as runnable steps with `agent-steps submit`
   (rexconfig README), not as chat.
 - **Final proof** runs in a throwaway session on the live server (`session.create`, then

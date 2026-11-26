@@ -26,7 +26,7 @@ What it makes true on the machine it runs on:
   (`/<name>`). Codex 0.169 skips a SKILL.md that is a symlink, so there it is a generated copy of the
   COMMAND.md, its folder marked by `.agent-core-command` (the source path). What it made (a link into
   `primitives/commands/`, or a marked Codex folder) is removed when its command is gone or now skipped,
-  and `~/.codex/prompts` links into agent-core (a retired mechanism) are removed. A file it did not make
+  and `~/.codex/prompts` links into agent-core are removed. A file it did not make
   is left alone and named.
 
 Never edit a generated file. Change agent-core and push; then `git -C ~/agent-core pull` on each

@@ -45,9 +45,8 @@ When the estate changes, this file changes in the same commit.
    in Rivet, reached through rexconfig's commands.
 5. **Steps:** a step runs on a harness and model (Claude, Codex, pi) named in its task's prescription,
    hired from the task for that step and gone after it. Josh can start a harness clean with
-   `rex claude|codex|pi`. There are no roles: the old role directives (`seat`, `hive-oracle`,
-   `rex-oracle`, `rivet-oracle`) are retired; a layer's knowledge lives in its brief card
-   (rexconfig `oracle/reserve/<layer>.md`), which goes into a task's brief, not into a persona.
+   `rex claude|codex|pi`. A layer's knowledge lives in its brief card (rexconfig
+   `oracle/reserve/<layer>.md`), which goes into a task's brief.
 
 ## agent-core
 

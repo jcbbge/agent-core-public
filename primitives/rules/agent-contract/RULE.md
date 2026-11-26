@@ -6,7 +6,7 @@ description: "How a task's step is handed off, messaged, waited on, reported and
 # The hand-off contract
 
 Binds every hand-off of a task's step (Josh, 2026-11-14, 2026-11-20). Rule 1 (2026-11-25): the task is the
-durable work; whatever runs a step is a disposable file hired for it, never a someone with a role. Below,
+durable work; whatever runs a step is a disposable file hired for it. Below,
 "the sender" is the task that hands off and "the receiver" is whatever runs the step. rexconfig's commands
 enforce most of it; it holds where they don't.
 

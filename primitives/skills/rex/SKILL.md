@@ -57,11 +57,11 @@ agent-ask <your name> --title "<a few words>" --task "<original task>" --purpose
 - `agent-send` delivers through the work engine's Rex bridge, which holds the one Rex connection. A
   message is served only when the receiver's own status turns to working after it; otherwise it is
   queued, held (the receiver is held, as in Focus Mode) or failed with a reason. The bridge drains
-  queues itself. teerex is retired (2026-11-23).
+  queues itself.
 - Rex handles pane lookup, layout, capture, events and session persistence. Use
   `rex block capture` for command output from a pane you started.
 - rexconfig (`~/rexconfig`, its README, `./install --check`) owns Rex's config and the agent commands:
-  `start-work`, `agent-send`, `agent-ask`, `agent-close`, `agent-role`, `scratch`, the `agent-hook`, and
+  `start-work`, `agent-send`, `agent-ask`, `agent-close`, `scratch`, the `agent-hook`, and
   the task views (one tab per open task). `rex claude|codex|pi` starts that agent clean; any other `rex ...` is Rex itself.
 - On hive, `~/rexconfig/install --check` checks configuration.
   `rex-check api` checks the live Rex API.
