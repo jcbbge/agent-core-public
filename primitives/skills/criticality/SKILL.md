@@ -1,137 +1,47 @@
 ---
 name: criticality
-description: Recognize and operate at the edge of chaos — where signal doesn't vanish (subcritical) or explode (supercritical), but sustains coherent flow. Neural avalanches, phase transitions, and maximizing cognitive throughput by staying at the asymptote.
+description: Restore productive reasoning when work is starved of decisive evidence, exploding into branches, or proceeding without feedback. Use for stuck sense-making, sprawling investigation, or loss of task focus. Apply a small perturbation and observe its effect; criticality is an operating metaphor here, not a diagnosis of human or model neural activity.
 metadata:
-  version: "1.0"
+  version: "1.1"
   tags: cognition, flow-state, phase-transitions, sense-making, neural-avalanches
 ---
 
 # Criticality
 
-**When to invoke:** When sense-making, making decisions under complexity, debugging systems with emergent behavior, or recognizing when you've tipped into subcritical (signal loss) or supercritical (chaos explosion).
+Keep a useful signal alive without letting it consume the task. The target is not maximum association, maximum context, or a feeling of flow: it is a sequence of justified moves toward the requested outcome.
 
-**Core insight:** The brain makes its best decisions at criticality — the edge of chaos where information integrates maximally without vanishing or exploding. Recognize the three states. Steer toward the edge.
+Use **subcritical**, **supercritical**, and **critical** as names for observable work patterns. Do not claim to measure a brain, model activations, neural avalanches, or optimal cognition from prose. Fluent output can be wrong; difficulty can accompany good work.
 
----
+## Find the operating condition
 
-## The Three States
+First name the outcome and the next decision. Inspect the recent work: what new observation changed an action, what question remains unanswered, and how many branches actually bear on it? Do not infer the condition from answer length or emotional tone alone.
 
-### 1. Subcritical — Signal Vanishes
-**What it is:** The gradients die out. The system is too dampened. You can't sustain the signal.
+| Pattern | Discriminating sign | Small intervention | Evidence it helped |
+|---|---|---|---|
+| **Subcritical: signal dies** | Existing evidence cannot distinguish the live explanations; the same unknown keeps stopping action | Obtain the smallest missing discriminator: a failing input, trace, concrete example, or constraint | At least one explanation is ruled out or a next action becomes justified |
+| **Supercritical: branches multiply** | New avenues accumulate without changing the decision or producing a completed check | Hold the outcome fixed; choose the branch that can most directly decide the next move; park the others | A bounded check closes a question instead of spawning another investigation |
+| **Critical: useful propagation** | Observations change decisions, decisions produce testable actions, and scope stays intact | Continue the working loop and capture the result; change the method only for a concrete failure | The artifact meets another acceptance condition without unsupported assumptions |
 
-**What it feels like:**
-- Had an insight, but it slipped away
-- Flow state glimpsed briefly, then lost
-- "It was on the tip of my tongue"
-- Can't hold concentration long enough to complete the thought
+A task may combine missing evidence with too many theories. In that case, constrain the question first, then acquire its discriminator. More input alone can worsen the overload.
 
-**Why it happens:**
-- Not enough affordances accumulated yet
-- Insufficient data points to reach phase transition
-- System hasn't built up the "sand castle" to critical mass
+## Steer by response, not by label
 
-**Action:** Accumulate more. Don't force it. Let associations build. Wait for the avalanche trigger.
+1. Identify the current blockage in the work, not a supposed defect in the person.
+2. Make one reversible change to the reasoning process: add a specific observation, remove an irrelevant branch, or complete the current check.
+3. Compare the result with what the intervention was meant to change. Did the decision become easier to justify? Did a branch close? Did an acceptance condition advance?
+4. If not, revise the diagnosis. Do not repeat "load more context" or "prune harder" without new evidence that it is the right control.
 
----
+Prefer direct contact with the artifact to another layer of interpretation. A failing test may provide more useful signal than another architecture discussion. A concrete counterexample may help where several pages of explanation did not.
 
-### 2. Supercritical — Gradients Explode
-**What it is:** The system becomes chaotic. One thought spawns ten more. The butterfly effect destroys coherence.
+Do not manufacture an exploration cycle for a known-good answer. If the task and correction are already established, act within authorization and verify the correction.
 
-**What it feels like:**
-- Verbose, can't be concise
-- Every point branches into new tangents
-- Can't complete a sentence without adding "one more thing"
-- Overwhelmed by implications, consequences, connections
+## Preserve the signal
 
-**Why it happens:**
-- Too many affordances firing at once
-- Signal amplifying uncontrollably
-- No damping mechanism to preserve focus
+- **Add selectively:** name what missing fact will change before retrieving more material. Available context is not automatically useful context.
+- **Prune selectively:** retain a safety constraint, inconvenient contradiction, or necessary dependency even when it interrupts an elegant explanation.
+- **Stop on evidence:** meeting the requested acceptance conditions ends the task. Feeling coherent does not; failure to feel inspired does not prevent completion.
+- **Keep the handoff small:** retain the outcome, settled facts, live uncertainty, and next discriminating action in the existing work record. Do not create a new logging ritual.
 
-**Action:** Constrain. Prune. Pick one thread and follow it. Ignore the branches. Write it down to offload.
+When reporting, give the observed pattern, the steering move, and the result or next check. Do not narrate an internal phase transition or turn these labels into a compulsory status dashboard.
 
----
-
-### 3. Critical — The Edge of Chaos
-**What it is:** Gradients preserved over long time steps. Signal sustains without vanishing or exploding. Flow state. Locked in.
-
-**What it feels like:**
-- Michael Jackson leaning over the abyss, held at the perfect angle
-- Typing without thinking, words flowing coherently
-- Running the last 400m on pure willpower
-- Maximal efficiency, insight, wisdom emerging
-- Integration of sensory input + cognitive thought + action
-
-**Why it happens:**
-- Affordances from individual + environment accumulated just right
-- Neural avalanche triggered — associations cascade into phase transition
-- System at asymptote — maximum compute, maximum throughput
-
-**Action:** Stay there. Don't break it. Ride the wave. Capture the output.
-
----
-
-## Neural Avalanches
-
-**Definition:** The cascading integration of data points (associations, connections) that result in a phase transition.
-
-Think: A sand castle building grain by grain until one final grain triggers the cascade.
-
-**Not:** A single decision in time.  
-**Is:** The accumulation of associations that cascade into each other to allow a new state to exist.
-
-This is the **critical moment** — when sense-making completes, when the decision crystallizes, when the insight emerges coherently.
-
----
-
-## Recognizing State in Real-Time
-
-| Symptom | State | Steer toward |
-|---------|-------|--------------|
-| Insight slips away, can't hold focus | **Subcritical** | Accumulate more context, let it build |
-| Can't stop branching, overwhelmed by connections | **Supercritical** | Constrain scope, prune branches |
-| Flow state, coherent output, sustained focus | **Critical** | Stay here, capture output |
-
----
-
-## Application to Agent Work
-
-### Subcritical debugging
-- Not enough context loaded
-- Signal vanishing before pattern emerges
-- **Fix:** Load more traces, more logs, more related code
-
-### Supercritical refactoring
-- Every change spawns ten more ideas
-- Can't ship because "one more thing"
-- **Fix:** Constrain scope, ship the minimum, branch later
-
-### Critical implementation
-- Code flowing, tests passing, architecture emerging coherently
-- **Fix:** Don't break it. Ride it. Commit when done.
-
----
-
-## Integration with Other Primitives
-
-| Primitive | How criticality applies |
-|-----------|------------------------|
-| **session start** | Check state: subcritical (need more context), supercritical (too many open threads), critical (flow) |
-| **debugging** | Subcritical = acquire the smallest discriminating fact. Supercritical = stop multiplying theories and choose the lightest evidence route. |
-| **session end** | If at critical state, capture output fully before breaking. If subcritical, note what's missing. |
-| **synthesizing-insights** | Wait for critical state before synthesizing — let associations accumulate first. |
-
----
-
-## Key Takeaway
-
-> **Criticality is not a destination — it's a balance point.** You can't force it. You can only recognize when you're subcritical (accumulate more) or supercritical (prune aggressively) and steer back toward the edge. When you hit it, you'll know. That's when the work happens.
-
----
-
-## References
-
-- Complexity science — phase transitions, dynamical systems
-- Neuroscience — neural avalanches, criticality hypothesis
-- Affordance theory — Gibson, environment-organism coupling
-- Flow state research — Csikszentmihalyi
+**The useful edge is where another observation can still change your mind, and enough is already known to act.**

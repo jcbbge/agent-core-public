@@ -1,7 +1,7 @@
 # Pre-Mortem Worksheet
 
 ## Instructions
-Use this worksheet before major decisions or commitments. Project into a future where your plan has failed, then work backward to identify what went wrong. This reveals risks that forward planning misses.
+Use this optional worksheet only when an extended premortem is warranted or requested. The failure story is hypothetical, not a forecast or fact. Trace each material scenario back to a present assumption and a discriminating observation; do not infer likelihood from vividness. Use existing evidence before directing questions to the user.
 
 ---
 

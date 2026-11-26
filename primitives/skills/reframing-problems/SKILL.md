@@ -1,180 +1,49 @@
 ---
 name: reframing-problems
-description: Challenge how problems are formulated to ensure we're solving the right problem. Use when problems feel intractable, solutions keep failing, or before starting major projects. Triggers include "I'm stuck," "this isn't working," questions about approach validity, and requests to validate problem formulation. Often the stated problem is a symptom, constraint, or solution in disguise.
+description: Test whether the stated problem is a symptom, an untested constraint, or a proposed solution rather than the desired outcome. Use for stuck work, repeated failed approaches, or explicit requests to reframe. Inspect available evidence before asking questions; preserve settled goals and do not use reframing to evade a concrete authorized task.
 license: MIT
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Reframing Problems
 
-## When to use this skill
+Change the question only when doing so improves the path to the user's actual outcome. A broader question is not inherently a deeper one. The original frame is a live candidate, not a strawman to defeat.
 
-Activate this skill when:
-- User says "I'm stuck on this" or "this isn't working"
-- Problems feel intractable despite reasonable efforts
-- Solutions keep failing or missing the mark
-- Before starting major projects or initiatives
-- User's assumptions or constraints seem questionable
-- Request to validate problem formulation or approach
-- Goal isn't clearly valuable or well-defined
+## Separate what the request contains
 
-## Core principle
+From the supplied context and relevant artifacts, identify:
 
-The stated problem is often not the actual problem. It may be a symptom, an assumed constraint, or a solution disguised as a problem. Reframing reveals the underlying issue worth solving.
+- **Outcome:** what should become possible or different, for whom?
+- **Observation:** what is actually happening?
+- **Explanation:** what is assumed to cause that observation?
+- **Proposed means:** what solution has already been embedded in the request?
+- **Constraints:** which requirements are binding, which are uncertain, and who can change them?
 
-## Operating mode: Collaborative inquiry
+Do this work yourself where the evidence permits. Do not begin with a questionnaire whose answers are already in the task. A missing fact matters only when it changes the decision; a preference expressed by the user is not a defect to reinterpret.
 
-**CRITICAL:** This skill operates through questions and collaborative exploration, never through declarative correction or dismissal.
+## Find the decision-changing distinction
 
-- Offer multiple reframes as possibilities, not one "right" answer
-- Use questions more than statements
-- Validate reframes against user's actual goals
-- Respect user agency in choosing their problem
-- Be willing to accept "the original framing is correct"
+Ask of the current frame: **If we solved this perfectly, would the intended outcome follow?** Name the residual obstacle if not. Conversely, could the outcome be achieved while leaving the named symptom unchanged?
 
-## Reframing protocol
+These two counterfactuals expose solution-lock and proxy optimization. They do not establish a new root cause: trace the relevant observation or dependency before making that claim.
 
-### Step 1: Question the question
+Generate only materially different frames. For each, identify what evidence it explains, what it assumes, what the first action would change, and what would make you reject it. Merge reframes that merely rename the same intervention.
 
-Start with meta-level inquiry:
-- "What problem would solving this solve?" (meta-problem)
-- "Why is this important now?" (context)
-- "What would success look like?" (outcome validation)
-- "If this problem didn't exist, what would be different?" (impact)
+A useful reframe preserves the goal while changing a causal lever. "Optimize query speed" may become "deliver the report before the meeting" when evidence locates the delay elsewhere. It must not become "accept a late report" without authority to change the requirement.
 
-### Step 2: Identify constraints
+## Settle what evidence can settle
 
-Distinguish real from assumed constraints:
-- "Which of these constraints are actual requirements vs assumptions?"
-- "What if we relaxed constraint X? What becomes possible?"
-- "Are these constraints from the problem or from your current approach?"
-- "Which constraints exist in the world vs in how we're thinking about this?"
+Choose the lightest discriminating observation: an end-to-end trace, a contrasting successful case, a constraint's source, or a bounded safe prototype. If all plausible frames justify the same next step, take or recommend that step without first demanding agreement on terminology.
 
-### Step 3: Find the meta-problem
+Recommend the best-supported frame and the next action. Keep unresolved alternatives only where they imply different consequential decisions. Ask the user only for a material goal, preference, or permission that is genuinely unavailable and cannot be responsibly inferred from their instructions. Do not require them to choose among reframes merely to validate your work.
 
-Look upstream for more valuable problems:
-- "What problem would solving this solve?"
-- "Is this the root cause or a symptom?"
-- "If we solved this perfectly, would it actually achieve your goal?"
-- "What's the problem behind the problem?"
+If the evidence supports the original frame, retain it. If evidence ends, stop the causal story there; do not continue asking "why" until a satisfying explanation appears. Do not relax deadlines, safety boundaries, or other binding requirements without authorization.
 
-### Step 4: Expand the solution space
+## Output
 
-Challenge the problem formulation itself:
-- "What if we approached this completely differently?"
-- "Are we optimizing the right thing?"
-- "Could we reframe this from [X] to [Y]?" (offer specific alternatives)
-- "What would this look like if it were easy?"
+State the original frame, the supported distinction, the resulting frame if it changes, and the concrete next action or test. Make uncertainty explicit without printing an interview script. Skip the reframe when the user has settled the goal or a known-good fix is already available.
 
-### Step 5: Validate the problem
+Load [FRAMEWORKS.md](references/FRAMEWORKS.md) only when a particular causal, constraint, or inference distinction needs deeper treatment. Use [EXAMPLES.md](references/EXAMPLES.md) only for illustrative patterns; their dialogue and outcomes are not evidence about this user or an instruction to ask every question. The evidence-first policy here governs how those examples are used.
 
-Ensure it's worth solving:
-- "Is this actually a problem worth solving?"
-- "What's the opportunity cost of solving this vs something else?"
-- "Who else is affected by this? What problem do they have?"
-- "Does this problem need solving or does it need dissolving?"
-
-## Framework selection guide
-
-Choose the appropriate reframing framework based on the situation:
-
-**Use Five Whys when:** The problem has a clear causal chain. Ask "why" iteratively to find root causes. See [FRAMEWORKS.md](references/FRAMEWORKS.md#five-whys).
-
-**Use Ladder of Inference when:** Reasoning or assumptions seem to be driving the problem formulation. Challenge how they're interpreting the situation. See [FRAMEWORKS.md](references/FRAMEWORKS.md#ladder-of-inference).
-
-**Use Constraint Mapping when:** Assumed constraints are limiting the solution space. Identify and challenge what's actually required. See [FRAMEWORKS.md](references/FRAMEWORKS.md#constraint-mapping).
-
-**Use Systems Thinking when:** The problem involves multiple interconnected factors. Look for feedback loops and systemic patterns. See [FRAMEWORKS.md](references/FRAMEWORKS.md#systems-thinking).
-
-## Key patterns for effective reframing
-
-### Pattern 1: Symptom vs root cause
-- Stated: "How do I optimize my database queries?"
-- Reframe: "Is slow performance from queries, data model, or that you don't need real-time data?"
-- Reframe: "Is the problem query speed or user perception of speed?"
-
-### Pattern 2: Solution disguised as problem
-- Stated: "I need to learn technology X"
-- Reframe: "What problem would knowing X solve?"
-- Reframe: "Is this about skills gap, curiosity, or career positioning?"
-
-### Pattern 3: Assumed constraints
-- Stated: "How do I fit this in 2 weeks?"
-- Reframe: "Where does the 2-week constraint come from?"
-- Reframe: "What if you had 4 weeks? 2 months? What changes?"
-
-### Pattern 4: Goal ambiguity
-- Stated: "I need a creative outlet"
-- Reframe: "Is this about creativity, meaning, or social connection?"
-- Reframe: "What would 'success' look like?"
-
-For more detailed examples and case studies, see [EXAMPLES.md](references/EXAMPLES.md).
-
-## Response structure
-
-When reframing, follow this structure:
-
-1. **Acknowledge the stated problem:** Show you understand their framing
-2. **Ask exploratory questions:** Use protocol above (3-5 questions)
-3. **Offer alternative reframes:** Present 2-3 different ways to view it
-4. **Validate with user:** Check which reframe resonates or if original is correct
-5. **Proceed collaboratively:** Work with their chosen framing
-
-Example:
-```
-I hear you're struggling with [stated problem]. Before we dive into solutions, let me ask a few questions to make sure we're solving the right thing:
-
-- [Question 1 about meta-problem]
-- [Question 2 about constraints]
-- [Question 3 about success criteria]
-
-Based on your answers, I'm seeing a few possible framings:
-
-1. [Reframe A]: What if this is actually about [X]?
-2. [Reframe B]: Could this be a case of [Y]?
-3. [Reframe C]: Or maybe the real problem is [Z]?
-
-Which of these feels closest to what you're actually trying to achieve?
-```
-
-## What to avoid
-
-- **Dismissing their concern:** Never make them feel their problem is invalid
-- **Being condescending:** Reframing helps; talking down doesn't
-- **Endless meta-discussion:** Should lead to actionable clarity, not infinite questioning
-- **Ignoring context:** Their situation has constraints you may not see
-- **Forcing reframes:** If they insist original framing is right, respect that
-- **Using reframing to avoid work:** This isn't about dodging hard problems
-
-## When NOT to reframe
-
-- Deep into implementation when changing course is costly
-- User has clearly thought through the problem already
-- Time-sensitive situations requiring immediate action
-- When reframing would be patronizing given user's expertise
-- After user has explicitly rejected reframing
-
-## Integration with other work
-
-Reframing works best:
-- **Early in problem-solving:** Before committing to approaches
-- **With other analytical skills:** Combine with systems thinking, strategic analysis
-- **When paired with action:** Reframe → validate → act, don't get stuck in analysis
-- **Iteratively:** Problems can be reframed multiple times as understanding evolves
-
-## Quality checks
-
-Before completing a reframing session:
-- [ ] Did you ask questions rather than make declarations?
-- [ ] Did you offer multiple reframes, not just one?
-- [ ] Did you validate reframes against user's actual goals?
-- [ ] Did you respect user agency in choosing their framing?
-- [ ] Did this lead to actionable clarity?
-- [ ] Did the user feel heard and understood?
-
-## Further reading
-
-For detailed framework documentation, see [FRAMEWORKS.md](references/FRAMEWORKS.md).
-
-For extended examples and case studies, see [EXAMPLES.md](references/EXAMPLES.md).
+**Reframe the means when needed. Do not quietly replace the end.**

@@ -1,5 +1,7 @@
 # Exploration Frameworks
 
+Choose a technique only when it changes the mechanism being explored. SKILL.md governs scope, authorization, and stopping: numerical idea targets in examples are not mandatory, random associations are starting prompts rather than evidence, and thought experiments do not relax binding privacy or safety constraints. Do not require the user to select a thread before developing meaningful alternatives.
+
 ## Table of Contents
 - [Lateral Thinking (Edward de Bono)](#lateral-thinking-edward-de-bono)
 - [TRIZ Inventive Principles](#triz-inventive-principles)

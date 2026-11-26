@@ -1,6 +1,6 @@
 # Problem Reframing Examples and Case Studies
 
-This document provides detailed examples of problem reframing in action across various domains. Use these to understand reframing patterns and develop intuition for when and how to reframe.
+These are illustrative reframing patterns, not verified case histories or scripts to perform on the user. Treat the dialogue as already-available context when it is present; inspect before asking. Claimed metrics, historical attributions, and outcomes below require primary-source verification before citation or use as evidence. SKILL.md governs the current evidence-first behavior.
 
 ## Table of Contents
 
@@ -506,10 +506,10 @@ Across these examples, common reframing patterns emerge:
 
 When reframing problems:
 
-1. **Start with questions:** Never jump straight to reframes
-2. **Offer multiple reframes:** Show there are many ways to view it
-3. **Validate against goals:** Which reframe actually helps achieve their goal?
-4. **Respect their choice:** They may choose the original framing—that's okay
-5. **Lead to action:** Reframing should clarify next steps, not create analysis paralysis
+1. **Start with evidence:** Answer diagnostic questions from the available context first.
+2. **Distinguish mechanisms:** Keep only reframes that change a consequential next action.
+3. **Preserve goals:** Test whether the reframe advances the user's stated outcome.
+4. **Respect authority:** Keep settled preferences and binding constraints; do not force a reframe.
+5. **Lead to action:** Recommend a supported next step; ask only for a decision genuinely reserved to the user.
 
 These examples are templates, not formulas. Real situations are messy. Use judgment, ask questions, and collaborate with the human to find the right framing for their specific context.

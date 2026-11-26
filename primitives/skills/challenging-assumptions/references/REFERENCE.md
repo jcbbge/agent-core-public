@@ -1,5 +1,7 @@
 # Challenge-Mode Research Reference
 
+**Unverified legacy reading list.** The citations, statistics, and historical claims below have not been established by this document. Treat each as a search lead only: locate and inspect the primary source before citing or applying its claimed findings. An entry that cannot be verified must not be represented as evidence.
+
 ## Academic Research on Adversarial Analysis & Constructive Opposition
 
 ### AI-Augmented Devil's Advocate Systems

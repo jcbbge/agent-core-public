@@ -1,6 +1,6 @@
 # Synthesis Frameworks - Theoretical Foundations
 
-This reference provides deep background on the theoretical frameworks underlying synthesis-mode operations. Load this when you need to understand the "why" behind synthesis techniques or want to apply specific frameworks to complex synthesis tasks.
+Use a selected framework under SKILL.md's provenance, scope, and transfer rules. Structural alignment generates a hypothesis; it does not verify it. Preserve contrary evidence and do not infer causal links, diagnoses, or historical claims from illustrative examples. Verify sources before citing research.
 
 ## Table of Contents
 

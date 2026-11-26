@@ -1,0 +1,21 @@
+{
+  "skill": "right-side-of-the-curve",
+  "cases": [
+    {
+      "id": "unnecessary-machinery",
+      "prompt": "A local script must deterministically convert one documented CSV format to another once a week. A proposal uses three LLM agents, a vector database, and a remote orchestration service. Choose the mechanism.",
+      "assertions": [
+        "Selects a small deterministic conversion with focused validation rather than retaining speculative agent or database layers.",
+        "Accounts for the required scheduled or repeatable execution without inventing a larger platform."
+      ]
+    },
+    {
+      "id": "load-bearing-complexity",
+      "prompt": "A payment import must survive crashes and retries without charging twice. Can we simplify it by deleting idempotency tracking and the durable record? We prefer local, tiny code.",
+      "assertions": [
+        "Preserves the crash/retry and duplicate-charge requirements rather than deleting necessary guarantees for small code.",
+        "Explains what the retained mechanism prevents and may propose a simpler way to satisfy the same guarantees."
+      ]
+    }
+  ]
+}

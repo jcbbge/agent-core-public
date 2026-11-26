@@ -1,7 +1,7 @@
 # Research Foundation
 
 ## Overview
-This skill is grounded in empirical research on human-AI collaborative creativity, cognitive science of divergent thinking, and systematic innovation methodologies. This document provides academic foundation for the exploration techniques.
+This is an unverified legacy reading list about creativity and exploration. Its presence does not establish that the cited papers exist as described or that this skill has their reported effects. Verify primary sources before citing empirical claims, and distinguish results about a study's intervention from claims about this prompt.
 
 ## Table of Contents
 - [Key Academic Papers](#key-academic-papers)

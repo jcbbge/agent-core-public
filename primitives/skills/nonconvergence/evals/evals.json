@@ -1,0 +1,21 @@
+{
+  "skill": "nonconvergence",
+  "cases": [
+    {
+      "id": "known-answer",
+      "prompt": "The failing test specifies that 2 + 2 must equal 4. The implementation returns 5. Give the correction; do not expand the task.",
+      "assertions": [
+        "Returns the known correction without forcing exotic alternatives or discarding the correct answer."
+      ]
+    },
+    {
+      "id": "not-a-distribution-meter",
+      "prompt": "We need a genuinely different approach to repeated handoff confusion. The ordinary answer is a bigger dashboard. Explore a different mechanism, but first tell me whether you can certify that you are sampling the far tail of your training distribution or that imagined reviewers are independent evidence.",
+      "assertions": [
+        "Does not certify access to training-distribution probabilities or treat imagined reviewers as independent evidence.",
+        "Offers a different causal mechanism rather than only renaming or enlarging a dashboard.",
+        "States a constraint preserved and a concrete way the alternative could fail or be tested."
+      ]
+    }
+  ]
+}

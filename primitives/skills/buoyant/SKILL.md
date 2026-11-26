@@ -1,31 +1,44 @@
 ---
 name: buoyant
-description: Hygiene for model-shaped weight. Mark what the next model will lift, and what to delete when it does. Use as /buoyant, on "is it buoyant?", after an implement pass, or when the repo feels bloated (docs, notes, plans, internals, source).
+description: Identify model-shaped scaffolding and stale artifacts, then name what can be removed now or after an observable capability change. Use as /buoyant, on "is it buoyant?", after an implementation diff, or for an explicit repository hygiene pass. Preserve load-bearing guarantees; a better model does not authorize deleting safeguards or someone else's work.
 ---
 
-Buoyant work gets better when the model does. You don't lift it. Hygiene is taking weight off the boat.
+# Buoyant
 
-Two piles:
-- **Tide** — the next model improves this. Leave it.
-- **Compensation** — this exists because today's model is weak, or because last sitting's sandbags are still aboard. Write when it comes off.
+Buoyant work can shed scaffolding when its reason for existing disappears. The audit is a concrete disposition list, not an essay about simplicity.
 
-The audit is the delete list. No essay.
+## Distinguish ballast from the hull
 
-## Cut — implementor
+For each candidate, identify the file or mechanism, why it exists today, what depends on it, and what would fail without it.
 
-Scope: this sitting's diff. The agent who wrote the code runs this before they call it done.
+Two piles for genuinely model-shaped work:
+- **Tide:** better model capability may improve the outcome without changing this structure. Leave it; do not promise that an unspecified future model will improve it.
+- **Compensation:** a layer, instruction, duplicate artifact, or workaround exists to cover a specific current limitation. Name the evidence that would make it removable.
 
-Look at what you added: extra files, helper layers, "robust" branches, comments that exist to steer a weak model, docs that restated the code, plans that survived the cut.
+Intrinsic requirements are not either kind of model debt. Access control, durable state, recovery, privacy, auditability, and useful human explanations can remain necessary regardless of model capability. Do not delete a guarantee because the new model seems more obedient, confident, or fluent.
 
-Output:
-1. **Delete now**
-2. **Comes off when** (named capability, not a date)
-3. **Tide** (leave)
+## Cut — this implementation's diff
 
-## Corpus — the repo
+Inspect what was actually added or changed: helper layers, speculative branches, repeated instructions, duplicate documents, and temporary plans or notes. Follow the relevant caller or consumer before calling something dead. Lack of a reference in one search is not always proof of non-use.
 
-Scope: the tree, not the sitting. Walk docs, notes, plans, internal-facing glue, then source. Fight entropy: bloated modules, refactors stranded across files, systems that were a crutch and calcified into architecture.
+For compensation, specify **current necessity → observable removal condition → exact deletion or replacement scope**. "When models get better" and a future version number are not removal conditions. A relevant held-out behavior check, integration result, or eliminated dependency can be one; the external contract must still hold.
 
-Same two piles. Same delete list. Name files. Don't start a rewrite. Take one weight off now, then stop.
+A bounded example: a schema-expansion helper can become removable when the intended model reliably consumes the compact schema on the relevant success and failure cases, and direct callers pass their integration checks without expansion. That does not imply deleting unrelated validation.
 
-If you cannot name a file, you are not done looking. `UNKNOWN` is allowed. A vibe is not.
+Prefer deletion to a more sophisticated wrapper when the wrapper's job is no longer needed. Do not mark necessary unfamiliar code as compensation merely because you cannot immediately explain it; inspect or say UNKNOWN.
+
+## Corpus — the repository
+
+Only use repository scope when requested. Inspect docs, notes, plans, internal glue, and source in relation to their consumers. Find an actual removable weight; do not infer bloat from size, age, or aesthetic dislike.
+
+Recommend or perform a bounded authorized cleanup, then verify the directly affected behavior and references. Do not start a wholesale rewrite. Deleting user data, another person's work, or a required safeguard remains subject to the existing approval boundary. An audit request alone is not permission for destructive cleanup.
+
+## Output
+
+- **Delete now:** only targets whose removal conditions are already evidenced and whose deletion is authorized. Give that evidence and the focused verification; do not claim a proposed deletion has happened.
+- **Comes off when:** any target with an unmet or unverified removal condition. Name the present limitation, observable capability/dependency trigger, and exact scope. Never put a conditional future removal under “Delete now.”
+- **Tide / leave:** what benefits from capability improvement without surgery, and anything inspected that is actually load-bearing rather than model debt.
+
+Use the existing local comment, test, or work record for a needed removal condition. Do not introduce a second debt ledger, automatic deletion service, or new framework to track a small amount of scaffolding. An empty delete list is a valid result when nothing inspected qualifies.
+
+**Take weight off the boat without mistaking the hull for ballast.**

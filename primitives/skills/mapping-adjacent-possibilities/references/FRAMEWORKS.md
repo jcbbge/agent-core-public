@@ -1,6 +1,6 @@
 # Advanced Frameworks for Adjacent-Possibilities Mapping
 
-This reference provides deeper theoretical foundations and systematic methodologies for analyzing opportunity spaces.
+Use only the relevant method under SKILL.md's reachability and resource rules. A potential downstream use is not automatically an unlocked option, and platform-first sequencing is not a default. Show joint prerequisites, mutually exclusive paths, and the cost of preserving and exercising options. Verify any cited empirical or financial claims before relying on them.
 
 ## Table of Contents
 

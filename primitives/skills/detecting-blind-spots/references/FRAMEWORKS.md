@@ -1,6 +1,6 @@
 # Blind Spot Detection Frameworks
 
-This document provides detailed reference for established frameworks that inform blind spot detection in human-AI collaboration.
+Use only a relevant coverage lens under SKILL.md's evidence and scope rules. Questions are investigative prompts, not a required interview. A simulated perspective or omitted mention is not proof of a real person's motives or an actual omission. Verify the historical citations below before treating them as sources.
 
 ## Table of Contents
 1. [Johari Window Framework](#johari-window-framework)

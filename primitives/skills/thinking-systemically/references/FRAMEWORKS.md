@@ -1,5 +1,7 @@
 # Systems Thinking Frameworks Reference
 
+Apply the evidence, boundary, and delay rules in SKILL.md. Framework rankings and illustrative diagrams are hypotheses about leverage, not measured effects in the current system. Distinguish stocks from flows, throughput constraints from delivery-time paths, and causal evidence from correlation. Use only the framework needed for the current intervention.
+
 This reference provides detailed frameworks for deeper systems analysis. Load these when you need:
 - Specific leverage point identification
 - Decision context determination (Cynefin)

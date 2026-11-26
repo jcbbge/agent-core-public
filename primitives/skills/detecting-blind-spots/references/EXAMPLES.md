@@ -1,6 +1,6 @@
 # Extended Blind Spot Detection Examples
 
-This document provides detailed examples of blind spot detection across different domains and contexts, showing how the skill applies in practice.
+These are illustrative scenarios, not facts about the current user or verified case histories. Supplied numbers and imagined motives must not be imported into another task. Answer investigative questions from existing evidence first, distinguish intentional exclusions from unknown coverage, and follow SKILL.md rather than reproducing an interview.
 
 ## Table of Contents
 1. [Technical Architecture Decisions](#technical-architecture-decisions)

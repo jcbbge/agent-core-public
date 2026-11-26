@@ -1,6 +1,6 @@
 # Extended Case Studies: Adjacent-Possibilities in Practice
 
-This reference provides detailed real-world examples of adjacent-possibilities analysis across different domains and decision types.
+Treat these as illustrative scenarios, not verified case histories, forecasts, or current market evidence. Preserve the distinction between an available capability, a conditional opportunity, and a speculative chain. SKILL.md's constraints take precedence over any example favoring platforms or parallel projects; numerical outcomes require primary-source verification.
 
 ## Table of Contents
 

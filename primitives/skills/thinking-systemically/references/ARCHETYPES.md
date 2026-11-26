@@ -1,6 +1,6 @@
 # System Archetypes for Indie Developers
 
-Recurring patterns of system behavior. When you recognize the pattern, you gain insight into dynamics and intervention strategies.
+Illustrative patterns for generating causal hypotheses, not diagnoses or guaranteed outcomes. A resemblance does not establish a loop: verify each material link, operating condition, and delay under SKILL.md. Personal or organizational examples are not evidence about the current user; do not infer motives or health states from an archetype.
 
 ## Table of Contents
 

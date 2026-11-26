@@ -1,6 +1,6 @@
 # Pattern Validation and Refinement
 
-This reference provides comprehensive methods for testing synthesized patterns and frameworks. Use this when you need to validate pattern quality, test for over-patterning, or refine insights through iteration.
+Select only the validation needed under SKILL.md. User agreement can clarify intent but is not required ratification of every synthesis and does not establish factual truth. Check available artifacts and independent cases before asking questions; repeated summaries of one source count as one underlying observation.
 
 ## Table of Contents
 

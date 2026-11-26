@@ -1,6 +1,6 @@
 # Blind Spot Detection Research Foundations
 
-This document provides academic research foundations and real-world case studies that inform blind spot detection in AI-augmented decision making.
+Unverified legacy research leads: the citations, effect sizes, and case histories below are not established by this document. Locate and inspect each primary source before citing it. If it cannot be verified, omit its claim; do not treat an impressive bibliography or precise percentage as evidence.
 
 ## Table of Contents
 1. [Academic Research Foundations](#academic-research-foundations)

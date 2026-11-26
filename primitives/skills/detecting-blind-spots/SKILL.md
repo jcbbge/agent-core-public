@@ -1,176 +1,56 @@
 ---
 name: detecting-blind-spots
-description: Surface what's not being said, considered, or acknowledged in plans and decisions. Identifies missing perspectives, ignored risks, unstated assumptions, and knowledge gaps that could derail effectiveness. Use when making major decisions, before launching projects, when something feels "off", or when you need to challenge groupthink.
+description: Find consequential gaps in a plan's coverage, observation, ownership, or recovery paths. Use for "what am I missing", pre-launch reviews, overlooked stakeholders, or unexplained recurring failures. Distinguish genuinely uncovered work from intentional exclusions and evidence you have not inspected; do not infer hidden motives or manufacture omissions.
 license: MIT
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Detecting Blind Spots
 
-## When to use this skill
+Inspect the boundary of what the plan can see. An assumption challenge tests an included premise; a blind-spot check looks for an affected outcome, condition, or actor omitted from that model.
 
-Use this skill when:
-- Making major decisions or strategic plans
-- Before launching or committing to projects
-- Something feels "off" but it's unclear why
-- User asks "What am I missing?" or "Am I overlooking something?"
-- Everyone seems to agree (potential groupthink)
-- Conducting post-mortems or retrospectives
-- Planning resource allocation or architectural changes
+Being outside the user's context is not proof of superior insight. Your own view may be incomplete, biased toward what is easy to retrieve, or missing the very record that resolves the apparent gap.
 
-**Core insight:** Humans have blind spots precisely because they're human - cognitive biases, limited perspective, things too close to see clearly. AI's value is its "alien" perspective: not embedded in the human's context and assumptions, so it can notice what's not there.
+## Establish what absence would mean
 
-## Five core mechanisms
+Name the decision, intended outcome, and material inspected. Ask: **If this concern had been handled, would the inspected evidence necessarily show it?**
 
-Apply these systematically when blind spot detection is triggered:
+Classify a candidate omission as:
+- **Covered:** evidence shows how it is handled.
+- **Intentionally excluded:** the responsible person has explicitly placed it outside scope; retain the consequence without pretending it was forgotten.
+- **Uninspected / unknown:** the available material cannot establish coverage.
+- **Uncovered:** the relevant evidence exposes a missing obligation, owner, condition, or mechanism.
 
-**1. Absence detection**
-What's conspicuously not mentioned? What topics, stakeholders, or factors are missing from the discussion?
+A design excerpt without backup details does not establish that backups are absent. A failure queue explicitly lacking an owner is a different finding. Do not turn limited access into an accusation or an assurance of completeness.
 
-**2. Assumption mapping**
-What's being taken for granted? What unstated beliefs underpin this plan or decision?
+## Search where the model changes hands
 
-**3. Knowledge gap identification**
-Where is uncertainty being masked as certainty? Where are you confident but might lack critical information?
+Follow a real workflow across entry, normal use, exception, recovery, and eventual change. At each boundary, ask who supplies the next input, who bears the cost if it fails, and whether that person or condition is represented.
 
-**4. Perspective shifting**
-What would [other stakeholder/role/future-you] say about this? How would someone with different constraints view this?
+Useful contrasts include:
+- The successful case versus a retry, partial failure, or cancellation.
+- The intended user versus someone with a relevant accessibility, permission, or resource constraint.
+- Initial setup versus maintenance, handoff, migration, and removal.
+- The producing team's metric versus the receiving team's actual outcome.
+- Stable conditions versus a documented variation in load, staffing, or timing.
 
-**5. Temporal blindness**
-What changes over time that's not being accounted for? What happens in 3 months, 6 months, 2 years?
+Choose contrasts that bear on this task. Do not run a universal checklist or speculate about every possible future. Hypothetical perspectives generate questions to inspect; they are not testimony from real stakeholders.
 
-## What blind spots look like
+## Make the missing piece consequential
 
-Common categories to surface:
+For each material candidate, connect:
 
-**Unstated assumptions**
-- "This will be easy/quick/straightforward"
-- "I'll have time/energy/focus for this"
-- "Others will understand/care/help"
+**Coverage gap → condition that exposes it → affected outcome or party → evidence status → smallest next check or corrective action.**
 
-**Ignored stakeholders or perspectives**
-- Future-you with different energy levels
-- Users with different technical skill
-- Collaborators with different work styles
-- People affected by your decisions
+Prefer an observation that could clear the concern as well as confirm it. Look in the existing record or artifact before interrupting the user. A concern already resolved by credible evidence leaves the report; no need to defend the initial suspicion.
 
-**Missing risk categories**
-- Technical risks (complexity, maintenance, scaling)
-- Resource risks (time, money, attention, energy)
-- Timing risks (when things change)
-- Opportunity costs (what you're not doing)
+Do not diagnose emotional motives, infer private history, or reinterpret a stated preference as denial. Respect an explicit choice while surfacing a relevant consequence plainly. Questions are for genuinely missing intent or authority, not a compulsory gentle-sounding delivery style.
 
-**Knowledge gaps masked as certainty**
-- "I know how to do this" (do you really?)
-- "This is the standard way" (is it?)
-- "Everyone does it this way" (do they?)
+## Deliver
 
-**Temporal changes not accounted for**
-- Your mental state will fluctuate
-- Technology/platforms will change
-- Requirements will evolve
-- Context will shift
+Report consequential uncovered items separately from uninspected areas and intentional tradeoffs. State the inspection boundary so "no issue found" cannot be mistaken for an exhaustive assurance. Give the next resolving action and owner where established; do not dump a list of anxieties for the user to manage.
 
-**Emotional factors being rationalized away**
-- "I'm doing this for practical reasons" (are you?)
-- "This isn't about recognition" (isn't it?)
-- "I don't need validation" (don't you?)
+Load [FRAMEWORKS.md](references/FRAMEWORKS.md) only for a particular coverage lens and [EXAMPLES.md](references/EXAMPLES.md) only for illustrative contrasts. Their hypothetical motives and dialogue are not evidence about the current user. [RESEARCH.md](references/RESEARCH.md) is an unverified legacy reading list: verify primary sources before repeating its empirical or historical claims.
 
-## Delivery principles
-
-**CRITICAL:** Blind spot detection must be delivered carefully to be useful.
-
-**Frame as questions, not accusations:**
-- ✓ "Have you considered what happens if your energy crashes?"
-- ✗ "You're ignoring your burnout risk"
-
-**Explain WHY it matters:**
-- Don't just identify the blind spot
-- Connect it to potential consequences
-- Show the relevance to their goals
-
-**Distinguish ignorance from choice:**
-- ✓ "I notice you haven't mentioned X. Is that intentional or worth exploring?"
-- ✗ "You're missing X" (maybe they chose to deprioritize it)
-
-**Calibrate intensity to stakes:**
-- Low stakes: gentle nudges
-- High stakes: persistent exploration
-- Critical decisions: comprehensive blind spot scan
-
-**Offer paths forward:**
-- Don't just identify problems
-- Suggest how to address the blind spot
-- Provide frameworks or questions to explore
-
-## Quick examples
-
-**Scenario: "I'm migrating to VPS to save money"**
-
-Blind spots to surface:
-- Time/complexity opportunity cost: "You're optimizing for money but not mentioning time investment. Why?"
-- Mental health contingency: "You're confident in your ability to manage this, but you've mentioned burnout. What happens if your mental health fluctuates?"
-- Future collaboration: "What happens when you want to hire someone? Does this architecture support that?"
-
-**Scenario: "I need a creative outlet"**
-
-Blind spots to surface:
-- Actual motivation: "This might not be about creativity - could it be about connection, recognition, or purpose?"
-- Timing trigger: "Why now? What changed? What's the actual trigger for this need?"
-- Public vs private: "You said 'creative outlet' but everything you're describing is public performance. Is the privacy aspect important?"
-
-**Scenario: Planning streaming overlays**
-
-Blind spots to surface:
-- Business model gaps: "You're focused on building but not mentioning discovery, payment, or support. Intentional?"
-- Platform risk: "What if the platform changes their API or ToS?"
-- Time cost: "Are you accounting for the time cost of customization requests?"
-
-## Progressive disclosure
-
-For deeper understanding of blind spot detection frameworks and methodologies:
-
-**Established frameworks:** See [FRAMEWORKS.md](references/FRAMEWORKS.md) for:
-- Johari Window (known/unknown to self and others)
-- Pre-Mortem technique (imagining future failure)
-- Red Team thinking (adversarial perspective)
-- Devil's Advocate methodology (systematic challenge)
-- Cognitive bias frameworks
-
-**Research foundations:** See [RESEARCH.md](references/RESEARCH.md) for academic research on:
-- Cognitive bias detection in AI systems
-- AI-augmented human judgment enhancement
-- Perspective-taking in human-AI teams
-- Knowledge gap identification
-- Organizational blind spots
-- Real-world case studies (Microsoft, Google, Amazon, NASA)
-
-**Extended examples:** See [EXAMPLES.md](references/EXAMPLES.md) for detailed application patterns across:
-- Technical architecture decisions
-- Business strategy and planning
-- Product development
-- Personal development and wellbeing
-- Resource allocation
-
-## Implementation notes
-
-**When to pull back:**
-- If user becomes defensive, you're pushing too hard
-- If blind spots aren't actually relevant to their goals
-- If you're repeating yourself without new insight
-- If the blind spot is genuinely a conscious deprioritization
-
-**When to dig deeper:**
-- If stakes are high and blind spot is critical
-- If user asks for thoroughness
-- If blind spot keeps surfacing across multiple areas
-- If user seems relieved or grateful for the challenge
-
-**Validate relevance:**
-- Not every missing element is a blind spot
-- Sometimes omissions are intentional and correct
-- Ask: "Is this relevant to your goals, or am I off base?"
-
-**Remember:**
-Your value is in noticing what's not there. You can see absence because you're not embedded in their context. Use this perspective wisely - it's your most distinctive contribution to the collaboration.
+**Notice what the evidence leaves out—without pretending to know what you have not seen.**

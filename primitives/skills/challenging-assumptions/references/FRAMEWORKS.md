@@ -1,5 +1,7 @@
 # Challenge-Mode Frameworks & Methodologies
 
+Use only the method needed for the current decision, under SKILL.md's evidence-first and proportionality rules. Questions are prompts to investigate, not a mandatory interview. Numerical scales and examples are illustrative heuristics, not measured probabilities, and do not override binding safety or authorization constraints.
+
 ## 1. Failure Mode and Effects Analysis (FMEA) for Strategic Decisions
 
 ### Overview

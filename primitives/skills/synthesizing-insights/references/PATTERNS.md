@@ -1,6 +1,6 @@
 # Cross-Domain Pattern Library
 
-This reference provides a library of common patterns that appear across multiple domains. Use this when conducting synthesis to recognize familiar patterns quickly and as inspiration for pattern identification.
+Use these patterns as candidate explanations, not templates that the evidence must fit. Apply SKILL.md's provenance and boundary checks. Personal-system examples do not establish a diagnosis of a user, and recurring vocabulary does not establish a shared causal mechanism.
 
 ## Table of Contents
 

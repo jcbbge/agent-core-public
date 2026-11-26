@@ -1,6 +1,6 @@
 # Problem Reframing Frameworks Reference
 
-This document provides detailed guidance on established frameworks for problem reframing. Use these when the main SKILL.md protocol indicates a specific framework would be helpful.
+Use the relevant framework only when SKILL.md identifies a concrete distinction it can resolve. Its questions are diagnostic prompts to answer from evidence, not a mandatory interview. Preserve the user's stated goals and binding constraints; causal chains and worked numbers below are illustrations, not evidence about the current task.
 
 ## Table of Contents
 
@@ -27,8 +27,8 @@ This document provides detailed guidance on established frameworks for problem r
 1. State the problem clearly
 2. Ask "Why does this happen?"
 3. For each answer, ask "Why does *that* happen?"
-4. Continue until you reach a root cause (usually 3-7 iterations)
-5. Validate: Would fixing this root cause prevent the original problem?
+4. Continue only while each causal link has support; stop and mark the gap when evidence ends.
+5. Test whether changing the proposed cause changes the original problem. Do not infer causation from a plausible chain alone.
 
 ### Example application
 
@@ -60,10 +60,7 @@ Stop when you reach:
 - A systemic issue you can address
 - A constraint you can challenge
 
-Don't stop at:
-- External factors you can't influence
-- "That's just how things are" (challenge this)
-- Personal blame (look for process/system issues)
+Do not force a controllable explanation when the supported cause is external. Distinguish a real constraint from an unexplored one. Avoid personal blame without evidence, and do not invent a process defect to complete the chain.
 
 ---
 
@@ -216,7 +213,7 @@ Reframed problems:
 ### Protocol
 
 1. Map the full system/process
-2. Identify the bottleneck (slowest step, lowest capacity)
+2. Identify the constraint for the actual objective: limiting capacity for throughput, or the binding dependency path for delivery time. The longest individual step is not automatically the bottleneck.
 3. Ask: "What if we removed this bottleneck?"
 4. Consider whether the stated problem is actually about the bottleneck
 5. Reframe around maximizing constraint throughput
