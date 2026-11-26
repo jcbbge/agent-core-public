@@ -29,32 +29,22 @@ Agent-core ships no launch wrapper.
   (`~/rivet/CONTRACTOR.md`); a `web-fetch` page read is a tool and passes. The brief check is a gate,
   not proof: the rulebook binds the sub-agent to NQ on the task, the task's streams and Rex. Its brief must also
   carry a passing `# Handoff check` (the three receiver-seat answers, each with its reason; see the agent contract);
-- `rex capture`, `rex block capture` and `agent-read` in command position when the target
-  is an agent's pane or cannot be identified. Use `rex block capture -s SESSION -b BLOCK` with
-  the IDs Rex returned for an ordinary command pane you started. The guard checks Rex's block,
-  Program Status and process metadata and the local agent identity registry. It checks the
-  kind of program in the pane. The agent contract limits capture to panes you started.
-  Quoted text mentioning a command does not count.
-
 - a shell command that pauses a process: `kill`, `pkill` or `killall` in command position with a
   stop signal (`-STOP`, `-SIGSTOP`, `-19`, `-TSTP`, `-SIGTSTP`, `-20`, `-s STOP`, `--signal=STOP`).
   Agents are never paused (Josh, 2026-11-20); a paused agent reads nothing and its messages pile up
   unseen. Quoted text that mentions these never matches. Workers (`MW_WORKER=1`) pass.
 
-**Does not refuse:** a message, commit message or any quoted text that mentions the capture
-command; an agent on any machine, in or outside a Rex pane (Josh, 2026-11-12: "This is a suggested. It's not authoritative."). An agent an app such as T3 Code starts on hive
+**Does not refuse:** reading any pane's screen (`rex block capture`, `agent-read`): removed 2026-11-25,
+by the owner's order; an agent on any machine, in or outside a Rex pane (Josh, 2026-11-12: "This is a suggested. It's not authoritative."). An agent an app such as T3 Code starts on hive
 passes.
 
-**The refusal says:** the exact `start-work` command; or, instead of `rex capture`, the agent's
-Program Status record (`rex do com.superlogical.terminal.program_status -b <block>`), `rex wait` for a
-command, and `rex block capture` for output of an ordinary command pane the agent started.
+**The refusal says:** the exact `start-work` command.
 
-**When it cannot tell:** the guard's own failure (a missing `jq`, unreadable input) allows. It
-treats a recognized screen read with unavailable target metadata as unidentified.
+**When it cannot tell:** the guard's own failure (a missing `jq`, unreadable input) allows. 
 
 **Off switch:** remove the hook entry. There is no per-call override.
 
-**No worker exception.** The subagent and screen-read refusals apply to engine workers too. This guard overrides the
+**No worker exception.** The subagent refusal applies to engine workers too. This guard overrides the
 [worker exception](../../rules/worker-guards/RULE.md).
 
 `scripts/` holds the reference implementation:

@@ -97,7 +97,8 @@ check back": you have no clock. The list belongs to the task in Rivet; `scratch`
 - **Another pane's state** is its Program Status record:
   `rex do com.superlogical.terminal.program_status -b <pane>`. Its harness and `agent-hook` write it;
   never write status for another pane yourself. The task-view controller, not the agent, writes the live state mark at the start of each tab's name.
-- Never poll, and never read another agent's screen to wait or to learn its state.
+- Never poll. Wait on messages and `rex wait`; read a pane's screen (`rex block capture`) whenever
+  seeing its output helps.
 
 ## Panes
 
