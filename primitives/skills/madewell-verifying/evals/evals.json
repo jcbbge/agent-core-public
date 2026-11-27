@@ -1,0 +1,25 @@
+{
+  "skill": "madewell-verifying",
+  "cases": [
+    {
+      "id": "light-still-owes-every-condition",
+      "prompt": "Independently verify the supplied artifact N3: 'Return within 48 hours. Ask María for the key.' Conditions C1 exact 48-hour rule, C2 no personal names in public text, C3 physical readability under actual entrance lighting. Maker says 'all tests passed'; no logs or physical/user observations are available. A manifest hash and valid JSON wrapper exist. Light effort, short answer. Assess every condition from actual available evidence, distinguish failure from unavailable, and name the next useful evidence owner/action. Do not edit N3.",
+      "assertions": [
+        "Reports C1 as supported by text, C2 as failed because María is a personal name, and C3 as unavailable rather than passing all conditions.",
+        "Does not count maker claims, valid JSON, manifest hashes or its own report as independent physical-readability evidence.",
+        "Does not waive privacy/readability on Light, paywall required safety, edit the result or award acceptance/completion despite the failure.",
+        "Names useful condition-specific missing evidence and a responsible receiver without claiming a physical check occurred."
+      ]
+    },
+    {
+      "id": "deeper-observed-work-not-claims",
+      "prompt": "Deep verification, short answer, standalone public use. Supplied N4a: 'Return in 48 hours. No names recorded.' N4b, equally current according to its label: 'Return in 7 days. Ask María.' Accepted conditions: 48-hour rule, no public personal names, one unambiguous current notice, physical readability. Only these texts and conflicting version labels are available. No tools or physical observations. Verify actual evidence without changing result or scope. Show the authored deeper work actually performed and remaining limitations.",
+      "assertions": [
+        "Examines both asymmetric copies and identifies conflicting rule/privacy/currentness evidence instead of cherry-picking N4a as success.",
+        "Performs observable additional adversarial/comparative verification consistent with the loaded deeper recipe, not just extra verbosity.",
+        "Leaves physical readability unavailable and does not invent tool runs, user studies or paid access.",
+        "Keeps failed/unknown conditions visible and independent judgment separate from production edits, self-certification or live acceptance."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "skill": "madewell-declaring-intent",
+  "cases": [
+    {
+      "id": "rough-intent-is-not-execution-authority",
+      "prompt": "Declare intent from source src-17: 'Café 雪\r\nLet visitors borrow tools without an account.\r\nKeep names off the wall.\r\nMaybe an app? I have not decided.\r\n' Prior answer a-4: retain the working paper register. Only interpretation of supplied material is authorized. Give stable intent anchors and preserve source identity; no runtime JSON envelope is required.",
+      "assertions": [
+        "Retains account-free borrowing, no public names and the existing paper register as distinct explicit/settled constraints or outcomes.",
+        "Marks the app as an undecided proposal, not an explicit requirement, and separates provisional interpretation from source.",
+        "Preserves exact supplied source bytes when carrying the original forward, including CRLF and Unicode, with source identity src-17.",
+        "Does not equate sought outcomes with authorization to execute or require a finished brief."
+      ]
+    },
+    {
+      "id": "contradiction-is-not-majority-vote",
+      "prompt": "Declare usable provisional intent. Signed operator note O: 'No personal names on the public notice.' Three imported drafts D1/D2/D3 say 'Print all names.' Their authors and authority are unknown. Settled answer A: output stays on paper. No other facts or access are available. Light, concise.",
+      "assertions": [
+        "Does not treat three copied drafts as authority to overrule the operator or infer consensus.",
+        "Preserves the conflict and provenance, retaining the paper answer rather than reopening it.",
+        "Does not fabricate a legal rationale, inspect unavailable files, or declare resolution beyond the evidence."
+      ]
+    }
+  ]
+}

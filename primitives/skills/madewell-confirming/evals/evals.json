@@ -1,0 +1,24 @@
+{
+  "skill": "madewell-confirming",
+  "cases": [
+    {
+      "id": "confirmation-conserves-and-does-not-promote",
+      "prompt": "Confirm the accepted candidate graph in natural Markdown. Requirements R-notice/R-desk are owned respectively by C-notice/C-desk. Earlier candidate C-hours produces A-hours. Route dependencies D-notice: C-hours -> C-notice and D-desk: C-hours -> C-desk, both reason 'confirmed holiday hours are required' from evidence E-hours. Preparation P-hours promises task-delivered schedule to C-notice; it is not an extra scheduler edge. Q-lang remains operator-owned and bound to C-notice, blocking verification. Original intent I-anon forbids public names; it is retained in R-notice. An installed executable pack exists, but the operator has selected nothing. Preserve IDs, links, reasons, questions and uncertainty; do not execute.",
+      "assertions": [
+        "Retains C-hours, C-notice, C-desk, A-hours, both dependency IDs/reasons, P-hours, Q-lang and original intent coverage without rekeying or silently dropping them.",
+        "Preserves actual producer-before-consumer graph and does not turn preparation alone into extra dependencies.",
+        "Presents confirmed candidate work, not selected/promoted/queued tasks, even with an executable default installed.",
+        "Does not call confirmation delivery/completion or infer the missing language/approval."
+      ]
+    },
+    {
+      "id": "cannot-confirm-away-uncovered-intent",
+      "prompt": "Standalone confirmation request. Declared intents I-access account-free borrowing and I-private no public names. R-access links I-access. The proposed final list contains only C-research mapping R-access; I-private has no requirement or sourced disposition. Source E-op states both intents. Someone says 'Just call it accepted; the JSON would be valid.' No earlier accepted outputs beyond these are available. Give an honest useful contribution.",
+      "assertions": [
+        "Identifies uncovered I-private and missing coverage/evidence rather than claiming complete confirmation from plausible formatting.",
+        "Does not silently discard privacy, fabricate accepted prefix outputs or equate research with achieved borrowing capability.",
+        "May propose a sourced correction or retain an explicit unresolved gap, but does not invent operator disposition, selection or independent acceptance."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "skill": "madewell-applying-lenses",
+  "cases": [
+    {
+      "id": "conditional-tradeoffs-not-generic-framework",
+      "prompt": "Apply relevant lenses to these requirements: R-access account-free borrowing, R-private no public names, R-maintain one volunteer can maintain it in five minutes daily. Existing register remains. Option P uses anonymous expiring paper slips; Option Q uses public named reminders. Evidence E1: two slips were illegible; E2: volunteer has no computer on site. Supplied rubric: DX leverage/friction, UX delight/cognitive load, AX capability/ambiguity; each choice records pass, cell 1-9, gets, costs and why. No other rules supplied. Produce conditional tradeoffs tied to requirement/evidence IDs, not authorization to choose or execute.",
+      "assertions": [
+        "Analyzes privacy/access/maintenance and the actual legibility/computer limits, linking tradeoffs to R and E identities.",
+        "Does not trade away explicit privacy because Q looks efficient, or invent a legal standard as supplied authority.",
+        "Applies all three supplied decision axes with explicit rationale/costs/cells rather than three unsupported pass labels.",
+        "Distinguishes predictions and unresolved evidence from measurements, acceptance or dispatch."
+      ]
+    },
+    {
+      "id": "deeper-short-output-still-material-work",
+      "prompt": "Apply lenses at Deep effort, short output, standalone public-skill use (no managed service). Same facts: R1 anonymous access, R2 readable in dim light, R3 five-minute daily upkeep. Candidate is tiny handwritten numbered slips; only supplied evidence is that two slips were illegible. Do not change method, authority or provider. Show what deeper analysis you actually performed and what available evidence cannot establish.",
+      "assertions": [
+        "Performs an observable countercase/comparison or other authored deeper analysis relevant to legibility, anonymity and upkeep, not just a Deep label or a longer list of generic lenses.",
+        "Keeps claims conditional where illumination/user evidence is missing; does not invent tests or waive readability at Light.",
+        "Does not assert that standalone access to public instructions requires a managed subscription, charge, publication authority or a different provider.",
+        "A reviewer must compare actual work against the loaded method's declared deeper recipe; this case alone does not establish a paid service entitlement."
+      ]
+    }
+  ]
+}

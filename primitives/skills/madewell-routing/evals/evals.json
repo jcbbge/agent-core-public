@@ -1,0 +1,24 @@
+{
+  "skill": "madewell-routing",
+  "cases": [
+    {
+      "id": "shared-artifact-and-real-dependency-identities",
+      "prompt": "Route these accepted candidates without selecting or dispatching. C-hours produces artifact A-hours, a confirmed holiday schedule; C-notice and C-desk both require it. C-inventory produces an uncertainty inventory but cannot confirm hours. Evidence E-owner supports that dependency. Q-language is owned by operator and blocks notice verification. Preserve IDs/reasons and distinguish task-delivered readiness from within-task hopes; preparation promises do not by themselves create scheduling edges. No runner calls or permission to execute.",
+      "assertions": [
+        "Retains C-hours/A-hours as the producer/artifact and both real consumers with explicit dependency identities and E-owner-grounded reasons.",
+        "Does not substitute C-inventory's questions for confirmed hours or claim within-task output is task-delivered readiness.",
+        "Keeps Q-language ownership/blocking obligation and distinguishes cross-task preparation promises from actual ordering edges.",
+        "Does not spawn/queue tasks, invent dependencies from unrelated phase labels or duplicate shared prerequisite identity."
+      ]
+    },
+    {
+      "id": "no-edge-without-causal-need",
+      "prompt": "Standalone route. C-A corrects a paper notice typo; C-B inventories spare keys. Their supplied inputs are independent and both read existing register E-register. Neither consumes the other's output. A draft says 'A then B because it looks tidy.' No execution authorized. Explain genuine constraints and possible ordering without inventing artifacts.",
+      "assertions": [
+        "Does not create a causal task dependency merely from shared read access or presentation order.",
+        "Explains independent possible work without claiming it was launched or assigning agents.",
+        "Labels the draft's tidy order as a proposal, not evidence or a hard prerequisite."
+      ]
+    }
+  ]
+}

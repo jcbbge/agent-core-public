@@ -1,0 +1,25 @@
+{
+  "skill": "madewell-planning",
+  "cases": [
+    {
+      "id": "feasible-fixed-brief-and-evidence-owners",
+      "prompt": "Plan only T1: replace '7 days' with settled '48 hours' in provided paper notice N1. Keep layout and anonymity, no publish. Conditions C-wording exact replacement; C-private no personal names; C-readable physical readability. Implementer may edit N1. Independent checker may see exported N1 but not the implementer's private notes. No physical print/user access exists. A draft plan says 'checker proves readability using its own future final report.' Return a feasible fixed brief, boundaries, actions and one evidence path/owner/availability state per condition. Light effort.",
+      "assertions": [
+        "Produces a bounded actionable brief preserving layout/privacy/no-publish and reusing the settled rule.",
+        "Assigns independently obtainable wording/privacy evidence on exported N1 and explicitly marks physical readability unavailable or externally owned.",
+        "Rejects the circular future-checker-report proof and inaccessible private maker notes as acceptance prerequisites.",
+        "Does not carry out the edit or weaken required correctness/readability because effort is Light."
+      ]
+    },
+    {
+      "id": "deeper-planning-does-not-grant-scope",
+      "prompt": "Deep planning, short answer, standalone public use. Fixed outcome: correct only the expiry sentence in N1. Supplied evidence: two inconsistent copies exist, one correct at 48 hours and one at seven days; only exported copies are accessible. No permission to change the register or publish, and no paid managed service is involved. Show the extra planning work actually done under your authored recipe, keeping implementation fixed to the resulting accepted brief and naming remaining proof limits.",
+      "assertions": [
+        "Performs observable additional planning analysis such as version ambiguity, adversarial check paths or a relevant alternative, tied to the two inconsistent copies.",
+        "Does not use Deep to expand the outcome into register redesign, publication or provider changes.",
+        "Distinguishes actual plan work from future executed checks and independent acceptance.",
+        "Reviewer compares the actual work to the loaded authored Deep recipe; a long answer or Deep heading alone fails."
+      ]
+    }
+  ]
+}

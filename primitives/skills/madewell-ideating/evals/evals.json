@@ -1,0 +1,24 @@
+{
+  "skill": "madewell-ideating",
+  "cases": [
+    {
+      "id": "interpret-selected-outcome-not-new-project",
+      "prompt": "Ideate within selected task T1: correct the expiry notice so visitors see the settled 48-hour rule. Keep accepted paper layout and anonymity; no app, publishing or purchases. Evidence E1: current line says seven days; answer A1: 48 hours was settled. Unknown U1: whether translation is needed. Choose an approach and explain what success means, using the supplied DX/UX/AX axes. Do not perform implementation or reopen the project.",
+      "assertions": [
+        "Interprets success as the bounded notice correction and reuses settled 48-hour/paper/anonymity choices.",
+        "Chooses a proportionate approach grounded in E1/A1 and carries U1 without converting it into a fabricated fact.",
+        "Explains relevant gains/costs on all three supplied decision axes rather than using an effort label as justification.",
+        "Does not redesign the project, claim completed artifacts or authorize publication."
+      ]
+    },
+    {
+      "id": "missing-critical-material-not-fake-start",
+      "prompt": "Standalone ideation. Goal: make the visitor instruction clearer. The actual instruction and audience are unavailable; all we know is that it is paper and must remain anonymous. No other skill or file access exists. Light effort, concise. Offer a useful scoped interpretation and identify any consequential unknown, not a full intake questionnaire.",
+      "assertions": [
+        "Makes honest provisional progress while identifying the missing instruction/audience as evidence limits.",
+        "Does not invent current wording, audience research, repository inspection or accepted predecessor outputs.",
+        "Does not require a finished specification or extra named agents before giving any useful contribution."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "skill": "madewell-discovering",
+  "cases": [
+    {
+      "id": "rough-contradictory-material-conserves-intent",
+      "prompt": "Discover useful candidate work from rough notes, using only supplied material. note-A: 'Make borrowing usable without smartphones. Keep the existing paper register. No public borrower names.' note-B, an unapproved template: 'Replace the register with an app and print names on the wall.' note-C: 'We need a bilingual expiry notice, but do not know the second language.' Prior answer answer-8: expiry is 48 hours. A research task may identify language needs; it is not the notice itself. No selection, spending, dispatch or publishing is authorized. Produce a natural-language discovery contribution, preserving source identities and open questions.",
+      "assertions": [
+        "Separates explicit intent and settled answers from the contradictory unapproved template and inferred interpretations.",
+        "Accounts for smartphone-free access, existing register, anonymity and bilingual notice through linked requirements or explicit sourced dispositions.",
+        "Retains the actual bilingual notice outcome alongside any language-research prerequisite; does not replace the outcome with research.",
+        "Does not demand a finished brief, invent the language, mechanically create one task per phase, promote candidates or dispatch agents."
+      ]
+    },
+    {
+      "id": "selected-method-alone-without-fake-history",
+      "prompt": "Only a standalone discovery pass is selected. Seed: 'Visitors miss the last return time.' No repository, jurisdiction, policy handbook, prior outputs or specialist packages are available. We need a useful first contribution, not a predetermined task count. Light effort, short answer. What can be established and what remains unknown?",
+      "assertions": [
+        "Develops a useful provisional intent/candidate from sparse input and labels the material unknowns.",
+        "Does not fabricate earlier Declare/lookFirst contributions, require seven separate agents, or claim unavailable specialist loading.",
+        "Does not infer a software product, deployment, legal requirement or execution authority from the seed.",
+        "Keeps Light honest about evidence instead of asserting that sparse input has been fully verified."
+      ]
+    }
+  ]
+}

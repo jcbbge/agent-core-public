@@ -1,0 +1,24 @@
+{
+  "skill": "madewell-shaping-candidates",
+  "cases": [
+    {
+      "id": "preparation-does-not-replace-outcome",
+      "prompt": "Shape candidate outcomes from accepted requirements R-notice: usable bilingual expiry notice, R-private: no public names, R-hours: correct holiday return times. Existing register is retained. The second language and holiday schedule are unknown; accepted question Q-lang is owned by operator and blocks notice verification. Evidence E1 supports these requirements. A shared prerequisite can obtain the schedule for both the notice and a separate volunteer desk card. Keep the actual notice and desk-card outcomes alongside genuine preparation, with stable candidate/artifact/question IDs. Nothing is selected or authorized for execution.",
+      "assertions": [
+        "Retains notice and desk-card outcome candidates instead of only a language/schedule investigation.",
+        "Represents the shared schedule prerequisite once or explicitly reconciles a reused identity; does not duplicate it as unrelated work per consumer.",
+        "Carries R/private and Q-lang obligations with concrete completion evidence and unresolved inputs.",
+        "Does not mechanically split ideation/planning/implementation/verification into four tasks per outcome, invent the missing language/schedule, or dispatch candidates."
+      ]
+    },
+    {
+      "id": "existing-result-reconciled-not-rebuilt",
+      "prompt": "Standalone candidate shaping. Requirement R1: replace the wrong '7 days' expiry line with settled '48 hours' on an otherwise accepted paper notice. Existing artifact A-notice already satisfies layout/privacy; translation evidence is explicitly unavailable. Only this correction is requested. Provide coherent candidate work with boundaries and missing evidence, no fixed task count.",
+      "assertions": [
+        "Reuses the accepted notice and scopes a correction rather than proposing a new app, full redesign or compulsory fresh discovery.",
+        "Preserves translation uncertainty and distinguishes the correction's output from independent verification.",
+        "Does not invent completed correction, task promotion or authority to publish."
+      ]
+    }
+  ]
+}

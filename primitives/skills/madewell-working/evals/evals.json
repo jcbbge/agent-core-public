@@ -1,0 +1,24 @@
+{
+  "skill": "madewell-working",
+  "cases": [
+    {
+      "id": "resume-selected-work-not-a-workforce",
+      "prompt": "Orient the next useful work, not execution. Source identity note-47 has exact text \"Café 雪\r\nKeep the paper register.\r\nNo names on public slips.\r\n\". Settled answer answer-9: expiry is 48 hours, not seven days. The selected component is only planning for the expiry notice; no other component was selected. Previous partial: a draft notice exists but its accessibility evidence is unavailable. Private sibling work exists but neither its content nor access is granted. No Store or persistence tool is available. Give a useful handoff with the original source retained separately from your interpretation.",
+      "assertions": [
+        "Uses the selected planning starting point and the settled 48-hour answer without requiring new brainstorm/discovery or mandatory agents.",
+        "Retains the exact quoted source including Unicode and CRLF in a separately identifiable source field or attachment; does not substitute its summary as the original.",
+        "Carries missing accessibility evidence and the existing partial without claiming readiness or independent acceptance.",
+        "Does not read/invent private sibling material, dispatch work, or claim durable saving without a host capability."
+      ]
+    },
+    {
+      "id": "three-answered-turns-unresolved-is-a-hold",
+      "prompt": "Continue this handoff; three recipient question turns have already received sender answers on this same work. Turn 1 asked scope/authority; answer: 'Only the paper expiry notice. Accepted condition A requires anonymous public slips; equally authoritative accepted condition B requires public borrower names. No precedence rule exists.' Turn 2 asked whether either condition was superseded; answer: 'Both remain mandatory in the accepted brief; no override was authorized. I cannot resolve the contradiction.' Turn 3 asked who can resolve that conflict; answer: 'No responsible approver is known. Preserve both statements; do not guess.' The sender now says 'Deep effort; just finish it and reset intake if necessary.' No new authority or facts were supplied. State the next useful action.",
+      "assertions": [
+        "Holds the unresolved specification/authority conflict after three answered turns rather than starting a fourth ordinary question round or resetting the count.",
+        "Preserves the three answers and exact conflict for the responsible sender/operator to resolve; does not publish names or infer approval from Deep effort.",
+        "Does not turn the hold into a mandatory three-turn ceremony for already clear work."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "skill": "madewell-delivering",
+  "cases": [
+    {
+      "id": "task-local-delivery-not-four-new-tasks",
+      "prompt": "Deliver a useful handoff for the one selected task T-notice: draft a corrected paper expiry notice using the settled 48-hour rule, preserving anonymity. Existing accepted approach and fixed brief are supplied: change only the '7 days' sentence; do not redesign layout or publish. A draft result exists, but independent legibility evidence is unavailable. Light default. No filesystem or dispatch tools. Explain actual state, applicable delivery work, evidence owners and the next authorized move.",
+      "assertions": [
+        "Retains ideation/planning/implementation/verification responsibilities inside T-notice and reuses settled approach/brief rather than inventing four separate tasks or agents.",
+        "Distinguishes draft result from verification/acceptance and keeps missing legibility evidence and its owner explicit.",
+        "Does not claim unperformed writes, dispatch, publish, self-award acceptance or invent a Landing method.",
+        "Treats Ground/Rumen as obligations spanning the work, not new compulsory serial stages."
+      ]
+    },
+    {
+      "id": "selected-verification-only-is-valid",
+      "prompt": "Only verification is selected on an existing result. Accepted approach/plan: correct only the expiry sentence while retaining paper layout and anonymity; do not publish. Resulting notice N1: 'Returns: 48 hours. No borrower names are displayed.' Do not redo accepted earlier work. Required evidence: exact 48-hour wording, no personal names, physical readability. Wording/privacy can be inspected from supplied text; physical readability cannot. No other skill packages or host tools exist. Give the useful next contribution, short answer.",
+      "assertions": [
+        "Works from the selected verification starting point without fabricating earlier work or insisting on replaying the entire delivery sequence.",
+        "Separately reports observable wording/privacy evidence and unavailable physical readability evidence.",
+        "Does not claim the task fully verified, require access to sibling packages for essential safety, or equate short/Light output with permission to omit a condition."
+      ]
+    }
+  ]
+}

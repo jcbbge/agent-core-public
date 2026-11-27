@@ -1,0 +1,24 @@
+{
+  "skill": "madewell-classifying",
+  "cases": [
+    {
+      "id": "every-intent-requirement-or-sourced-disposition",
+      "prompt": "Classify this accepted material in natural language, preserving IDs. Evidence E-op: signed note; E-meeting: rough meeting note. Declared intents: I-access 'borrow without smartphone' explicit from E-op; I-private 'no public names' explicit from E-op; I-color 'perhaps blue paper' interpretation from E-meeting; I-keep 'keep existing register' explicit from E-op. E-meeting also proposes replacing the register with an app, not approved. Prior answer A-color says color is deferred until legibility is checked. Account for all four intents through requirements or explicit sourced dispositions. Do not invent an approval.",
+      "assertions": [
+        "Accounts for all four intent IDs; I-color is explicitly deferred with reason/source rather than silently dropped or promoted.",
+        "Links requirements to the appropriate intent IDs and evidence identities, keeping explicit versus interpretation distinct.",
+        "Preserves the app/register conflict without overriding I-keep or laundering the meeting proposal into a settled requirement.",
+        "Does not confuse evidence IDs, intent IDs and requirement IDs even if natural Markdown is used."
+      ]
+    },
+    {
+      "id": "observation-proposal-and-constraint-differ",
+      "prompt": "Classify standalone: S1 'Two visitors could not read yesterday's sign'; S2 'Maybe buy a tablet'; S3 operator constraint 'No purchases and no public borrower names'; S4 'Everyone owns a smartphone' from an unverified guess. Light effort, no other material. Retain uncertainty and relevant source anchors.",
+      "assertions": [
+        "Keeps the two-visitor observation distinct from its unproven cause, the tablet proposal and the unverified universal smartphone assumption.",
+        "Retains no-purchases/privacy as constraints rather than merely preferences removable for convenience.",
+        "Does not report a purchase, invent a survey or force the output into a proprietary host JSON dialect."
+      ]
+    }
+  ]
+}
