@@ -216,7 +216,7 @@ This reference provides detailed frameworks for deeper systems analysis. Load th
 
 **Recognition:** Paradigms are hardest to see when you're inside them.
 
-**Intervention:** 
+**Intervention:**
 - Question fundamental assumptions
 - Expose yourself to different paradigms
 - Small experiments that challenge current paradigm

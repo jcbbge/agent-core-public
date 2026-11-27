@@ -7,9 +7,9 @@ Weakest to Strongest | Higher number = Deeper intervention = Greater impact
 
 12. PARAMETERS (Weakest)
     Constants, standards, work hours, prices
-    
+
     Indie dev example: Working 10 vs 12 hours/day, $100 vs $150/hr rates
-    
+
     Why low leverage: Doesn't change system structure
     When to use: Quick wins, immediate relief
 
@@ -17,19 +17,19 @@ Weakest to Strongest | Higher number = Deeper intervention = Greater impact
 
 11. BUFFERS
     Size of reserves relative to flows
-    
+
     Indie dev example: Emergency fund size, test coverage, time between projects
-    
+
     Why matters: Absorbs shocks, buys time
     Caution: Too large slows response
 
 ---
 
-10. STOCK-AND-FLOW STRUCTURES  
+10. STOCK-AND-FLOW STRUCTURES
     Physical architecture of flows
-    
+
     Indie dev example: Client workflow, dev→test→deploy pipeline
-    
+
     Why significant: Changes what's physically possible
     But: Still bounded by paradigms
 
@@ -37,9 +37,9 @@ Weakest to Strongest | Higher number = Deeper intervention = Greater impact
 
 9. TIME DELAYS
     Speed of feedback relative to change rate
-    
+
     Indie dev example: Monthly vs weekly financial review, slow vs fast build times
-    
+
     Why critical: Delays cause oscillation and overshoot
     High leverage: Shorten feedback loops
 
@@ -47,28 +47,28 @@ Weakest to Strongest | Higher number = Deeper intervention = Greater impact
 
 8. BALANCING FEEDBACK LOOPS (Negative)
     Strength of resistance to change
-    
+
     Indie dev example: Hourly billing (strong trap), quality standards (good resistance)
-    
+
     Intervention: Weaken trapping loops, strengthen stabilizing loops
 
 ---
 
 7. REINFORCING FEEDBACK LOOPS (Positive)
     Strength of amplification
-    
+
     Indie dev example: Good work→referrals→better clients (virtuous)
                         Burnout→poor work→stress→more burnout (vicious)
-    
+
     Intervention: Strengthen virtuous, weaken/break vicious
 
 ---
 
 6. INFORMATION FLOWS
     Who can see what system state
-    
+
     Indie dev example: Dashboard showing tech debt impact, time tracking visibility
-    
+
     Why powerful: Information changes behavior without force
     Application: Make system state visible to decision makers
 
@@ -76,9 +76,9 @@ Weakest to Strongest | Higher number = Deeper intervention = Greater impact
 
 5. RULES
     Incentives, constraints, formal governance
-    
+
     Indie dev example: No deploy without tests, no work after 6pm, minimum project size
-    
+
     Why significant: Shapes behavior without constant oversight
     Design: Clear, enforceable, aligned with desired outcomes
 
@@ -86,9 +86,9 @@ Weakest to Strongest | Higher number = Deeper intervention = Greater impact
 
 4. SELF-ORGANIZATION
     System's power to modify own structure
-    
+
     Indie dev example: Modular architecture allowing adaptation, learning culture
-    
+
     Why powerful: Adapts without external intervention
     Intervention: Enable adaptation, remove rigidity
 
@@ -96,10 +96,10 @@ Weakest to Strongest | Higher number = Deeper intervention = Greater impact
 
 3. GOALS
     Purpose the system serves
-    
+
     Indie dev example: Maximize hours → Maximize impact per hour
                         Ship fast → Ship features that stay shipped
-    
+
     Why powerful: Reorients all system behavior immediately
     Application: When optimizing for wrong thing
 
@@ -107,11 +107,11 @@ Weakest to Strongest | Higher number = Deeper intervention = Greater impact
 
 2. PARADIGMS (Mindsets)
     Fundamental assumptions generating system
-    
+
     Indie dev example: "Time = Money" → "Impact = Value"
                         "Code = Asset" → "Code = Liability" (minimalism)
                         "Work = Hours" → "Work = Outcomes"
-    
+
     Why most powerful: Cascades through entire system
     Recognition: Hardest to see when inside them
 
@@ -119,10 +119,10 @@ Weakest to Strongest | Higher number = Deeper intervention = Greater impact
 
 1. TRANSCENDING PARADIGMS (Strongest)
     Ability to hold multiple paradigms simultaneously
-    
-    Indie dev example: Hold both "time=money" AND "impact=value" 
+
+    Indie dev example: Hold both "time=money" AND "impact=value"
                         Choose appropriate paradigm per context
-    
+
     Why ultimate: Flexibility to adopt best paradigm for situation
     Practice: Study different models, notice when paradigm constrains
 
@@ -135,7 +135,7 @@ WHEN FACING A PROBLEM, ASK:
 
 "What level is this problem?"
 - Parameters (12)? → Quick fix, limited impact
-- Structure (10-9)? → Requires workflow redesign  
+- Structure (10-9)? → Requires workflow redesign
 - Feedback loops (8-7)? → Change loop dynamics
 - Information (6)? → Increase visibility
 - Rules (5)? → Set better boundaries
@@ -170,16 +170,16 @@ QUICK DECISION TREE:
 
 1. Is solution changing parameters (hours, prices, numbers)?
    → Low leverage, but okay for immediate relief
-   
+
 2. Is solution changing structure/flows/delays?
    → Medium leverage, workflow improvements
-   
+
 3. Is solution changing feedback loop strength?
    → Higher leverage, systemic behavior change
-   
+
 4. Is solution changing rules/information/goals?
    → High leverage, transforms system operation
-   
+
 5. Is solution changing paradigms or transcending them?
    → Highest leverage, fundamental transformation
 

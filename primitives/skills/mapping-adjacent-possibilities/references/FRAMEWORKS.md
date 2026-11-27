@@ -192,11 +192,11 @@ Analysis:
 A) Immediate: Revenue potential (high)
    Platform effect: Low (point solution)
    Reversibility: Medium (can pivot product)
-   
+
 B) Immediate: Slower revenue (medium)
    Platform effect: High (tools enable multiple products)
    Reversibility: High (tools useful regardless)
-   
+
 C) Immediate: Fast revenue (high)
    Platform effect: Medium (builds expertise + tools)
    Reversibility: High (consulting is flexible)

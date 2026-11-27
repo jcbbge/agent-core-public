@@ -100,7 +100,7 @@ Notice when user is confident about something they may not actually understand d
 
 ### Microsoft Azure Security - Red Team Implementation
 
-**Context:** Microsoft Azure Security Team (2018-2024)  
+**Context:** Microsoft Azure Security Team (2018-2024)\
 **Initiative:** Proactive vulnerability detection through AI-augmented red team
 
 **What They Did:**
@@ -132,7 +132,7 @@ When stakes are high (security, major architecture, business-critical), adopt sy
 
 ### Google Product Decision Enhancement
 
-**Context:** Google Product Strategy (2020-2024)  
+**Context:** Google Product Strategy (2020-2024)\
 **Initiative:** Cognitive bias detection in product decision-making
 
 **What They Did:**
@@ -164,7 +164,7 @@ Before major product decisions:
 
 ### Amazon Strategic Planning - Assumption Challenge
 
-**Context:** Amazon Strategic Planning (2019-2024)  
+**Context:** Amazon Strategic Planning (2019-2024)\
 **Initiative:** Business plan stress-testing through assumption mapping
 
 **What They Did:**
@@ -197,7 +197,7 @@ For major strategic decisions or plans:
 
 ### NASA Risk Assessment - Multiple Perspectives
 
-**Context:** NASA Risk Management (2017-2024)  
+**Context:** NASA Risk Management (2017-2024)\
 **Initiative:** Multi-perspective analysis for mission risk
 
 **What They Did:**

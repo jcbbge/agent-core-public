@@ -36,19 +36,19 @@ User answers:
 
 Alternative reframes:
 
-A. Real-time vs batch: "Do executives need real-time data, or would daily/hourly 
+A. Real-time vs batch: "Do executives need real-time data, or would daily/hourly
    batch processing work? That changes everything about architecture."
 
-B. Data model: "The slow queries might be a symptom of a data model that wasn't 
+B. Data model: "The slow queries might be a symptom of a data model that wasn't
    designed for these query patterns. Should we look upstream at the schema?"
 
-C. Caching: "If queries rarely change, aggressive caching might be simpler than 
+C. Caching: "If queries rarely change, aggressive caching might be simpler than
    query optimization. Have you considered that angle?"
 
-D. Expectations: "Is 2-3 seconds actually slow for analytics, or is this about 
+D. Expectations: "Is 2-3 seconds actually slow for analytics, or is this about
    perception? Could a loading indicator solve the problem?"
 
-E. Requirements: "Do executives need all this data, or can we show them a smaller, 
+E. Requirements: "Do executives need all this data, or can we show them a smaller,
    pre-aggregated summary that loads instantly?"
 ```
 
@@ -80,19 +80,19 @@ User answers:
 
 Alternative reframes:
 
-A. Validate first: "Have you validated that people want this app? Could you test 
+A. Validate first: "Have you validated that people want this app? Could you test
    the core idea with a web app before investing in mobile?"
 
-B. Faster path: "What if you used a no-code/low-code platform to ship v1, then 
+B. Faster path: "What if you used a no-code/low-code platform to ship v1, then
    rebuild in React Native if it gains traction?"
 
-C. Native vs cross-platform: "React Native makes sense if you need iOS + Android. 
+C. Native vs cross-platform: "React Native makes sense if you need iOS + Android.
    But if you only need one platform, native might be simpler to learn."
 
-D. Web-first: "Could this be a mobile-optimized web app (PWA)? You already know 
+D. Web-first: "Could this be a mobile-optimized web app (PWA)? You already know
    React, and PWAs are surprisingly capable now."
 
-E. Actual goal: "Is your goal 'learn mobile development' or 'ship this specific 
+E. Actual goal: "Is your goal 'learn mobile development' or 'ship this specific
    app'? Because those suggest different paths."
 ```
 
@@ -123,18 +123,18 @@ User answers:
 
 Alternative reframes:
 
-A. Team size: "Microservices add significant complexity. With a 3-person team, 
+A. Team size: "Microservices add significant complexity. With a 3-person team,
    the operational burden might slow you down more than the monolith does."
 
-B. Actual bottleneck: "Are merge conflicts from code structure or from how you're 
+B. Actual bottleneck: "Are merge conflicts from code structure or from how you're
    working? Better branching strategy might be simpler than microservices."
 
-C. Modular monolith: "Could you create clear module boundaries in the monolith? 
+C. Modular monolith: "Could you create clear module boundaries in the monolith?
    Get the benefits of separation without distributed system complexity."
 
 D. Deploy time: "15 minutes isn't slow. Are you solving the wrong problem?"
 
-E. Future-proofing: "Are you solving today's problem or preparing for scale you 
+E. Future-proofing: "Are you solving today's problem or preparing for scale you
    don't have yet? Microservices make sense at 30+ engineers, not 3."
 ```
 
@@ -168,19 +168,19 @@ User answers:
 
 Alternative reframes:
 
-A. Scale of problem: "Is this 5 users with 100 contacts each, or 500 users with 
+A. Scale of problem: "Is this 5 users with 100 contacts each, or 500 users with
    10 contacts? The solution changes based on scale."
 
-B. Underlying goal: "They want their contacts in the system quickly. CSV upload 
+B. Underlying goal: "They want their contacts in the system quickly. CSV upload
    is one solution, but could we integrate with their existing tools instead?"
 
-C. Workaround quality: "How painful is manual entry really? If they're willing to 
+C. Workaround quality: "How painful is manual entry really? If they're willing to
    spend 30 minutes once, maybe it's not a high-value feature."
 
-D. Future users: "Will most users need this, or just these power users? Are we 
+D. Future users: "Will most users need this, or just these power users? Are we
    building for current users or future market?"
 
-E. Alternative solutions: "What if we built an API and published a Python script 
+E. Alternative solutions: "What if we built an API and published a Python script
    they can use? Serves power users without building full UI."
 ```
 
@@ -212,19 +212,19 @@ User answers:
 
 Alternative reframes:
 
-A. Onboarding: "60% first-session drop-off screams onboarding problem, not product 
+A. Onboarding: "60% first-session drop-off screams onboarding problem, not product
    problem. Users aren't reaching the value moment."
 
-B. Activation metric: "Users who complete core workflow stick around. So the problem 
+B. Activation metric: "Users who complete core workflow stick around. So the problem
    is 'how do we get more users to that activation point?'"
 
-C. Expectation mismatch: "Are you attracting wrong users, or failing to show value 
+C. Expectation mismatch: "Are you attracting wrong users, or failing to show value
    to right users? Different problems, different solutions."
 
-D. Time to value: "How long does it take to reach first value? If it's 10+ minutes, 
+D. Time to value: "How long does it take to reach first value? If it's 10+ minutes,
    that's your problem. Fast time to value = better retention."
 
-E. Product-market fit: "30% retention might be fine if you're still finding PMF. 
+E. Product-market fit: "30% retention might be fine if you're still finding PMF.
    Are you sure this is an engagement problem vs market-fit problem?"
 ```
 
@@ -258,19 +258,19 @@ User answers:
 
 Alternative reframes:
 
-A. Role evolution: "Have you asked your manager about new challenges? Could you 
+A. Role evolution: "Have you asked your manager about new challenges? Could you
    shift to a different team or project without quitting?"
 
-B. Side projects: "Could you scratch the 'cutting-edge tech' itch through side 
+B. Side projects: "Could you scratch the 'cutting-edge tech' itch through side
    projects while keeping the stable job?"
 
-C. Learning vs novelty: "Is this about learning/growth (career) or just boredom 
+C. Learning vs novelty: "Is this about learning/growth (career) or just boredom
    (novelty)? Different problems need different solutions."
 
-D. Grass is greener: "New job will have novelty for 6-12 months, then same feeling. 
+D. Grass is greener: "New job will have novelty for 6-12 months, then same feeling.
    Is this a job problem or a you problem?"
 
-E. What's actually missing: "You said 'not learning anything new.' What would you 
+E. What's actually missing: "You said 'not learning anything new.' What would you
    want to learn? Can you learn it where you are?"
 ```
 
@@ -302,19 +302,19 @@ User answers:
 
 Alternative reframes:
 
-A. Actual need: "Is this about creativity, or is it about meaning/fulfillment? 
+A. Actual need: "Is this about creativity, or is it about meaning/fulfillment?
    Maybe you need a different kind of engagement entirely."
 
-B. Pattern recognition: "You've started and abandoned blogs before. Why would this 
+B. Pattern recognition: "You've started and abandoned blogs before. Why would this
    time be different? Might need to address the root pattern."
 
-C. Lower commitment: "What if you did something with no audience pressure? Like 
+C. Lower commitment: "What if you did something with no audience pressure? Like
    journaling, drawing, or music just for yourself?"
 
-D. Social connection: "Sometimes 'creative outlet' is code for 'I want to connect 
+D. Social connection: "Sometimes 'creative outlet' is code for 'I want to connect
    with people.' Could this be about community?"
 
-E. Work-life balance: "Is the real problem 'work is all-consuming'? If so, creative 
+E. Work-life balance: "Is the real problem 'work is all-consuming'? If so, creative
    outlet won't fix that—boundary-setting will."
 ```
 
@@ -348,19 +348,19 @@ User answers:
 
 Alternative reframes:
 
-A. Value articulation: "Are you 'too expensive' or are you failing to demonstrate 
+A. Value articulation: "Are you 'too expensive' or are you failing to demonstrate
    value? Those are different problems."
 
-B. Deal size: "Could you offer a smaller starting package? Maybe they want to 
+B. Deal size: "Could you offer a smaller starting package? Maybe they want to
    try before committing to full price."
 
-C. Comparison: "What are they comparing your price to? Your competitors or their 
+C. Comparison: "What are they comparing your price to? Your competitors or their
    status quo (doing nothing)?"
 
-D. Payment terms: "Is it the total price or the payment structure? Annual upfront 
+D. Payment terms: "Is it the total price or the payment structure? Annual upfront
    vs monthly might matter more than the actual amount."
 
-E. Wrong segment: "If ideal customers say you're too expensive, either they're not 
+E. Wrong segment: "If ideal customers say you're too expensive, either they're not
    actually ideal, or your positioning doesn't match your price point."
 ```
 
@@ -392,19 +392,19 @@ User answers:
 
 Alternative reframes:
 
-A. Competitor reaction: "You're reacting to competitor moves rather than customer 
+A. Competitor reaction: "You're reacting to competitor moves rather than customer
    pull. Is there actual European demand?"
 
-B. Current market: "At 5% penetration, you have 20x room to grow in your current 
+B. Current market: "At 5% penetration, you have 20x room to grow in your current
    market. Why jump to a harder market?"
 
-C. Growth diagnosis: "Growth slowing from 50% to 30% is natural maturation. Is 
+C. Growth diagnosis: "Growth slowing from 50% to 30% is natural maturation. Is
    Europe going to change that trajectory?"
 
-D. Actual bottleneck: "What's actually limiting your growth? Product? Sales? 
+D. Actual bottleneck: "What's actually limiting your growth? Product? Sales?
    Marketing? Europe doesn't fix any of those."
 
-E. Easier growth: "What if you doubled down on sales/marketing in US? That would 
+E. Easier growth: "What if you doubled down on sales/marketing in US? That would
    be simpler and faster than Europe expansion."
 ```
 

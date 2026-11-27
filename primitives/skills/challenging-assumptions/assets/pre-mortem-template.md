@@ -199,7 +199,7 @@ Based on this analysis, what should we do?
 2. _______________________________________________
 3. _______________________________________________
 
-**Review date:** _______________________________________________  
+**Review date:** _______________________________________________\
 *Schedule follow-up to check if assumptions still hold*
 
 ---
@@ -223,8 +223,8 @@ Based on this analysis, what should we do?
 
 ## Example: VPS Migration Pre-Mortem
 
-**Project:** Migrate from AWS to VPS  
-**Timeline:** It's 6 months from now  
+**Project:** Migrate from AWS to VPS\
+**Timeline:** It's 6 months from now\
 **Status:** Migration has failed
 
 ### Failure Story

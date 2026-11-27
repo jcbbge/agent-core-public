@@ -15,7 +15,7 @@ Use a selected framework under SKILL.md's provenance, scope, and transfer rules.
 
 ## Structure-Mapping Theory
 
-**Originator:** Dedre Gentner (1983)  
+**Originator:** Dedre Gentner (1983)\
 **Core insight:** Analogical reasoning works by aligning relational structures, not surface features.
 
 ### Key Principles
@@ -57,7 +57,7 @@ Use Structure-Mapping when:
 
 ## Integrative Thinking
 
-**Originator:** Roger Martin  
+**Originator:** Roger Martin\
 **Core insight:** Hold opposing models in tension to create better solutions than either alone.
 
 ### Four-Stage Process
@@ -105,7 +105,7 @@ Use Integrative Thinking when:
 
 ## Systems Thinking
 
-**Key figures:** Donella Meadows, Peter Senge  
+**Key figures:** Donella Meadows, Peter Senge\
 **Core insight:** Understand complex phenomena through interconnections, feedback, and emergent properties.
 
 ### Core Concepts
@@ -175,7 +175,7 @@ Use Systems Thinking when:
 
 ## Conceptual Blending Theory
 
-**Originators:** Gilles Fauconnier & Mark Turner  
+**Originators:** Gilles Fauconnier & Mark Turner\
 **Core insight:** Creativity and meaning emerge from blending mental spaces.
 
 ### Blending Network Structure

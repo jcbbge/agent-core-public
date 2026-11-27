@@ -138,7 +138,7 @@
 
 ### McKinsey Strategic Decision Stress-Testing
 
-**Organization:** McKinsey & Company  
+**Organization:** McKinsey & Company\
 **Case Study:** Merger Due Diligence Enhancement (2023-2024)
 
 **Implementation:**
@@ -150,14 +150,14 @@ Systematic challenge-mode approach to stress-test merger assumptions before exec
 - Pre-mortem analysis uncovered hidden assumptions about cultural compatibility
 - Red team approach identified integration risks that would have caused major problems
 
-**Key learning for indie developers:**  
+**Key learning for indie developers:**\
 Before major commitments (hiring, partnerships, technology choices), run systematic challenge to identify hidden assumptions and failure modes.
 
 ---
 
 ### Google Product Risk Assessment Framework
 
-**Organization:** Google Product Strategy Team  
+**Organization:** Google Product Strategy Team\
 **Case Study:** New Product Launch Risk Mitigation (2024)
 
 **Implementation:**
@@ -169,14 +169,14 @@ AI-augmented challenge-mode framework to systematically identify weaknesses in p
 - Cross-functional red team identification of blind spots
 - Continuous challenge methodology enhanced adaptability
 
-**Key learning for indie developers:**  
+**Key learning for indie developers:**\
 Before product launches, run systematic pre-mortem to identify failure modes. Small-scale launches become learning opportunities when you've anticipated potential failures.
 
 ---
 
 ### DARPA Technology Assessment Process
 
-**Organization:** Defense Advanced Research Projects Agency  
+**Organization:** Defense Advanced Research Projects Agency\
 **Case Study:** Project Proposal Challenge Process (2022-2024)
 
 **Implementation:**
@@ -188,14 +188,14 @@ Institutionalized systematic challenge where every major proposal faces dedicate
 - Challenge documentation improved future proposal quality
 - Cultural acceptance of systematic challenge enhanced innovation
 
-**Key learning for indie developers:**  
+**Key learning for indie developers:**\
 Create self-imposed challenge discipline for major decisions. Document challenges and outcomes to improve future decision quality.
 
 ---
 
 ### Investment Fund Due Diligence Enhancement
 
-**Organization:** Bridgewater Associates  
+**Organization:** Bridgewater Associates\
 **Case Study:** Investment Thesis Stress-Testing (2023-2024)
 
 **Implementation:**
@@ -207,7 +207,7 @@ AI-augmented challenge-mode to systematically test investment assumptions and id
 - Red team approach improved risk-adjusted returns
 - Constructive opposition enhanced decision quality
 
-**Key learning for indie developers:**  
+**Key learning for indie developers:**\
 Apply investment-grade rigor to major technical/business decisions. What assumptions must be true? What could go wrong? How do we know we're right?
 
 ---
@@ -367,30 +367,30 @@ Solo developers lack team diversity, so systematic multi-perspective challenge c
 
 ### Current Research Gaps
 
-1. **Long-term impact of systematic challenge**  
+1. **Long-term impact of systematic challenge**\
    Need longitudinal studies on how continuous challenge affects decision quality over time in solo developer contexts.
 
-2. **Emotional intelligence in opposition**  
+2. **Emotional intelligence in opposition**\
    Limited research on maintaining motivation and confidence while providing systematic challenge. Risk of decision paralysis from too much challenge.
 
-3. **Group challenge dynamics**  
+3. **Group challenge dynamics**\
    Most research on teams; little on solo developers with AI assistants as challenge partners.
 
-4. **Domain-specific challenge optimization**  
+4. **Domain-specific challenge optimization**\
    Lack of research on optimal challenge approaches across different domains (technical vs business vs operational decisions).
 
 ### Emerging Research Areas
 
-1. **AI self-challenge protocols**  
+1. **AI self-challenge protocols**\
    Systems that systematically challenge their own reasoning before presenting it.
 
-2. **Neurological basis of constructive opposition**  
+2. **Neurological basis of constructive opposition**\
    Brain processes involved in receiving and implementing challenge. How to deliver challenge that's heard, not rejected.
 
-3. **Cultural adaptation of challenge methods**  
+3. **Cultural adaptation of challenge methods**\
    How challenge approaches need to adapt across cultural contexts. Direct challenge works in some cultures, indirect in others.
 
-4. **Real-time challenge adaptation**  
+4. **Real-time challenge adaptation**\
    Dynamic adjustment of challenge intensity based on user response and emotional state.
 
 ---

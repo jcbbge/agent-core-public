@@ -103,14 +103,14 @@ Example:
 ```
 It's 6 months from now. My VPS migration has failed spectacularly.
 
-The server went down during a traffic spike. I was at a conference with 
-spotty WiFi. By the time I could SSH in, we'd lost 4 hours of uptime. 
-15 customers churned immediately. The incident revealed that our backup 
+The server went down during a traffic spike. I was at a conference with
+spotty WiFi. By the time I could SSH in, we'd lost 4 hours of uptime.
+15 customers churned immediately. The incident revealed that our backup
 system wasn't actually working—we discovered this when we needed it most.
 
-I spent the next week firefighting, migrating back to managed hosting at 
-3x the cost in panic mode. The "95% cost savings" ended up costing us 
-$15K in lost revenue and emergency migrations. I'm exhausted, customers 
+I spent the next week firefighting, migrating back to managed hosting at
+3x the cost in panic mode. The "95% cost savings" ended up costing us
+$15K in lost revenue and emergency migrations. I'm exhausted, customers
 are angry, and I'm 6 weeks behind on actual product development.
 ```
 
@@ -231,22 +231,22 @@ What would guarantee failure?
 #### Step 4: Identify actual risks
 Which of these am I actually at risk of?
 
-✗ Price too high - ✓ Research shows $10-15/month range  
-✓ Build what I want vs what users need - Risk: I'm excited about features users don't care about  
-✓ Never market it - Risk: I hate marketing and will avoid it  
-✗ Critical bugs - I test thoroughly  
-✓ Complex onboarding - Risk: I understand the domain, users don't  
+✗ Price too high - ✓ Research shows $10-15/month range\
+✓ Build what I want vs what users need - Risk: I'm excited about features users don't care about\
+✓ Never market it - Risk: I hate marketing and will avoid it\
+✗ Critical bugs - I test thoroughly\
+✓ Complex onboarding - Risk: I understand the domain, users don't\
 
 #### Step 5: Create safeguards
 How do we prevent identified risks?
 
-**Risk:** Building features I want vs what users need  
+**Risk:** Building features I want vs what users need\
 **Safeguard:** Validate with 10 target users before building each major feature
 
-**Risk:** Never marketing  
+**Risk:** Never marketing\
 **Safeguard:** Commit to 2 hours/week on marketing before building more features
 
-**Risk:** Complex onboarding  
+**Risk:** Complex onboarding\
 **Safeguard:** Have 3 non-experts try onboarding, fix every point of confusion
 
 ### Inversion Template
@@ -380,7 +380,7 @@ Build the strongest version of an argument before critiquing it. Ensures constru
 #### Step 1: Charitable interpretation
 What's the best-case interpretation of this idea?
 
-Instead of: "They want to waste time building custom auth"  
+Instead of: "They want to waste time building custom auth"\
 Steel-man: "They see auth as core to product differentiation and want control over the user experience"
 
 #### Step 2: Identify genuine strengths
@@ -478,7 +478,7 @@ What's the impact of each scenario?
 #### Step 4: Calculate expected value
 EV = (Probability × Outcome) for each scenario, summed
 
-EV = (0.2 × $9K) + (0.6 × $3K) + (0.2 × -$25K)  
+EV = (0.2 × $9K) + (0.6 × $3K) + (0.2 × -$25K)\
 EV = $1.8K + $1.8K - $5K = -$1.4K
 
 **Expected value is negative** → Don't proceed without reducing worst-case risk
@@ -501,7 +501,7 @@ Scenarios:
 - Worst case: _______________
 
 Probability Estimates:
-- Best: _____% 
+- Best: _____%
 - Expected: _____%
 - Worst: _____%
 
@@ -598,12 +598,12 @@ Action: _______________
 
 ### When to use which framework:
 
-**FMEA** - Complex technical decisions, infrastructure changes, architecture choices  
-**Pre-Mortem** - Before major commitments, product launches, strategic pivots  
-**Inversion** - When stuck, when too optimistic, to reveal hidden constraints  
-**Red Team** - Competitive strategy, security decisions, business model validation  
-**Steel Man** - When dismissing ideas too quickly, to ensure constructive critique  
-**Decision Matrix** - High uncertainty decisions, significant financial impact  
+**FMEA** - Complex technical decisions, infrastructure changes, architecture choices\
+**Pre-Mortem** - Before major commitments, product launches, strategic pivots\
+**Inversion** - When stuck, when too optimistic, to reveal hidden constraints\
+**Red Team** - Competitive strategy, security decisions, business model validation\
+**Steel Man** - When dismissing ideas too quickly, to ensure constructive critique\
+**Decision Matrix** - High uncertainty decisions, significant financial impact\
 **Multi-Perspective** - Holistic decisions affecting multiple aspects of business
 
 ### Framework selection flowchart:

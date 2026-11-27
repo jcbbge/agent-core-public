@@ -16,8 +16,8 @@ This is an unverified legacy reading list about creativity and exploration. Its 
 ## Key Academic Papers
 
 ### 1. AI-Assisted Creative Ideation (2025)
-**Citation**: "Evaluating AI-assisted creative ideation: A crossover study"  
-**Source**: ScienceDirect  
+**Citation**: "Evaluating AI-assisted creative ideation: A crossover study"\
+**Source**: ScienceDirect\
 **Link**: https://www.sciencedirect.com/science/article/pii/S187118712500207X
 
 **Key Findings**:
@@ -35,8 +35,8 @@ This is an unverified legacy reading list about creativity and exploration. Its 
 ---
 
 ### 2. Double-Edged Roles of GenAI in Creative Process (2024)
-**Citation**: "The Double-Edged Roles of Generative AI in the Creative Process"  
-**Source**: INFORMS  
+**Citation**: "The Double-Edged Roles of Generative AI in the Creative Process"\
+**Source**: INFORMS\
 **Link**: https://pubsonline.informs.org/doi/10.1287/isre.2024.0937
 
 **Key Findings**:
@@ -54,8 +54,8 @@ This is an unverified legacy reading list about creativity and exploration. Its 
 ---
 
 ### 3. Cross-Domain Analogical Reasoning (2025)
-**Citation**: "Cross-domain analogical reasoning ability links functional..."  
-**Source**: ScienceDirect  
+**Citation**: "Cross-domain analogical reasoning ability links functional..."\
+**Source**: ScienceDirect\
 **Link**: https://www.sciencedirect.com/science/article/abs/pii/S1871187125000574
 
 **Key Findings**:
@@ -73,8 +73,8 @@ This is an unverified legacy reading list about creativity and exploration. Its 
 ---
 
 ### 4. Task Switching Reduces Cognitive Fixation (2017)
-**Citation**: "Switching On creativity: Task switching can increase creativity by reducing cognitive fixation"  
-**Source**: Organizational Behavior and Human Decision Processes  
+**Citation**: "Switching On creativity: Task switching can increase creativity by reducing cognitive fixation"\
+**Source**: Organizational Behavior and Human Decision Processes\
 **Link**: https://www.sciencedirect.com/science/article/abs/pii/S074959781630108X
 
 **Key Findings**:
@@ -92,8 +92,8 @@ This is an unverified legacy reading list about creativity and exploration. Its 
 ---
 
 ### 5. Human-AI Collaborative Design Space Exploration (2021)
-**Citation**: "A Framework to Study Human-AI Collaborative Design Space Exploration"  
-**Source**: NSF PAR  
+**Citation**: "A Framework to Study Human-AI Collaborative Design Space Exploration"\
+**Source**: NSF PAR\
 **Link**: https://par.nsf.gov/servlets/purl/10394334
 
 **Key Findings**:
@@ -330,7 +330,7 @@ This is an unverified legacy reading list about creativity and exploration. Its 
 
 **3. Use Frameworks Systematically**
 - TRIZ for contradictions
-- Biomimicry for functional challenges  
+- Biomimicry for functional challenges\
 - Lateral Thinking for fixation breaking
 - Match framework to need
 

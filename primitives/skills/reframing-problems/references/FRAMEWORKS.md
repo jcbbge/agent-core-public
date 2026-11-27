@@ -407,7 +407,7 @@ Characteristics:
    - Is there a clear success criterion? (Tame)
    - Do stakeholders disagree on what success is? (Wicked)
    - Will "solving" it create new problems? (Wicked)
-   
+
 2. **Adjust your approach:**
    - **Tame:** Optimize, use best practices, find "right" answer
    - **Wicked:** Frame as ongoing management, not "solving"

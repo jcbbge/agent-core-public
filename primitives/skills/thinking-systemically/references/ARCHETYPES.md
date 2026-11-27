@@ -40,7 +40,7 @@ Lower quality → More rework needed
 More rework (+) → Work intensity
 ```
 
-**Loop type:** Reinforcing (collapse spiral)  
+**Loop type:** Reinforcing (collapse spiral)\
 **Time signature:** Accelerates over weeks/months
 
 ### Recognition Criteria
@@ -58,8 +58,8 @@ More rework (+) → Work intensity
 
 ### Why Standard Solutions Fail
 
-**"Work harder"** - Strengthens the loop (more intensity → more stress)  
-**"Take a day off"** - Temporary relief, loop resumes Monday  
+**"Work harder"** - Strengthens the loop (more intensity → more stress)\
+**"Take a day off"** - Temporary relief, loop resumes Monday\
 **"Power through"** - Accelerates collapse
 
 ### Breaking Strategy
@@ -117,7 +117,7 @@ Low progress → Frustration
 Frustration → Abandon projects or add new ones
 ```
 
-**Loop type:** Reinforcing (accelerating collapse)  
+**Loop type:** Reinforcing (accelerating collapse)\
 **Time signature:** Visible within days, critical in weeks
 
 ### Recognition Criteria
@@ -136,8 +136,8 @@ Frustration → Abandon projects or add new ones
 
 ### Why Standard Solutions Fail
 
-**"Better time management"** - Can't manage attention into existence  
-**"Just focus"** - Doesn't address structural problem  
+**"Better time management"** - Can't manage attention into existence\
+**"Just focus"** - Doesn't address structural problem\
 **"Work harder on all of them"** - Worsens fragmentation
 
 ### Breaking Strategy
@@ -198,7 +198,7 @@ Maintenance burden → Less time for quality practices
 Less quality practices → More debt (reinforcing)
 ```
 
-**Loop type:** Reinforcing (exponential growth)  
+**Loop type:** Reinforcing (exponential growth)\
 **Time signature:** Invisible initially, then sudden crisis
 
 ### Recognition Criteria
@@ -218,8 +218,8 @@ Less quality practices → More debt (reinforcing)
 
 ### Why Standard Solutions Fail
 
-**"We'll fix it later"** - Later never comes, debt compounds  
-**"Rewrite from scratch"** - Usually fails, debt follows you  
+**"We'll fix it later"** - Later never comes, debt compounds\
+**"Rewrite from scratch"** - Usually fails, debt follows you\
 **"Freeze features, clean up"** - Rarely get permission/discipline
 
 ### Breaking Strategy
@@ -281,7 +281,7 @@ Can't build products → Still need income
 Still need income → Take any client (trapped)
 ```
 
-**Loop type:** Balancing (maintains undesired state)  
+**Loop type:** Balancing (maintains undesired state)\
 **Time signature:** Stable but unsatisfying indefinitely
 
 ### Recognition Criteria
@@ -297,8 +297,8 @@ Still need income → Take any client (trapped)
 
 ### Why Standard Solutions Fail
 
-**"Save money first"** - Client work prevents saving time for product  
-**"Work nights/weekends on product"** - Leads to Burnout Loop  
+**"Save money first"** - Client work prevents saving time for product\
+**"Work nights/weekends on product"** - Leads to Burnout Loop\
 **"Quit clients cold turkey"** - Usually not financially viable
 
 ### Breaking Strategy
@@ -361,7 +361,7 @@ Problems → Fix problems (slower delivery)
 Slow delivery → Pressure to ship fast (restart cycle)
 ```
 
-**Loop type:** Balancing (oscillates between extremes)  
+**Loop type:** Balancing (oscillates between extremes)\
 **Time signature:** Oscillation period: weeks to months
 
 ### Recognition Criteria
@@ -380,8 +380,8 @@ Slow delivery → Pressure to ship fast (restart cycle)
 
 ### Why Standard Solutions Fail
 
-**"Just find the right balance"** - Doesn't address structural oscillation  
-**"Be consistent"** - Pressure forces swing back  
+**"Just find the right balance"** - Doesn't address structural oscillation\
+**"Be consistent"** - Pressure forces swing back\
 **"Set standards"** - Standards relaxed under pressure
 
 ### Breaking Strategy
@@ -445,7 +445,7 @@ Decline → Pressure to restore success
 Pressure → Work expands more (worsens problem)
 ```
 
-**Loop type:** Balancing (resists maintaining success)  
+**Loop type:** Balancing (resists maintaining success)\
 **Time signature:** Success → failure over months/years
 
 ### Recognition Criteria
@@ -464,8 +464,8 @@ Pressure → Work expands more (worsens problem)
 
 ### Why Standard Solutions Fail
 
-**"Work harder"** - Already working hard, that's the problem  
-**"Hire help"** - New constraint (management), same pattern  
+**"Work harder"** - Already working hard, that's the problem\
+**"Hire help"** - New constraint (management), same pattern\
 **"Say no to growth"** - Resists market opportunity
 
 ### Breaking Strategy
